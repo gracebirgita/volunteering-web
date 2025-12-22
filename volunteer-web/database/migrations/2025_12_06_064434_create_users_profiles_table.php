@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('account_id')
                   ->constrained('accounts', 'account_id')
                   ->cascadeOnDelete(); //FK
+
             $table->string('user_name', 50);
-            $table->string('user_email', 100);
             $table->string('user_phone', 20);
             $table->string('user_domicile', 50);
             $table->date('user_dob');

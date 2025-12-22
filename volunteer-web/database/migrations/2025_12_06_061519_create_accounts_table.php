@@ -14,8 +14,12 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->id('account_id'); //PK
             $table->string('email', 100)->unique();
+            $table->timestamp('email_verified_at')->nullable();
+
             $table->string('password', 255);
-            $table->string('role', 10);
+            $table->string('role', 20);
+
+            $table->rememberToken(); // remember me
             $table->timestamps();
         });
     }
