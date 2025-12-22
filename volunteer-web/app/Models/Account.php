@@ -13,8 +13,15 @@ class Account extends Model
 {
     //
     use HasFactory, Notifable;
+    protected $primaryKey = 'account_id';
+
     protected $fillable=[
         'email', 'password', 'role'
+    ];
+
+    protected $hidden=[
+        'password',
+        'remember_token'
     ];
 
     // RELATIONS
@@ -52,4 +59,46 @@ class Account extends Model
 
     // }
 
+
+
+
+    // protected function casts(): array
+    // {
+    //     return [
+    //         'email_verified_at' => 'datetime',
+    //         'password' => 'hashed',
+    //     ];
+    // }
+
+    // BAWAAN USERS
+    
+    //     /**
+    //  * The attributes that are mass assignable.
+    //  *
+    //  * @var array<int, string>
+    //  */
+    // protected $fillable = [
+    //     'name',
+    //     'email',
+    //     'password',
+    // ];
+
+    // /**
+    //  * The attributes that should be hidden for serialization.
+    //  *
+    //  * @var array<int, string>
+    //  */
+    // protected $hidden = [
+    //     'password',
+    //     'remember_token',
+    // ];
+
+
+    // protected function casts(): array
+    // {
+    //     return [
+    //         'email_verified_at' => 'datetime',
+    //         'password' => 'hashed',
+    //     ];
+    // }
 }
