@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,9 +18,9 @@ class UserProfile extends Model
         'account_id',
         'user_name',
         'user_phone',
-        'user_domicile', 
-        'user_dob', // tgl lahir
-        'user_interest', // pilih kategori bidang volunteer
+        'user_domicile',
+        'user_dob', // tanggal lahir
+        'user_interest', //kategori volunteer
     ];
 
     // protected $hidden = [
@@ -30,6 +29,6 @@ class UserProfile extends Model
 
     public function account(): BelongsTo
     {
-        return $this->belongsTo(Account::class, 'account_id');
+        return $this->belongsTo(Account::class, 'account_id', 'account_id');
     }
 }
