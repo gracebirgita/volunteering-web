@@ -6,44 +6,51 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+// use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
-class Account extends Model
+// class Account extends Model
+class Account extends Authenticatable
 {
     //
-    use HasFactory, Notifable;
+    use HasFactory, Notifiable;
+    protected $table = 'accounts';
     protected $primaryKey = 'account_id';
 
     protected $fillable=[
         'email', 'password', 'role'
     ];
-
     protected $hidden=[
         'password',
         'remember_token'
     ];
 
+    protected $casts=[
+        'password'=>'hashed',
+    ];
+
     // RELATIONS
-    public function admins() : HasMany{
-        return $this->hasMany(Admin::class, 'account_id');
+    public function admin() : HasOne{
+        return $this->hasOne(Admin::class, 'account_id');
     }
 
-    public function users_profiles(): HasMany{
-        return $this->hasMany(UserProfile::class, 'account_id');
+    public function userProfile(): HasOne{
+        return $this->hasOne(UserProfile::class, 'account_id');
     }
-    public function institites(): HasMany{
-        return $this->hasMany(Institute::class, 'account_id');
+    public function institute(): HasOne{
+        return $this->hasOne(Institute::class, 'account_id');
     }
 
-    // role -> account id yg unik (role: institute, userprofile, admin)
-    public function isAdmin(){
+    // CHECK role -> account id yg unik (role: institute, userprofile, admin)
+    public function isAdmin(): bool{
         return $this->role==='admin';
     }
-    public function isUser(){
+    public function isUser(): bool{
         return $this->role==='user';
     }
-    public function isInstitute(){
+    public function isInstitute(): bool{
         return $this->role==='institute';
     }
     
@@ -71,7 +78,7 @@ class Account extends Model
     // }
 
     // BAWAAN USERS
-    
+
     //     /**
     //  * The attributes that are mass assignable.
     //  *

@@ -10,8 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Admin extends Model
 {
     //
-    use HasFactory, Notifable;
+    use HasFactory;
     protected $fillable=[
+        'account_id',
         'admin_name'
     ];
 

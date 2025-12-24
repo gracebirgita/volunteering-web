@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
 
+// LOGIN
 class AuthenticatedSessionController extends Controller
 {
     /**
@@ -29,9 +30,21 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
-        $request->session()->regenerate();
-        return redirect()->intended(route('dashboard', absolute: false));
+        $request->authenticate(); //cocokan email, pass - save ke user session
+        $request->session()->regenerate(); //regenerate session id
+
+        $account = Auth::user(); //account model
+
+        if($account->isAdmin()){
+            return redirect()->route('admin.dashboard');
+        }
+
+        if($account->isInstitute()){
+            return redirect()->route('institute.dashboard');
+        }
+
+        // user -> dashboard user
+        return redirect()->route('user.dashboard');
     }
 
     /**
@@ -43,6 +56,6 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/'); //balik landing page
     }
 }
