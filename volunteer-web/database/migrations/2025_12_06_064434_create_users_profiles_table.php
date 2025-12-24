@@ -17,11 +17,11 @@ return new class extends Migration
                   ->constrained('accounts', 'account_id')
                   ->cascadeOnDelete(); //FK
 
-            $table->string('user_name', 50);
-            $table->string('user_phone', 20);
-            $table->string('user_domicile', 50);
-            $table->date('user_dob');
-            $table->string('user_interest', 50);
+            $table->string('user_name', 50)->nullable();
+            $table->string('user_phone', 20)->nullable();
+            $table->string('user_domicile', 50)->nullable();
+            $table->date('user_dob')->nullable();
+            $table->string('user_interest', 50)->nullable();
 
             $table->timestamps();
         });
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('users_profiles');
     }
 };

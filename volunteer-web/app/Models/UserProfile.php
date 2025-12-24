@@ -9,24 +9,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserProfile extends Model
 {
-    use HasFactory, Notifiable;
-
+    //
+    use HasFactory;
     protected $table = 'users_profiles';
-    protected $primaryKey = 'user_id';
+    protected $primaryKey= 'user_id';
 
     protected $fillable = [
-        'account_id',      
+        'account_id',
         'user_name',
-        'user_email',
         'user_phone',
         'user_domicile',
         'user_dob', // tanggal lahir
         'user_interest', //kategori volunteer
     ];
 
-    protected $casts = [
-        'user_dob' => 'date',
-    ];
+    // protected $hidden = [
+    //     'remember_token',
+    // ];
 
     public function account(): BelongsTo
     {

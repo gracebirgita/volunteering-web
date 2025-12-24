@@ -11,8 +11,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Institute extends Model
 {
     //
-    use HasFactory, Notifiable;
+    use HasFactory;
     protected $fillable = [
+        'account_id',
         'institute_name',
         'institute_phone',
         'institute_pic_name',

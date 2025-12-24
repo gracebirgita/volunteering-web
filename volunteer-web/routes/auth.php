@@ -12,11 +12,41 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 
+// add
+use App\Http\Controllers\Auth\AuthenticatedUserController;
+use App\Http\Controllers\Dashboard\AdminDashboardController;
+use App\Http\Controllers\Dashboard\UserDashboardController;
+use App\Http\Controllers\Dashboard\InstituteDashboardController;
+use Inertia\Inertia;
+
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
+// yg sdh ter auth
+Route::middleware(['auth'])->group(function(){
+        
+        Route::get('/dashboard', function () {
+                return Inertia::render('Dashboard');
+        })->name('dashboard');
+
+        Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])
+        ->middleware('role:admin')
+        ->name('dashboard.admin');
+
+        Route::get('/dashboard/user', [UserDashboardController::class, 'index'])
+                ->middleware('role:user')
+                ->name('dashboard.user');
+
+        Route::get('/dashboard/institute', [InstituteDashboardController::class, 'index'])
+                ->middleware('role:institute')
+                ->name('dashboard.institute');
+});
+
+    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+        ->name('password.request');
+        
 // Route::middleware('guest')->group(function () {
 //     Route::get('register', [RegisteredUserController::class, 'create'])
 //         ->name('register');
