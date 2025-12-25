@@ -18,6 +18,7 @@ use App\Http\Controllers\Dashboard\AdminDashboardController;
 use App\Http\Controllers\Dashboard\UserDashboardController;
 use App\Http\Controllers\Dashboard\InstituteDashboardController;
 use Inertia\Inertia;
+use App\Http\Controllers\VolunteerProfilController;
 
 Route::middleware('guest')->group(function(){
         // LOGIN
@@ -66,6 +67,10 @@ Route::middleware(['auth'])->group(function(){
         Route::middleware('role:user')->group(function(){
                 Route::get('/dashboard/user', [UserDashboardController::class, 'index'])
                         ->name('dashboard.user');
+
+                // Profil Saya (showcase profil user)
+                Route::get('/profile', [VolunteerProfilController::class, 'show'])
+                        ->name('volunteer.profile');
         });
         
         // ROLE INSTITUTE
