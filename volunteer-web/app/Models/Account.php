@@ -51,50 +51,14 @@ class Account extends Authenticatable
     public function isInstitute(): bool{
         return $this->role==='institute';
     }
-    
-    // validasi role
-    // $account = Account::find($account_id);
-    // if($account->isAdmin()){
 
-    // }
-    // elseif($account->isUser()){
-
-    // }
-    // elseif($account->isInstitute()){
-
-    // }
-
-
-
-
-    // protected function casts(): array
-    // {
-    //     return [
-    //         'email_verified_at' => 'datetime',
-    //         'password' => 'hashed',
-    //     ];
-    // }
-
-    // BAWAAN USERS
-
-    //     /**
-    //  * The attributes that are mass assignable.
-    //  *
-    //  * @var array<int, string>
-    //  */
-    // protected $fillable = [
-    //     'name',
-    //     'email',
-    //     'password',
-    // ];
-
-    // /**
-    //  * The attributes that should be hidden for serialization.
-    //  *
-    //  * @var array<int, string>
-    //  */
-    // protected $hidden = [
-    //     'password',
-    //     'remember_token',
-    // ]
+    public function roleLabel()
+    {
+        return match ($this->role) {
+            'user' => 'Relawan',
+            'institute' => 'Institusi',
+            'admin' => 'Admin',
+            default => 'Tidak diketahui',
+        };
+    }
 }

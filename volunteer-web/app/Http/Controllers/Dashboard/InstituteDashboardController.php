@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+// lokasi di folder dashboard
+namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class InstituteDashboardController extends Controller
