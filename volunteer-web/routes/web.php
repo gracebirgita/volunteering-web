@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VolunteerSettingsController;
+use App\Http\Controllers\InstituteDashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -15,6 +16,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+Route::get('/institute/dashboard', [InstituteDashboardController::class, 'index'])->name('institute.dashboard');
 // Route::middleware('auth')->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 //     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -22,7 +24,6 @@ Route::get('/dashboard', function () {
 // });
 
 //login routes blm, harus login dulu
-
 Route::get('/settings', [VolunteerSettingsController::class, 'edit'])
     ->name('volunteer.settings');
 
