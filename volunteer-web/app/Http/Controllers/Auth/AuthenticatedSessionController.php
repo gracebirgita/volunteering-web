@@ -34,17 +34,29 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate(); //regenerate session id
 
         $account = Auth::user(); //account model
+        $selectedRole=$request->input('role');
 
+        // validasi role hrs sesuai saat login
+        if(
+            ($selectedRole==='user' && !$account->isUser()) ||
+            ($selectedRole === 'institute' && ! $account->isInstitute()) ||
+            ($selectedRole === 'admin' && ! $account->isAdmin())
+        ){
+            Auth::logout();
+            return back()->withErrors([
+                'role'=>'Akun terdaftar sebagai '.$account->roleLabel(),
+            ]);
+        }
+
+        // dashboard sesuai role
         if($account->isAdmin()){
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('dashboard.admin');
         }
-
         if($account->isInstitute()){
-            return redirect()->route('institute.dashboard');
+            return redirect()->route('dashboard.institute');
         }
-
         // user -> dashboard user
-        return redirect()->route('user.dashboard');
+        return redirect()->route('dashboard.user');
     }
 
     /**

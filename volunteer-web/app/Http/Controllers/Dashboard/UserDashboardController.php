@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
 
 class UserDashboardController extends Controller
 {
@@ -11,7 +13,8 @@ class UserDashboardController extends Controller
         $account = auth()->user();
 
         return inertia('Dashboard/User',[
-            'profile'=> $account->userProfile,
+            // 'user'=> $account->userProfile,
+            'user'=>$account,
         ]);
     }
 }

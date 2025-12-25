@@ -9,21 +9,27 @@ import { User } from 'lucide-react'; // Import ikon person (User)
 
 export default function Register() {
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         user_name: '',
+        institute_name:'',
+
         email: '',
         password: '',
         password_confirmation: '',
-        role: 'user', //default sementara
+        role: 'user', //dessfault sementara
     });
 
     const submit = (e) => {
         e.preventDefault();
+
+        // post ke db
         post(route('register.store'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
+
 
     return (
         <div className="flex h-screen w-full overflow-hidden bg-white">
@@ -87,7 +93,10 @@ export default function Register() {
                     <div className="flex bg-gray-100 rounded-lg p-1 mb-8 max-w-[400px] mx-auto">
                         <button
                             type="button"
-                            onClick={() => setData('role', 'user')}
+                            onClick={() => {
+                                setData('role', 'user');
+                                setData('institute_name', '');
+                            }}
                             className={`flex-1 py-2 text-sm font-bold rounded-md transition-all text-[14px] ${
                                 data.role === 'user' ? 'bg-white shadow text-black' : 'text-gray-400'
                             }`}
@@ -96,7 +105,10 @@ export default function Register() {
                         </button>
                         <button
                             type="button"
-                            onClick={() => setData('role', 'institute')}
+                            onClick={() => {
+                                setData('role', 'institute');
+                                setData('user_name', '');
+                            }}
                             className={`flex-1 py-2 text-sm font-bold rounded-md transition-all text-[14px] ${
                                 data.role === 'institute' ? 'bg-white shadow text-black' : 'text-gray-400'
                             }`}
@@ -120,16 +132,25 @@ export default function Register() {
                                     </svg>
                                 </div>
                                 <TextInput
-                                    id="user_name"
-                                    name="user_name"
-                                    value={data.user_name}
+                                    id={data.role==='user'? 'user_name': 'institute_name'}
+                                    name={data.role==='user'? 'user_name': 'institute_name'}
+                                    value={data.role==='user'? data.user_name: data.institute_name}
                                     className="block w-full bg-gray-50 border-none rounded-xl py-3 pl-10 font-['inter']-1" // Tambahkan pl-10 di sini
                                     placeholder="example12345"
-                                    onChange={(e) => setData('user_name', e.target.value)}
+                                    onChange={(e) => 
+                                        data.role ==='user'
+                                            ? setData('user_name', e.target.value)
+                                            : setData('institute_name', e.target.value)
+                                        }
                                     required
                                 />
                             </div>
-                            <InputError message={errors.user_name} className="mt-2" />
+                            <InputError message={
+                                    data.role==='user'
+                                        ? errors.user_name
+                                        : errors.institute_name
+                                } 
+                                className="mt-2" />
                         </div>
 
                         {/* EMAIL */}
@@ -163,7 +184,7 @@ export default function Register() {
                                 {/* Ikon Gembok (Kiri) */}
                                 <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-lock-fill text-gray-400" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
+                                        <path fillRule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
                                     </svg>
                                 </div>
 
@@ -210,14 +231,14 @@ export default function Register() {
                                 {/* Ikon Gembok (Kiri) */}
                                 <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-lock-fill text-gray-400" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
+                                        <path fillRule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
                                     </svg>
                                 </div>
 
                                 {/* TextInput: sesuai show/hide */}
                                 <TextInput
                                     id="password_confirmation"
-                                    type={showPassword ? 'text' : 'password'}
+                                    type={showConfirmPassword ? 'text' : 'password'}
                                     value={data.password_confirmation}
                                     className="mt-1 block w-full bg-gray-50 border-none rounded-xl py-3 pl-12 pr-12 font-['inter']-1"
                                     placeholder="•••••••••••"
@@ -228,10 +249,10 @@ export default function Register() {
                                 {/* Tombol Show/Hide (Kanan) */}
                                 <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                     className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600 focus:outline-none"
                                 >
-                                    {showPassword ? (
+                                    {showConfirmPassword ? (
                                         /* Ikon open eye fill */
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
                                             <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>

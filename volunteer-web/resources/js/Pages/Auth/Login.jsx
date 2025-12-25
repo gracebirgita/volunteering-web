@@ -20,9 +20,10 @@ export default function Login({ status, canResetPassword }) {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('login'), {
-            onFinish: () => reset('password'),
-        });
+        post(route('login.store'));
+        // post(route('login'), {
+        //     onFinish: () => reset('password'),
+        // });
     };
 
     return (
@@ -82,30 +83,35 @@ export default function Login({ status, canResetPassword }) {
 
                     {/* FORM */}
                     {/* ISI FORM */}
+                    {errors.role && (
+                        <p className="text-red-500 text-sm mt-2">
+                            {errors.role}
+                        </p>
+                    )}
                     <form onSubmit={submit} className="space-y-4">
                         {/* EMAIL */}
                         <div>
-                            <InputLabel htmlFor="user_name" 
+                            <InputLabel htmlFor="email" 
                             value={data.role === 'user' ? 'Email' : 'Email Organisasi'} 
                             className="font-['inter']" />
                             <div className="relative mt-1">
                                 <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                                    {/* <i className="fa-solid fa-user text-gray-600"></i> */}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-person-fill text-gray-400" viewBox="0 0 20 20">
-                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-envelope-fill text-gray-400" viewBox="0 0 16 16">
+                                        <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586zm3.436-.586L16 11.801V4.697z"/>
                                     </svg>
                                 </div>
+
                                 <TextInput
-                                    id="user_name"
-                                    name="user_name"
-                                    value={data.user_name}
-                                    className="block w-full bg-gray-50 border-none rounded-xl py-3 pl-10 font-['inter']-1" // Tambahkan pl-10 di sini
-                                    placeholder="example12345"
-                                    onChange={(e) => setData('user_name', e.target.value)}
+                                    id="email"
+                                    type="email"
+                                    value={data.email}
+                                    className="mt-1 block w-full bg-gray-50 border-none rounded-xl py-3 pl-11 font-['inter']-1"
+                                    placeholder="example@gmail.com"
+                                    onChange={(e) => setData('email', e.target.value)}
                                     required
                                 />
                             </div>
-                            <InputError message={errors.user_name} className="mt-2" />
+                            <InputError message={errors.email} className="mt-2" />
                         </div>
 
                         {/* PASSWORD  + remember me*/}
@@ -116,7 +122,7 @@ export default function Login({ status, canResetPassword }) {
                                 {/* Ikon Gembok (Kiri) */}
                                 <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-lock-fill text-gray-400" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
+                                        <path fillRule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
                                     </svg>
                                 </div>
 

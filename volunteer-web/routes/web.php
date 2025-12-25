@@ -6,15 +6,15 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
+// LARAVEL
 Route::get('/', function () {
     return view('landingPage');
 });
 
-Route::get('/register', [RegisteredUserController::class, 'create'])
-    ->name('register');
-
-Route::post('/register', [RegisteredUserController::class, 'store'])
-    ->name('register.store');
+// inertia
+// Route::get('/', function(){
+//     return Inertia::render('Landing');
+// });
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');

@@ -46,8 +46,8 @@ class RegisteredUserController extends Controller
             'password'=> ['required', 'confirmed', Rules\Password::defaults()],
             'role' => 'required|in:user,institute,admin',
 
-            'user_name' => 'sometimes|required|string|max:255',
-            'institute_name' => 'sometimes|required|string|max:255',
+            'user_name' => 'required_if:role,user',
+            'institute_name' => 'required_if:role,institute',
         ]);
         DB::transaction(function () use ($request) {
                 // 2. create account(BASE)
@@ -87,12 +87,11 @@ class RegisteredUserController extends Controller
                     ]);
                 }
         
-        
                 // login
                 Auth::login($account);
             });
     
             // redirect
-            return redirect()->route('dashboard');
+            return redirect()->route('login')->with('success', 'Registrasi berhasil, silakan login.');;
     }
 }

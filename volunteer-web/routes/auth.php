@@ -19,29 +19,46 @@ use App\Http\Controllers\Dashboard\UserDashboardController;
 use App\Http\Controllers\Dashboard\InstituteDashboardController;
 use Inertia\Inertia;
 
+// LOGIN
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
-Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+        ->name('login.store');
+
+// REGIST
+Route::get('/register', [RegisteredUserController::class, 'create'])
+    ->name('register');
+// post register -> DB
+Route::post('/register', [RegisteredUserController::class, 'store'])
+    ->name('register.store');
+// Route::middleware(['guest'])->group(function(){
+// });
 
 // yg sdh ter auth
 Route::middleware(['auth'])->group(function(){
         
-        Route::get('/dashboard', function () {
-                return Inertia::render('Dashboard');
-        })->name('dashboard');
+        // ROLE ADMIN
+        Route::middleware('role:admin')->group(function(){
+                Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])
+                        ->name('dashboard.admin');
 
-        Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])
-        ->middleware('role:admin')
-        ->name('dashboard.admin');
+        });
 
-        Route::get('/dashboard/user', [UserDashboardController::class, 'index'])
-                ->middleware('role:user')
-                ->name('dashboard.user');
-
-        Route::get('/dashboard/institute', [InstituteDashboardController::class, 'index'])
-                ->middleware('role:institute')
-                ->name('dashboard.institute');
+        // ROLE USER
+        Route::middleware('role:user')->group(function(){
+                Route::get('/dashboard/user', [UserDashboardController::class, 'index'])
+                        ->name('dashboard.user');
+        });
+        
+        // ROLE INSTITUTE
+        Route::middleware('role:institute')->group(function(){
+                Route::get('/dashboard/institute', [InstituteDashboardController::class, 'index'])
+                        ->name('dashboard.institute');
+        });
+        
+        // LOGOUT
+        Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+        ->name('logout');
 });
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
