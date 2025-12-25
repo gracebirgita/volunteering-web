@@ -36,10 +36,7 @@ class RegisteredUserController extends Controller
     }
 
     // simpan akun (POST regist ke db)
-    public function store(Request $request){
-        // dd($request->all());
-        
-        
+    public function store(Request $request){      
         // 1. validasi input 
         $validated=$request->validate([
             'email'=> 'required|string|lowercase|email|max:100|unique:accounts,email',
@@ -88,10 +85,15 @@ class RegisteredUserController extends Controller
                 }
         
                 // login
-                Auth::login($account);
-            });
-    
-            // redirect
+                // Auth::login($account);
+                // return $account;
+            });         
+            // login akun
+            // return match ($account->role) {
+            //     'admin' => redirect()->route('dashboard.admin'),
+            //     'institute' => redirect()->route('dashboard.institute'),
+            //     'user' => redirect()->route('dashboard.user'),
+            // };
             return redirect()->route('login')->with('success', 'Registrasi berhasil, silakan login.');;
     }
 }

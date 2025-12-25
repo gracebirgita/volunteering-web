@@ -13,7 +13,7 @@ export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
-        remember: false,
+        remember: false, // remember me
         role:'user',
     });
 
@@ -163,7 +163,7 @@ export default function Login({ status, canResetPassword }) {
 
                         {/* REMEMBER ME & FORGOT PASSWORD */}
                         <div className="mt-4 flex items-center justify-between">
-                            {/* Sisi Kiri: Remember Me */}
+                            {/* Kiri: Remember Me */}
                             <label className="flex items-center">
                                 <Checkbox
                                     name="remember"
@@ -175,7 +175,7 @@ export default function Login({ status, canResetPassword }) {
                                 </span>
                             </label>
 
-                            {/* Sisi Kanan: Forgot Password */}
+                            {/* Kanan: Forgot Password */}
                             {canResetPassword && (
                                 <Link
                                     href={route('password.request')}
@@ -192,10 +192,10 @@ export default function Login({ status, canResetPassword }) {
                         {/* LOGIN BUTTON */}
                         <div className="pt-2">
                             <PrimaryButton 
-                                className="w-full justify-center py-4 bg-[#005d66] 
+                                className="w-full justify-center py-4 bg-[#005D67] 
                                 hover:bg-[#004a52] 
                                 rounded-xl transition-all 
-                                font-['inter'] font-medium text-[14px] leading-[100%] 
+                                font-['inter']-5 font-medium text-[16px] leading-[100%] 
                                 normal-case tracking-normal text-center" 
                                 disabled={processing}
                             >

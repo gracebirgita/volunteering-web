@@ -19,24 +19,42 @@ use App\Http\Controllers\Dashboard\UserDashboardController;
 use App\Http\Controllers\Dashboard\InstituteDashboardController;
 use Inertia\Inertia;
 
-// LOGIN
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])
-        ->name('login');
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])
-        ->name('login.store');
+Route::middleware('guest')->group(function(){
+        // LOGIN
+        Route::get('/login', [AuthenticatedSessionController::class, 'create'])
+                ->name('login');
+        Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+                ->name('login.store');
+        
+        // REGIST
+        Route::get('/register', [RegisteredUserController::class, 'create'])
+            ->name('register');
+        // post register -> DB
+        Route::post('/register', [RegisteredUserController::class, 'store'])
+            ->name('register.store');
 
-// REGIST
-Route::get('/register', [RegisteredUserController::class, 'create'])
-    ->name('register');
-// post register -> DB
-Route::post('/register', [RegisteredUserController::class, 'store'])
-    ->name('register.store');
-// Route::middleware(['guest'])->group(function(){
-// });
+        Route::get('/logout', function(){
+                return redirect()->route('login'); //guest tdk bs logout
+        });
+
+
+        // FORGET PASSWORD
+        // Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
+        // ->name('password.request');
+
+        // // submit email reset
+        // Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+        //         ->name('password.email');
+        // // form isi password baru
+        // Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+        //         ->name('password.reset');
+        // // submit new pass
+        // Route::post('/reset-password', [NewPasswordController::class, 'store'])
+        //         ->name('password.store');
+});
 
 // yg sdh ter auth
 Route::middleware(['auth'])->group(function(){
-        
         // ROLE ADMIN
         Route::middleware('role:admin')->group(function(){
                 Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])
@@ -60,9 +78,6 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 });
-
-    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
-        ->name('password.request');
         
 // Route::middleware('guest')->group(function () {
 //     Route::get('register', [RegisteredUserController::class, 'create'])

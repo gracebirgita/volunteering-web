@@ -25,6 +25,23 @@ class AuthenticatedSessionController extends Controller
         ]);
     }
 
+    // modif authenticate
+    public function authenticate(): void{
+        $this->ensureIsNotRateLimited();
+
+        if(! Auth::attempt(
+            $this->only('email', 'password'),
+            $this->boolean('remember'), //remember me
+        )){
+            RateLimiter::hit($this->throttleKey());//catat fail login
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
+
+        RateLimiter::clear($this->throttleKey()); //clear catatan fail
+    }
     /**
      * Handle an incoming authentication request.
      */
@@ -55,8 +72,12 @@ class AuthenticatedSessionController extends Controller
         if($account->isInstitute()){
             return redirect()->route('dashboard.institute');
         }
+        if ($account->isUser()) {
+            return redirect()->route('dashboard.user');
+        }
         // user -> dashboard user
-        return redirect()->route('dashboard.user');
+        // return redirect()->route('dashboard.user');
+        return redirect('/');
     }
 
     /**
