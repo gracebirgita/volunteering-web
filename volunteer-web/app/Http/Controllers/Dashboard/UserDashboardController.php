@@ -13,8 +13,8 @@ class UserDashboardController extends Controller
         $account = auth()->user();
 
         return inertia('Dashboard/User',[
-            // 'user'=> $account->userProfile,
-            'user'=>$account,
+            'user'=> $account->userProfile,
+            // 'user'=>$account,
         ]);
     }
 }
