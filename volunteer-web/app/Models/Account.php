@@ -61,4 +61,14 @@ class Account extends Authenticatable
             default => 'Tidak diketahui',
         };
     }
+
+    // role redirect
+    public function dashRoute():string{
+        return match($this->role){
+            'admin'=>'dashboard.admin',
+            'institute'=>'dashboard.institute',
+            'user'=>'dashboard.user',
+        };
+    }
+    
 }

@@ -275,10 +275,10 @@ export default function Register() {
                         {/* REGISTER BUTTON */}
                         <div className="pt-2">
                             <PrimaryButton 
-                                className="w-full justify-center py-4 bg-[#005d66] 
+                                className="w-full justify-center py-4 bg-[#005D67] 
                                 hover:bg-[#004a52] 
                                 rounded-xl transition-all 
-                                font-['inter'] font-medium text-[14px] leading-[100%] 
+                                font-['inter']-5 font-medium text-[16px] leading-[100%] 
                                 normal-case tracking-normal text-center" 
                                 disabled={processing}
                             >
