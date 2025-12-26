@@ -8,9 +8,9 @@ use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
 // LARAVEL
-Route::get('/', function () {
-    return view('landingPage');
-});
+// Route::get('/', function () {
+//     return view('landingPage');
+// });
 
 
 //login routes blm, harus login dulu

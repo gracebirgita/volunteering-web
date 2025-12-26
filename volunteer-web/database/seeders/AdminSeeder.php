@@ -18,7 +18,7 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        // STATIS (role admin hrs di define)
         $account = Account::create([
             'email'=> 'admin1@volhub.com',
             'password'=> Hash::make('admin123'),

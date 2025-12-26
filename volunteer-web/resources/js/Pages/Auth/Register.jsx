@@ -25,7 +25,7 @@ export default function Register() {
         e.preventDefault();
 
         // post ke db
-        post(route('register.store'), {
+        post('/register', {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
@@ -300,7 +300,7 @@ export default function Register() {
                                 Sudah Punya Akun ?{' '}
                             </span>
                             <Link 
-                                href={route('login')} 
+                                href='/login' 
                                 style={{ 
                                     fontFamily: "'DM Sans', sans-serif",
                                     fontSize: '15px',

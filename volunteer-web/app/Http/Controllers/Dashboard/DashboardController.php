@@ -15,12 +15,12 @@ class DashboardController extends Controller
         $account = Auth::user();
 
         if($account->isAdmin()){
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('dashboard.admin');
         }
         if($account->isInstitute()){
-            return redirect()->route('institute.dashboard');
+            return redirect()->route('dashboard.institute');
         }
 
-        return redirect()->route('user.dashboard');
+        return redirect()->route('dashboard.user');
     }
 }
