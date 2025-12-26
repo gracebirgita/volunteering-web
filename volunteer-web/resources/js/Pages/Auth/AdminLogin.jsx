@@ -20,7 +20,7 @@ export default function Login({ status, canResetPassword }) {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('login.store'));
+        post(route('admin.store'));
         // post(route('login'), {
         //     onFinish: () => reset('password'),
         // });
@@ -52,33 +52,8 @@ export default function Login({ status, canResetPassword }) {
                             lineHeight: '100%',
                             textAlign: 'center',
                         }} className="text-gray-900">
-                            Selamat Datang Kembali
+                            Admin Login
                         </h2>
-                        <p className="text-center text-gray-600 mt-2 text-sm leading-relaxed font-['inter']-5">
-                            Masuk untuk mulai berkontribusi.
-                        </p>
-                    </div>
-
-                    {/* Role Switcher */}
-                    <div className="flex bg-gray-100 rounded-lg p-1 mb-8 max-w-[400px] mx-auto">
-                        <button
-                            type="button"
-                            onClick={() => setData('role', 'user')}
-                            className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${
-                                data.role === 'user' ? 'bg-white shadow text-black' : 'text-gray-400'
-                            }`}
-                        >
-                            Relawan
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setData('role', 'institute')}
-                            className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${
-                                data.role === 'institute' ? 'bg-white shadow text-black' : 'text-gray-400'
-                            }`}
-                        >
-                            Institute
-                        </button>
                     </div>
 
                     {/* FORM */}
@@ -174,17 +149,6 @@ export default function Login({ status, canResetPassword }) {
                                     Ingat saya
                                 </span>
                             </label>
-
-                            {/* Kanan: Forgot Password */}
-                            {canResetPassword && (
-                                <Link
-                                    href={route('password.request')}
-                                    className="text-sm underline font-['inter']-5"
-                                    style={{ color: '#07ACE6', fontSize: '16px' }}
-                                >
-                                    Lupa Password?
-                                </Link>
-                            )}
                         </div>
                         
 
@@ -201,134 +165,12 @@ export default function Login({ status, canResetPassword }) {
                             >
                                 Login
                             </PrimaryButton>
-                        </div>
-
-                        {/* AKSES REGIST */}
-                        <div className="text-center mt-6">
-                            <span 
-                                style={{ 
-                                    fontFamily: "'DM Sans', sans-serif",
-                                    fontWeight: 400,
-                                    fontSize: '14px',
-                                    lineHeight: '100%',
-                                    letterSpacing: '0%',
-                                    color: '#6B7280' 
-                                }}
-                            >
-                                Tidak Punya Akun ?{' '}
-                            </span>
-                            <Link 
-                                href={route('register')} 
-                                style={{ 
-                                    fontFamily: "'DM Sans', sans-serif",
-                                    fontSize: '15px',
-                                    lineHeight: '100%',
-                                    color: '#07ACE6',
-                                }}
-                                className="underline"
-                            >
-                                Register Disini
-                            </Link>
-                        </div>
-                   
+                        </div>              
                    </form>
                 </div>
             </div>
 
-            {/* IMAGE SECTION*/}
-            <div 
-                className="relative hidden lg:block flex-shrink-0" 
-                style={{ 
-                    width: '737px', 
-                    height: '1024px',
-                    backgroundImage: `url(${data.role === 'user' ? '/assets/relawan-login.png' : 'assets/inst-login.png'})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                }}
-            >
-                {/* Overlay Gradient tetap 180deg sesuai referensi gambar login Anda */}
-                <div 
-                    className="absolute inset-0"
-                    style={{
-                        opacity: 1,
-                    }}
-                />
-            </div>
+            
         </div>
-
-
-        // <GuestLayout>
-        //     <Head title="Log in" />
-
-        //     {status && (
-        //         <div className="mb-4 text-sm font-medium text-green-600">
-        //             {status}
-        //         </div>
-        //     )}
-
-        //     <form onSubmit={submit}>
-        //         <div>
-        //             <InputLabel htmlFor="email" value="Email" />
-
-        //             <TextInput
-        //                 id="email"
-        //                 type="email"
-        //                 name="email"
-        //                 value={data.email}
-        //                 className="mt-1 block w-full"
-        //                 autoComplete="username"
-        //                 isFocused={true}
-        //                 onChange={(e) => setData('email', e.target.value)}
-        //             />
-
-        //             <InputError message={errors.email} className="mt-2" />
-        //         </div>
-
-        //         <div className="mt-4">
-                    // <InputLabel htmlFor="password" value="Password" />
-                    // <TextInput
-                    //     id="password"
-                    //     type="password"
-                    //     name="password"
-                    //     value={data.password}
-                    //     className="mt-1 block w-full"
-                    //     autoComplete="current-password"
-                    //     onChange={(e) => setData('password', e.target.value)}
-                    // />
-
-                    // <InputError message={errors.password} className="mt-2" />
-        //         </div>
-
-        //         <div className="mt-4 block">
-        //             <label className="flex items-center">
-        //                 <Checkbox
-        //                     name="remember"
-        //                     checked={data.remember}
-        //                     onChange={(e) =>
-        //                         setData('remember', e.target.checked)
-        //                     }
-        //                 />
-        //                 <span className="ms-2 text-sm text-gray-600">
-        //                     Remember me
-        //                 </span>
-        //             </label>
-        //         </div>
-
-        //         <div className="mt-4 flex items-center justify-end">
-        //             {canResetPassword && (
-        //                 <Link
-        //                     href={route('password.request')}
-        //                     className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        //                 >
-        //                     Forgot your password?
-        //                 </Link>
-        //             )}
-
-        //             <PrimaryButton className="ms-4" disabled={processing}>
-        //                 Log in
-        //             </PrimaryButton>
-        //         </div>
-        //     </form>
-        // </GuestLayout>
     );
 }
