@@ -14,7 +14,6 @@ Route::get('/', function () {
 
 
 //login routes blm, harus login dulu
-
 Route::get('/settings', [VolunteerSettingsController::class, 'edit'])
     ->name('volunteer.settings');
 

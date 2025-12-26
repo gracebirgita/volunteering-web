@@ -41,7 +41,7 @@ class RegisteredUserController extends Controller
         $validated=$request->validate([
             'email'=> 'required|string|lowercase|email|max:100|unique:accounts,email',
             'password'=> ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => 'required|in:user,institute,admin',
+            'role' => 'required|in:user,institute',
 
             'user_name' => 'required_if:role,user',
             'institute_name' => 'required_if:role,institute',
@@ -77,12 +77,12 @@ class RegisteredUserController extends Controller
                     ]);
                 }
         
-                if($request->role=='admin'){
-                    Admin::create([
-                        'account_id'=>$account->account_id,
-                        'admin_name'=>$request->admin_name,
-                    ]);
-                }
+                // if($request->role=='admin'){
+                //     Admin::create([
+                //         'account_id'=>$account->account_id,
+                //         'admin_name'=>$request->admin_name,
+                //     ]);
+                // }
         
                 // login
                 // Auth::login($account);

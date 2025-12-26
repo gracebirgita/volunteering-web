@@ -19,6 +19,7 @@ use App\Http\Controllers\Dashboard\UserDashboardController;
 use App\Http\Controllers\Dashboard\InstituteDashboardController;
 use Inertia\Inertia;
 use App\Http\Controllers\VolunteerProfilController;
+use App\Http\Controllers\Auth\AdminAuthController;
 
 Route::middleware('guest')->group(function(){
         // LOGIN
@@ -26,7 +27,13 @@ Route::middleware('guest')->group(function(){
                 ->name('login');
         Route::post('/login', [AuthenticatedSessionController::class, 'store'])
                 ->name('login.store');
-        
+
+        // admin login
+        Route::get('/admin/login', [AdminAuthController::class, 'create'])
+                ->name('admin.login');
+        Route::post('/admin/login', [AdminAuthController::class, 'store'])
+                ->name('admin.store');
+                
         // REGIST
         Route::get('/register', [RegisteredUserController::class, 'create'])
             ->name('register');
@@ -60,7 +67,6 @@ Route::middleware(['auth'])->group(function(){
         Route::middleware('role:admin')->group(function(){
                 Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])
                         ->name('dashboard.admin');
-
         });
 
         // ROLE USER
