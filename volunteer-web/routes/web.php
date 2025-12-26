@@ -8,9 +8,9 @@ use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
 // LARAVEL
-Route::get('/', function () {
-    return view('landingPage');
-});
+// Route::get('/', function () {
+//     return view('landingPage');
+// });
 
 Route::middleware(['auth'])->group(function(){
     Route::get('/settings', [VolunteerSettingsController::class, 'edit'])->name('volunteer.settings');

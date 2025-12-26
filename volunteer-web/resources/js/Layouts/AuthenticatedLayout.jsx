@@ -12,7 +12,7 @@ export default function AuthenticatedLayout({ children }) {
             <nav>
                 <form>
                     <Link
-                        href={route('logout')}
+                        href='/logout'
                         method="post"
                         as="button"
                         className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"

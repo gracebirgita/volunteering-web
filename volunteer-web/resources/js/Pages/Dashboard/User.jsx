@@ -1,9 +1,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, Link } from '@inertiajs/react';
 
 export default function Dashboard() {
     const handleLogout=() =>{
-        router.post(route('logout'));
+        router.post('/logout');
     };
 
     return (
@@ -22,6 +22,17 @@ export default function Dashboard() {
         <AuthenticatedLayout>
             <Head title="Dashboard" />
             <h1>USER DASHBOARD</h1>
+
+            {/* perlu diterapkan di navbar */}
+            
+            {/* Events Explore relawan */}
+            {/* <Link href={route('events.index')}>[ICON] Lihat Event</Link> */}
+            <Link href='/events'>[ICON] Lihat Event</Link>
+            <br />
+            {/* AKUN  */}
+            {/* profil */}
+            <Link href='/profile'>[ICON] Profil</Link>
+
         </AuthenticatedLayout>
 
         // <AuthenticatedLayout
