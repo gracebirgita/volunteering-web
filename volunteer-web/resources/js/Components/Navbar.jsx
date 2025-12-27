@@ -88,14 +88,14 @@ export default function MyNavbar({ user }) {
                 <NavbarCollapse 
                     className="md:ml-24 md:mr-auto md:w-auto md:block [&>ul]:md:flex-row [&>ul]:md:gap-8 [&>ul]:mt-0"
                 >
-                    <NavbarLink
+                    {/* <NavbarLink
                         as={Link}
                         href={route("home")}
                         active={isRouteActive("home")}
                         className={navLinkClasses}
                     >
                         Home
-                    </NavbarLink>
+                    </NavbarLink> */}
                 </NavbarCollapse>
             </Navbar>
         </div>

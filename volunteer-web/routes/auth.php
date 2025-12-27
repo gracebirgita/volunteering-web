@@ -32,7 +32,6 @@ Route::get('/', function () {
     return Inertia::render('LandingPage');
 })->name('home');
 
-
 Route::middleware('guest')->group(function(){
         // LOGIN
         Route::get('/login', [AuthenticatedSessionController::class, 'create'])
