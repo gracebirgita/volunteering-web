@@ -13,6 +13,7 @@ class VolunteerSettingsController extends Controller
     {
         // perlu login dulu
         $account = auth()->user();
+        if(!$account || !$account->isuser()) abort(403);
 
         $profile = $account->users_profiles()
             ->latest('user_id')

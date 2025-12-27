@@ -25,4 +25,8 @@ class Institute extends Model
     {
         return $this->belongsTo(Account::class, 'account_id');
     }
+
+    public function events(): HasMany{
+        return $this->hasMany(Event::class, 'institute_id', 'institute_id');
+    }
 }

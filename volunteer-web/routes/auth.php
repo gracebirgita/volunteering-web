@@ -77,6 +77,16 @@ Route::middleware(['auth'])->group(function(){
                 // Profil Saya (showcase profil user)
                 Route::get('/profile', [VolunteerProfilController::class, 'show'])
                         ->name('volunteer.profile');
+
+                // Profile settings and update
+                Route::get('/settings', [VolunteerSettingsController::class, 'edit'])
+                        ->name('volunteer.settings.edit');
+
+                Route::post('/settings/profile', [VolunteerSettingsController::class, 'updateProfile'])
+                        ->name('volunteer.settings.profile');
+
+                Route::post('/settings/password', [VolunteerSettingsController::class, 'updatePassword'])
+                        ->name('volunteer.settings.password');
         });
         
         // ROLE INSTITUTE
