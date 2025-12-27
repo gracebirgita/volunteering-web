@@ -213,7 +213,7 @@ export default function LandingPage({ auth }) {
                             </div>
                         ) : (
                             <Link
-                                href={route("dashboard")}
+                                href={route("login")}
                                 className="px-8 py-4 bg-green-600 text-white font-bold rounded-full hover:bg-green-700 transition shadow-lg text-lg inline-block"
                             >
                                 Ke Dashboard Saya

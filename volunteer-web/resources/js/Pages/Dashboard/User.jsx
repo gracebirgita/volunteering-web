@@ -21,7 +21,7 @@ export default function Dashboard() {
         // </div>
         <AuthenticatedLayout>
             <Head title="Dashboard" />
-            <h1>USER DASHBOARD</h1>
+            <h1 className='mt-20'>INI PLACEHOLDER USER DASHBOARD</h1>
 
             {/* perlu diterapkan di navbar */}
             

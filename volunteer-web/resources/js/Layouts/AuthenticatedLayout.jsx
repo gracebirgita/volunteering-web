@@ -5,27 +5,49 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
 
+// navbar
+import Navbar from '@/Components/Navbar';
+
 
 export default function AuthenticatedLayout({ children }) {
-    return (
-        <div>
-            <nav>
-                <form>
-                    <Link
-                        href='/logout'
-                        method="post"
-                        as="button"
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-                    >
-                    <span>Logout</span>
-                    </Link>
-                </form>
-            </nav>
+    // get user yg lagi login dr shared data Inertia
+    const user = usePage().props.auth.user;
 
-            <main>{children}</main>
-        </div>
-    );
-}
+    return (
+            <div className="min-h-screen bg-gray-100">
+                {/* 1. akses Navbar.jsxnya */}
+                {/* Kirim data user sebagai props spy bs show nama & menu logout */}
+                <Navbar user={user} />
+
+                {/* 2. bagain isi TEMPLATE */}
+                <main className="py-10">
+                    <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                        {children}
+                    </div>
+                </main>
+            </div>
+        );
+    }
+
+    // return (
+    //     <div>
+    //         <nav>
+    //             <form>
+    //                 <Link
+    //                     href='/logout'
+    //                     method="post"
+    //                     as="button"
+    //                     className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+    //                 >
+    //                 <span>Logout</span>
+    //                 </Link>
+    //             </form>
+    //         </nav>
+
+    //         <main>{children}</main>
+    //     </div>
+    // );
+// }
 // export default function AuthenticatedLayout({ header, children }) {
 //     const user = usePage().props.auth?.user;
 //     console.log('LAYOUT RENDERED', user);

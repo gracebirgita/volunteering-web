@@ -14,14 +14,14 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 
 
 //login routes blm, harus login dulu
-Route::get('/settings', [VolunteerSettingsController::class, 'edit'])
-    ->name('volunteer.settings');
+// Route::get('/settings', [VolunteerSettingsController::class, 'edit'])
+//     ->name('volunteer.settings');
 
-Route::post('/settings/profile', [VolunteerSettingsController::class, 'updateProfile'])
-    ->name('volunteer.settings.profile');
+// Route::post('/settings/profile', [VolunteerSettingsController::class, 'updateProfile'])
+//     ->name('volunteer.settings.profile');
 
-Route::post('/settings/password', [VolunteerSettingsController::class, 'updatePassword'])
-    ->name('volunteer.settings.password');
+// Route::post('/settings/password', [VolunteerSettingsController::class, 'updatePassword'])
+//     ->name('volunteer.settings.password');
 
 
 require __DIR__.'/auth.php';

@@ -5,7 +5,7 @@ import {
     NavbarCollapse,
     NavbarLink,
 } from "flowbite-react";
-import { Link } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 
 export default function MyNavbar({ user }) {
     const isRouteActive = (routeName) => {
@@ -14,6 +14,12 @@ export default function MyNavbar({ user }) {
         } catch (error) {
             return false;
         }
+    };
+    const { post } = useForm();
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        post(route("logout"));
     };
 
     const navLinkClasses =
@@ -44,12 +50,13 @@ export default function MyNavbar({ user }) {
                 </NavbarBrand>
 
                 <div className="flex md:order-2 items-center gap-4">
-                    {user ? (
+                    {/* USER NAVBAR (RAW VER) */}
+                    {user ? (                       
                         <div className="flex items-center gap-4 text-white">
                             <span className="hidden sm:block font-semibold">
                                 {user.name}
                             </span>
-                            <Link href={route("dashboard")}>
+                            <Link href={route("dashboard.user")}>
                                 <Button
                                     color="light"
                                     pill
@@ -59,8 +66,62 @@ export default function MyNavbar({ user }) {
                                     Dashboard
                                 </Button>
                             </Link>
+
+                            <Link href={route("events.index")}>
+                                <Button
+                                    color="light"
+                                    pill
+                                    size="sm"
+                                    className="bg-white/10 text-white border-white/20 hover:bg-white hover:text-gray-900 backdrop-blur-sm"
+                                >
+                                    Lihat Event
+                                </Button>
+                            </Link>
+                            <Link href={route("myevents.index")}>
+                                <Button
+                                    color="light"
+                                    pill
+                                    size="sm"
+                                    className="bg-white/10 text-white border-white/20 hover:bg-white hover:text-gray-900 backdrop-blur-sm"
+                                >
+                                    Event Saya
+                                </Button>
+                            </Link>
+                            <Link href={route("volunteer.profile")}>
+                                <Button
+                                    color="light"
+                                    pill
+                                    size="sm"
+                                    className="bg-white/10 text-white border-white/20 hover:bg-white hover:text-gray-900 backdrop-blur-sm"
+                                >
+                                    Profil
+                                </Button>
+                            </Link>
+                            <Link href={route("volunteer.settings")}>
+                                <Button
+                                    color="light"
+                                    pill
+                                    size="sm"
+                                    className="bg-white/10 text-white border-white/20 hover:bg-white hover:text-gray-900 backdrop-blur-sm"
+                                >
+                                    Pengaturan
+                                </Button>
+                            </Link>
+                            <Link href={route("volunteer.settings")}>
+                                <Button
+                                    onClick={handleLogout}
+                                    color="light"
+                                    pill
+                                    size="sm"
+                                    className="bg-white/10 text-white border-white/20 hover:bg-white hover:bg-red-700 backdrop-blur-sm"
+                                >
+                                    Keluar
+                                </Button>
+                            </Link>
+
                         </div>
                     ) : (
+                        // GUEST NAVBAR
                         <div className="flex items-center gap-2 sm:gap-4">
                             <Link href={route("login")}>
                                 <Button
