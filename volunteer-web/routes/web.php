@@ -12,6 +12,17 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 //     return view('landingPage');
 // });
 
+// Route::middleware(['auth'])->group(function(){
+//     Route::get('/settings', [VolunteerSettingsController::class, 'edit'])->name('volunteer.settings');
+
+//     Route::post('/settings/profile', [VolunteerSettingsController::class, 'updateProfile'])
+//         ->name('volunteer.settings.profile');
+
+//     Route::post('/settings/password', [VolunteerSettingsController::class, 'updatePassword'])
+//         ->name('volunteer.settings.password');
+
+// });
+
 
 //login routes blm, harus login dulu
 // Route::get('/settings', [VolunteerSettingsController::class, 'edit'])

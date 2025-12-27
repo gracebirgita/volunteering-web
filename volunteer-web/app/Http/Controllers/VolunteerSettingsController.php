@@ -13,6 +13,7 @@ class VolunteerSettingsController extends Controller
     {
         // perlu login dulu
         $account = auth()->user();
+        if(!$account || !$account->isuser()) abort(403);
 
         $profile = $account->users_profiles()
             ->latest('user_id')
@@ -53,13 +54,28 @@ class VolunteerSettingsController extends Controller
     {
         $account = auth()->user();
 
-        $request->validate([
-            'password' => 'required|min:8|confirmed',
+    $request->validate([
+        'current_password' => 'required',
+        'password' => 'required|min:8|confirmed',
+    ]);
+
+    //password lama salah
+    if (!Hash::check($request->current_password, $account->password)) {
+        throw ValidationException::withMessages([
+            'current_password' => 'Current password is incorrect.',
         ]);
+    }
 
-        $account->password = Hash::make($request->password);
-        $account->save();
+    //password baru sama dengan yang lama
+    if (Hash::check($request->password, $account->password)) {
+        throw ValidationException::withMessages([
+            'password' => 'New password must be different from the current password.',
+        ]);
+    }
 
-        return back()->with('status_password', 'Password updated.');
+    $account->password = Hash::make($request->password);
+    $account->save();
+
+    return back()->with('status_password', 'Password updated successfully.');
     }
 }
