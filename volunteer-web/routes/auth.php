@@ -21,6 +21,15 @@ use Inertia\Inertia;
 use App\Http\Controllers\VolunteerProfilController;
 use App\Http\Controllers\Auth\AdminAuthController;
 
+// relawan
+use App\Http\Controllers\Relawan\EventController;
+
+// GUEST = belum login
+
+Route::get('/', function () {
+    return Inertia::render('Landing');
+});
+
 Route::middleware('guest')->group(function(){
         // LOGIN
         Route::get('/login', [AuthenticatedSessionController::class, 'create'])
@@ -87,6 +96,10 @@ Route::middleware(['auth'])->group(function(){
 
                 Route::post('/settings/password', [VolunteerSettingsController::class, 'updatePassword'])
                         ->name('volunteer.settings.password');
+                // Explore Event(relawan)
+                // show(read db) ke relawan
+                Route::get('/events', [EventController::class, 'index'])
+                        ->name('events.index');
         });
         
         // ROLE INSTITUTE
@@ -97,7 +110,7 @@ Route::middleware(['auth'])->group(function(){
         
         // LOGOUT
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->name('logout');
+                ->name('logout');
 });
         
 // Route::middleware('guest')->group(function () {

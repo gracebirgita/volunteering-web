@@ -20,7 +20,7 @@ export default function Login({ status, canResetPassword }) {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('login.store'));
+        post('/login');
         // post(route('login'), {
         //     onFinish: () => reset('password'),
         // });
@@ -178,7 +178,7 @@ export default function Login({ status, canResetPassword }) {
                             {/* Kanan: Forgot Password */}
                             {canResetPassword && (
                                 <Link
-                                    href={route('password.request')}
+                                    href='#'
                                     className="text-sm underline font-['inter']-5"
                                     style={{ color: '#07ACE6', fontSize: '16px' }}
                                 >
@@ -192,7 +192,7 @@ export default function Login({ status, canResetPassword }) {
                         {/* LOGIN BUTTON */}
                         <div className="pt-2">
                             <PrimaryButton 
-                                className="w-full justify-center py-4 bg-[#005d67] 
+                                className="w-full justify-center py-4 bg-[#005D67] 
                                 hover:bg-[#004a52] 
                                 rounded-xl transition-all 
                                 font-['inter']-5 font-medium text-[16px] leading-[100%] 
@@ -218,7 +218,7 @@ export default function Login({ status, canResetPassword }) {
                                 Tidak Punya Akun ?{' '}
                             </span>
                             <Link 
-                                href={route('register')} 
+                                href='/register'
                                 style={{ 
                                     fontFamily: "'DM Sans', sans-serif",
                                     fontSize: '15px',

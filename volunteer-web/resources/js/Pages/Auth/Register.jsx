@@ -25,7 +25,7 @@ export default function Register() {
         e.preventDefault();
 
         // post ke db
-        post(route('register.store'), {
+        post('/register', {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
@@ -275,7 +275,7 @@ export default function Register() {
                         {/* REGISTER BUTTON */}
                         <div className="pt-2">
                             <PrimaryButton 
-                                className="w-full justify-center py-4 bg-[#005d67] 
+                                className="w-full justify-center py-4 bg-[#005D67] 
                                 hover:bg-[#004a52] 
                                 rounded-xl transition-all 
                                 font-['inter']-5 text-[16px] leading-[100%] 
@@ -300,7 +300,7 @@ export default function Register() {
                                 Sudah Punya Akun ?{' '}
                             </span>
                             <Link 
-                                href={route('login')} 
+                                href='/login' 
                                 style={{ 
                                     fontFamily: "'DM Sans', sans-serif",
                                     fontSize: '15px',

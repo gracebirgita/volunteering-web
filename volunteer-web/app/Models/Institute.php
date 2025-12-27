@@ -12,6 +12,7 @@ class Institute extends Model
 {
     //
     use HasFactory;
+    protected $primaryKey='institute_id';
     protected $fillable = [
         'account_id',
         'institute_name',
@@ -21,9 +22,15 @@ class Institute extends Model
         'institute_category'
     ];
 
+    // RELATIONS
     public function account(): BelongsTo
     {
-        return $this->belongsTo(Account::class, 'account_id');
+        return $this->belongsTo(Account::class, 'account_id', 'account_id');
+    }
+
+    // 1 institute -> many events
+    public function events(){
+        return $this->hasMany(Event::class);
     }
 
     public function events(): HasMany{
