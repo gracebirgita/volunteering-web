@@ -20,7 +20,7 @@ use App\Http\Controllers\Dashboard\InstituteDashboardController;
 use Inertia\Inertia;
 use App\Http\Controllers\VolunteerProfilController;
 use App\Http\Controllers\Auth\AdminAuthController;
-
+use App\Http\Controllers\VolunteerSettingsController;
 // relawan
 use App\Http\Controllers\Relawan\EventController;
 
