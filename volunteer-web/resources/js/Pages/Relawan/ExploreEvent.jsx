@@ -195,9 +195,13 @@ export default function ExploreEvent({ events, categories, institutes, locations
                                 </span>
                             </div>
 
-                            <button className="mt-4 px-3 py-1 bg-blue-600 text-white rounded">
+
+                            <Link
+                                href={`/events/${event.event_id}`}
+                                className="px-4 py-2 bg-blue-600 text-white rounded"
+                            >
                                 Lihat Detail
-                            </button>
+                            </Link>
 
                         </div>
                         ))}

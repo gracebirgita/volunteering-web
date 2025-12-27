@@ -28,6 +28,6 @@ class Event extends Model
 
     // 1 event -> byk eventregist
     public function registrations(){
-        return $this->hasMany(EventResgist::class);
+        return $this->hasMany(EventRegist::class, 'event_id', 'event_id');
     }
 }
