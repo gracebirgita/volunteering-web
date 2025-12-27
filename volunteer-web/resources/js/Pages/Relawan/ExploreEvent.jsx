@@ -1,5 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+
 
 export default function ExploreEvent({ events, categories, institutes, locations, filters:serverFilters }) {
     // const [search, setSearch] = useState(filters.search || '');
@@ -26,9 +28,10 @@ export default function ExploreEvent({ events, categories, institutes, locations
 
     return (
         <>
-        <h1>EVENT EXPLORE</h1>
-
-            <Head title="Explore Events" />
+        <AuthenticatedLayout>
+            <Head title="Explore Event" />
+            <h1 className='mt-20'>EXPLORE EVENT RELAWAN</h1>
+            <h1>EVENT EXPLORE</h1>
 
             <div className="flex gap-6">
                 {/* LEFT - EVENT LIST */}
@@ -209,6 +212,9 @@ export default function ExploreEvent({ events, categories, institutes, locations
 
                 </div>
             </div>
+        </AuthenticatedLayout>
+
+        
         </>
     );
 }

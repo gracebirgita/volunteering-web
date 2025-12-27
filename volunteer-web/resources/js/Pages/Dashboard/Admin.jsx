@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import { Button } from "flowbite-react";
 
 export default function Dashboard() {
     const handleLogout=() =>{
@@ -9,7 +10,27 @@ export default function Dashboard() {
         
         <AuthenticatedLayout>
             <Head title="ADMIN Dashboard" />
-            <h1>ADMIN DASHBOARD</h1>
+            <h1 className='mt-20'>ADMIN DASHBOARD</h1>
+
+            {/* perlu diterapkan di navbar */}
+            
+            {/*1. Manajemen Pengguna */}
+            {/* <Link href={route('events.index')}>[ICON] Lihat Event</Link> */}
+            <Link href={route('manage.user')}>[ICON] Manajemen Pengguna</Link>
+            <br />
+            
+            {/* 2. Manajemen Konten */}
+            <Link href={route('manage.content')}>[ICON] Manajemen Konten</Link>
+            <Button
+                onClick={handleLogout}
+                color="light"
+                pill
+                size="sm"
+                className="bg-white/10 text-white border-white/20 hover:bg-white hover:bg-red-700 backdrop-blur-sm"
+            >
+                Keluar
+            </Button>
+
         </AuthenticatedLayout>
         // <AuthenticatedLayout
         //     header={
