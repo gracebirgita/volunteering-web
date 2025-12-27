@@ -20,7 +20,7 @@ use App\Http\Controllers\Dashboard\InstituteDashboardController;
 use Inertia\Inertia;
 use App\Http\Controllers\VolunteerProfilController;
 use App\Http\Controllers\Auth\AdminAuthController;
-
+use App\Http\Controllers\VolunteerSettingsController;
 // relawan
 use App\Http\Controllers\Relawan\EventController;
 use App\Http\Controllers\Relawan\EventRegistController;
@@ -89,6 +89,15 @@ Route::middleware(['auth'])->group(function(){
                 Route::get('/profile', [VolunteerProfilController::class, 'show'])
                         ->name('volunteer.profile');
 
+                // Profile settings and update
+                Route::get('/settings', [VolunteerSettingsController::class, 'edit'])
+                        ->name('volunteer.settings.edit');
+
+                Route::post('/settings/profile', [VolunteerSettingsController::class, 'updateProfile'])
+                        ->name('volunteer.settings.profile');
+
+                Route::post('/settings/password', [VolunteerSettingsController::class, 'updatePassword'])
+                        ->name('volunteer.settings.password');
                 // Explore Event(relawan)
                 // show(read db) ke relawan
                 Route::get('/events', [EventController::class, 'index'])
