@@ -102,19 +102,7 @@ Route::middleware(['auth'])->group(function(){
                 Route::get('/dashboard/user', [UserDashboardController::class, 'index'])
                         ->name('dashboard.user');
 
-                // Profil Saya (showcase profil user)
-                Route::get('/profile', [VolunteerProfilController::class, 'show'])
-                        ->name('volunteer.profile');
 
-                // Profile settings and update
-                Route::get('/settings', [VolunteerSettingsController::class, 'edit'])
-                        ->name('volunteer.settings.edit');
-
-                Route::post('/settings/profile', [VolunteerSettingsController::class, 'updateProfile'])
-                        ->name('volunteer.settings.profile');
-
-                Route::post('/settings/password', [VolunteerSettingsController::class, 'updatePassword'])
-                        ->name('volunteer.settings.password');
                 // Explore Event(relawan)
                 // show(read db) ke relawan
                 Route::get('/events', [EventController::class, 'index'])
