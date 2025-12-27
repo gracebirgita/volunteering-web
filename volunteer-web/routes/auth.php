@@ -26,7 +26,6 @@ use App\Http\Controllers\Relawan\EventController;
 use App\Http\Controllers\Relawan\EventRegistController;
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\VolunteerSettingsController;
 
 // GUEST = belum login
 
