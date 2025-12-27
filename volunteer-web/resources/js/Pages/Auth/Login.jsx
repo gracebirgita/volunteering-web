@@ -192,7 +192,7 @@ export default function Login({ status, canResetPassword }) {
                         {/* LOGIN BUTTON */}
                         <div className="pt-2">
                             <PrimaryButton 
-                                className="w-full justify-center py-4 bg-[#005d67] 
+                                className="w-full justify-center py-4 bg-[#005D67] 
                                 hover:bg-[#004a52] 
                                 rounded-xl transition-all 
                                 font-['inter']-5 font-medium text-[16px] leading-[100%] 

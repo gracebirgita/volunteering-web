@@ -31,7 +31,7 @@ class EventController extends Controller
         $institute_cat =$request->institute_cat;
         $institute=$request->institute;
         $location=$request->location;
-        $date=$request->date;
+        $date=$request->input('date');
 
         $events = Event::with('institute')
             // search bar
@@ -72,9 +72,11 @@ class EventController extends Controller
 
                 // dropdown filter
                 'categories' => Institute::select('institute_category')
-                    ->distinct()->pluck('institute_category'),
+                    ->where('institute_category', '!=', '')
+                    ->distinct()->orderBy('institute_category', 'asc')
+                    ->pluck('institute_category'),
 
-                'institute' => Institute::select('institute_name')
+                'institutes' => Institute::select('institute_name')
                     ->distinct()->pluck('institute_name'),
 
                 'locations' => Event::select('event_location')
