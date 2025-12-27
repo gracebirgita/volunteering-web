@@ -31,4 +31,9 @@ class UserProfile extends Model
     {
         return $this->belongsTo(Account::class, 'account_id', 'account_id');
     }
+
+    // 1 user -> byk eventregist
+    public function registrations(){
+        return $this->hasMany(EventRegist::class, 'user_id', 'user_id');
+    }
 }

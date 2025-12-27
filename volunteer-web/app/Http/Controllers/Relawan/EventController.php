@@ -31,7 +31,7 @@ class EventController extends Controller
         $institute_cat =$request->institute_cat;
         $institute=$request->institute;
         $location=$request->location;
-        $date=$request->date;
+        $date=$request->input('date');
 
         $events = Event::with('institute')
             // search bar
@@ -72,9 +72,11 @@ class EventController extends Controller
 
                 // dropdown filter
                 'categories' => Institute::select('institute_category')
-                    ->distinct()->pluck('institute_category'),
+                    ->where('institute_category', '!=', '')
+                    ->distinct()->orderBy('institute_category', 'asc')
+                    ->pluck('institute_category'),
 
-                'institute' => Institute::select('institute_name')
+                'institutes' => Institute::select('institute_name')
                     ->distinct()->pluck('institute_name'),
 
                 'locations' => Event::select('event_location')
@@ -85,7 +87,83 @@ class EventController extends Controller
                     'search', 'category', 'organization', 'location', 'date'
                 ]),
             ]);
-        
-            
     }
+
+
+    // SHOW DETAIL EVENT
+    // get event
+    public function show(Event $event){
+        $event->load([
+            'institute.account',
+            'registrations.userProfile' //relawan terdaftar
+        ]);
+
+        // get user yang sedang login
+        $userId = auth()->id();
+        // get data regist user yg login
+        $userRegistration = $event->registrations()
+            ->where('user_id', $userId)
+            ->first();
+
+        return Inertia::render('Relawan/EventDetail',[
+            'event'=>[
+                'id' => $event->event_id,
+                'name' => $event->event_name,
+                'description' => $event->event_description,
+                'location' => $event->event_location,
+                'start' => $event->event_start,
+                'finish' => $event->event_finish,
+                'status' => $event->event_status,
+            ],
+            'institute'=>[
+                'name' => $event->institute->institute_name,
+                'category' => $event->institute->institute_category,
+
+                // get email dr table account
+                'email' => $event->institute->account->email ?? '-',
+                'phone' => $event->institute->institute_phone,
+                'pic' => $event->institute->institute_pic_name,
+                // 'bio' => $event->institute->bio ?? '-',
+            ],
+            'volunteers'=>$event->registrations->map(fn ($r)=>[
+                    'name'=>$r->userProfile->user_name ?? '-',
+                    'status'=>$r->regist_status,
+            ])->values(),
+
+            // regist Jadi Relawan
+            'isRegistered' => (bool) $userRegistration,
+            'isAccepted'   => $userRegistration?->regist_status === 'Accepted',
+            'isRejected'   => $userRegistration?->regist_status === 'Rejected',
+            'registStatus' => $userRegistration?->regist_status,
+
+        ]);
+    }
+
+
+     // show status daftar event user
+    // public function show(Event $event)
+    // {
+    //     // get user yang sedang login
+    //     $userId = auth()->id();
+
+    //     // get data regist user yg login
+    //     $userRegistration = $event->registrations()
+    //         ->where('user_id', $userId)
+    //         ->first();
+
+    //     return Inertia::render('Relawan/EventDetail', [
+    //         'event' => [
+    //             'id' => $event->event_id,
+    //             'name' => $event->event_name,
+    //         ],
+
+    //         'isRegistered' => (bool) $userRegistration,
+
+    //         'isAccepted'   => $userRegistration && $userRegistration->status === 'Accepted',
+    //         'isRejected'   => $userRegistration && $userRegistration->status === 'Rejected',
+
+    //         // send status regist
+    //         'registStatus'=> $userRegistration->status ?? null,
+    //     ]);
+    // }
 }

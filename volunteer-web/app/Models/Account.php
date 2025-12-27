@@ -34,7 +34,7 @@ class Account extends Authenticatable
         return $this->hasOne(Admin::class, 'account_id');
     }
 
-    public function userProfile(): HasOne{
+    public function users_profiles(): HasOne{
         return $this->hasOne(UserProfile::class, 'account_id');
     }
     public function institute(): HasOne{

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Event extends Model
 {
@@ -28,6 +29,6 @@ class Event extends Model
 
     // 1 event -> byk eventregist
     public function registrations(){
-        return $this->hasMany(EventResgist::class);
+        return $this->hasMany(EventRegist::class, 'event_id', 'event_id');
     }
 }

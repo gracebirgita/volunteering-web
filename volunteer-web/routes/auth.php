@@ -20,9 +20,11 @@ use App\Http\Controllers\Dashboard\InstituteDashboardController;
 use Inertia\Inertia;
 use App\Http\Controllers\VolunteerProfilController;
 use App\Http\Controllers\Auth\AdminAuthController;
-
+use App\Http\Controllers\VolunteerSettingsController;
 // relawan
 use App\Http\Controllers\Relawan\EventController;
+use App\Http\Controllers\Relawan\EventRegistController;
+
 
 // GUEST = belum login
 
@@ -73,13 +75,13 @@ Route::middleware('guest')->group(function(){
 
 // yg sdh ter auth
 Route::middleware(['auth'])->group(function(){
-        // ROLE ADMIN
+        // -- ROLE ADMIN
         Route::middleware('role:admin')->group(function(){
                 Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])
                         ->name('dashboard.admin');
         });
 
-        // ROLE USER
+        // -- ROLE USER / RELAWAN  / VOLUNTEER
         Route::middleware('role:user')->group(function(){
                 Route::get('/dashboard/user', [UserDashboardController::class, 'index'])
                         ->name('dashboard.user');
@@ -88,19 +90,39 @@ Route::middleware(['auth'])->group(function(){
                 Route::get('/profile', [VolunteerProfilController::class, 'show'])
                         ->name('volunteer.profile');
 
+                // Profile settings and update
+                Route::get('/settings', [VolunteerSettingsController::class, 'edit'])
+                        ->name('volunteer.settings.edit');
+
+                Route::post('/settings/profile', [VolunteerSettingsController::class, 'updateProfile'])
+                        ->name('volunteer.settings.profile');
+
+                Route::post('/settings/password', [VolunteerSettingsController::class, 'updatePassword'])
+                        ->name('volunteer.settings.password');
                 // Explore Event(relawan)
                 // show(read db) ke relawan
                 Route::get('/events', [EventController::class, 'index'])
                         ->name('events.index');
+                // event detail relawan
+                Route::get('/events/{event}', [EventController::class, 'show'])
+                        ->name('events.show');
+
+                // "Jadi Relawan" dr detail page
+                Route::post('/events/{event}/join', [EventRegistController::class, 'join'])
+                        ->name('events.join');
+                // cancel (bs jk status = pending)
+                Route::delete('/events/{event}/cancel', [EventRegistController::class, 'cancel']);
+
+
         });
         
-        // ROLE INSTITUTE
+        // -- ROLE INSTITUTE
         Route::middleware('role:institute')->group(function(){
                 Route::get('/dashboard/institute', [InstituteDashboardController::class, 'index'])
                         ->name('dashboard.institute');
         });
         
-        // LOGOUT
+        // -- LOGOUT
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
 });
