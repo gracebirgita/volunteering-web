@@ -29,8 +29,8 @@ use App\Http\Controllers\Relawan\EventRegistController;
 // GUEST = belum login
 
 Route::get('/', function () {
-    return Inertia::render('Landing');
-});
+    return Inertia::render('LandingPage');
+})->name('home');
 
 Route::middleware('guest')->group(function(){
         // LOGIN
