@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 // use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\UserProfile;
 
 
 // class Account extends Model
@@ -34,8 +35,8 @@ class Account extends Authenticatable
         return $this->hasOne(Admin::class, 'account_id');
     }
 
-    public function users_profiles(): HasOne{
-        return $this->hasOne(UserProfile::class, 'account_id');
+    public function userProfile(): HasOne{
+        return $this->hasOne(UserProfile::class, 'account_id', 'account_id');
     }
     public function institute(): HasOne{
         return $this->hasOne(Institute::class, 'account_id');
