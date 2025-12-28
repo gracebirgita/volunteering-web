@@ -21,15 +21,7 @@ export default function Dashboard() {
             
             {/* 2. Manajemen Konten */}
             <Link href={route('manage.content')}>[ICON] Manajemen Konten</Link>
-            <Button
-                onClick={handleLogout}
-                color="light"
-                pill
-                size="sm"
-                className="bg-white/10 text-white border-white/20 hover:bg-white hover:bg-red-700 backdrop-blur-sm"
-            >
-                Keluar
-            </Button>
+
 
         </AuthenticatedLayout>
         // <AuthenticatedLayout
