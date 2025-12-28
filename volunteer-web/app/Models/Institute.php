@@ -29,10 +29,6 @@ class Institute extends Model
     }
 
     // 1 institute -> many events
-    public function events(){
-        return $this->hasMany(Event::class);
-    }
-
     public function events(): HasMany{
         return $this->hasMany(Event::class, 'institute_id', 'institute_id');
     }
