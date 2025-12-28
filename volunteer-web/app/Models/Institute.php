@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class Institute extends Model
 {
@@ -30,6 +32,6 @@ class Institute extends Model
 
     // 1 institute -> many events
     public function events(): HasMany{
-        return $this->hasMany(Event::class, 'institute_id', 'institute_id');
+        return $this->hasMany(Event::class, 'event_id', 'event_id');
     }
 }
