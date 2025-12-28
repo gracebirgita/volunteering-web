@@ -6,7 +6,7 @@ export default function EventDetail({ event, institute, volunteers,
     isRegistered,
     isAccepted,
     isRejected,
-    registStatus,
+    isProfileComplete
  }) {
 
     const [tab, setTab] = useState('description')
@@ -247,14 +247,40 @@ export default function EventDetail({ event, institute, volunteers,
 
                     <div className="w-full">
                         {/* 1: BELUM DAFTAR */}
-                        {!isRegistered && event.status!=='finished' && (
+                        {!isRegistered && event.status !== 'finished' && (
+                            <>
+                                {isProfileComplete ? (
+                                    // Tampilkan tombol jika profil lengkap
+                                    <button
+                                        onClick={handleJoin}
+                                        className="w-full p-2 rounded bg-[#005D67] text-white"
+                                    >
+                                        Jadi Relawan
+                                    </button>
+                                ) : (
+                                    // Tampilkan peringatan jika profil belum lengkap
+                                    <div className="flex flex-col gap-2">
+                                        <p className="text-sm text-red-600 font-medium">
+                                            * Anda harus melengkapi profil (No. Telp & Domisili) untuk mendaftar.
+                                        </p>
+                                        <a 
+                                            href="/profile" // Sesuaikan dengan route profil Anda
+                                            className="w-full p-2 rounded bg-gray-200 text-gray-700 text-center font-medium"
+                                        >
+                                            Lengkapi Profil Sekarang
+                                        </a>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                        {/* {!isRegistered && event.status!=='finished' && (
                             <button
                                 onClick={handleJoin}
                                 className="w-full p-2 rounded bg-[#005D67] hover:bg-[#004a52] text-white font-medium transition-colors"
                             >
                                 Jadi Relawan
                             </button>
-                        )}
+                        )} */}
                         {/* Opsional: Tampilkan status jika event sudah selesai */}
                         {!isRegistered && event.status === 'finished' && (
                             <button
