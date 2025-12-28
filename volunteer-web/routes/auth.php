@@ -20,6 +20,7 @@ use App\Http\Controllers\Dashboard\InstituteDashboardController;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\VolunteerSettingsController;
+use App\Http\Controllers\InstituteProfileController;
 // relawan
 use App\Http\Controllers\Relawan\EventController;
 use App\Http\Controllers\Relawan\EventRegistController;
@@ -163,9 +164,7 @@ Route::middleware(['auth'])->group(function(){
                 })->name('institute.attendance');
 
                 // 6. profil organisasi
-                Route::get('/institute/profile', function () {
-                        return Inertia::render('Institute/Profile');
-                })->name('institute.profile');
+                Route::get('/institute/profile', [InstituteProfileController::class, 'show'])->name('institute.profile');
 
                 // 7. pengaturan
                 Route::get('/institute/settings', function () {
