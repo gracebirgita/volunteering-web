@@ -18,7 +18,7 @@ class VolunteerProfilController extends Controller
 
         return Inertia::render('Relawan/VolProfile', [
             'account' => $account,
-            'profile' => $account->userProfile, //object
+            'profile' => $account->users_profiles, //object
         ]);
     }
 

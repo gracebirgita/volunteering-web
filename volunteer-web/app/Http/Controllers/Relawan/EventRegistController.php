@@ -20,33 +20,33 @@ class EventRegistController extends Controller
     // status pending
     public function join(Request $request, Event $event){
         $user = auth()->user();
-
+        $profile = $user->users_profiles()->first(); 
+        // dd($user->users_profiles->user_id);
         // cek user terdaftar/blm
+        
+        // 2. Cek Kelengkapan Data (hrs ada data diri profil diisi)
+        if (!$profile || $profile->user_phone == '-' || $profile->user_domicile == '-'||
+            empty(trim($profile->user_phone)) || empty($profile->user_domicile)) {
+            return back()->with('error', 'Lengkapi data nomor telepon dan domisili profil Anda');
+        }
+        
+        // 3. cek menggunakan user_id PROFIL sdh terdaftar/blm
         $alreadyRegistered = EventRegist::where('event_id', $event->event_id)
-            ->where('user_id', $user->account_id)
+            ->where('user_id', $user->users_profiles->user_id) 
             ->exists();
-
         if($alreadyRegistered){
             return back()->with('error', 'Anda sudah terdaftar di event ini');
         }
-        // Pastikan user memiliki profil terlebih dahulu
-        if (!$user->users_profiles) {
-            return back()->with('error', 'Silakan lengkapi profil Anda terlebih dahulu.');
-        }
+
 
         // daftarkan relawan (blm registered)
         $regist = new EventRegist();
         $regist->event_id = $event->event_id;
-        $regist->user_id = $user->account_id; // Pastikan ini tidak null
+        $regist->user_id = $user->users_profiles->user_id; // pastikan tidak null
         $regist->regist_status = 'Pending';
         $regist->regist_date=now();
-        $regist->save();
         // dd($user->account_id);
-        // EventRegist::create([
-        //     'event_id'=>$event->event_id,
-        //     'user_id'=>$user->account_id,
-        //     'regist_status'=>'Pending',
-        // ]);
+        
 
         if($regist->save()) {
             return back()->with('success', 'Berhasil mendaftar sebagai relawan');
@@ -57,10 +57,10 @@ class EventRegistController extends Controller
 
     // CANCEL (jk status masih Pending)
     public function cancel(Event $event){
-        $userId = auth()->id();
+        $user = auth()->user();
 
         $registration = EventRegist::where('event_id', $event->event_id)
-            ->where('user_id', $userId)
+            ->where('user_id', $user->users_profiles->user_id)
             ->first();
 
         if (! $registration) {

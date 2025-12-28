@@ -133,11 +133,18 @@ class EventController extends Controller
         $remaining=$event->event_quota - $acceptedCount;
 
         // get user yang sedang login
-        $userId = auth()->id();
+        $user = auth()->user();
         // get data regist user yg login
         $userRegistration = $event->registrations()
-            ->where('user_id', $userId)
+            ->where('user_id', $user->users_profiles->user_id)
             ->first();
+        
+        $profile = $user->users_profiles;
+
+        // Cek apakah data kritikal sudah diisi (bukan tanda hubung)
+        $isProfileComplete = $profile && 
+                            $profile->user_phone !== '-' && 
+                            $profile->user_domicile !== '-';
 
 
         return Inertia::render('Relawan/EventDetail',[
@@ -172,6 +179,7 @@ class EventController extends Controller
 
             // regist Jadi Relawan
             'isRegistered' => (bool) $userRegistration,
+            'isProfileComplete' => $isProfileComplete,
             'isAccepted'   => $userRegistration?->regist_status === 'Accepted',
             'isRejected'   => $userRegistration?->regist_status === 'Rejected',
             'registStatus' => $userRegistration?->regist_status,
