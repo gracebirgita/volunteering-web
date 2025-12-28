@@ -57,7 +57,7 @@ export default function Register() {
             </div>
 
             {/* FORM SECTION RIGHT */}
-            <div className="flex-1 flex flex-col justify-center items-center px-8 py-5 mt-1">
+            <div className="flex-1 flex flex-col justify-center items-center px-8 py-5 ">
                 {/* Header Logo VolunteerHub */}
                 <div className="w-full max-w-[700px] mb-8 flex justify-start pl-1">
                     <img
@@ -90,7 +90,7 @@ export default function Register() {
                     </div>
 
                     {/* Role Switcher */}
-                    <div className="flex bg-gray-100 rounded-lg p-1 mb-8 max-w-[400px] mx-auto">
+                    <div className="flex bg-[#F6F6F6] rounded-lg p-1 mb-8 max-w-[400px] mx-auto">
                         <button
                             type="button"
                             onClick={() => {
@@ -135,7 +135,7 @@ export default function Register() {
                                     id={data.role==='user'? 'user_name': 'institute_name'}
                                     name={data.role==='user'? 'user_name': 'institute_name'}
                                     value={data.role==='user'? data.user_name: data.institute_name}
-                                    className="block w-full bg-gray-50 border-none rounded-xl py-3 pl-10 font-['inter']-1" // Tambahkan pl-10 di sini
+                                    className="block w-full bg-[#F6F6F6] border-none rounded-xl py-3 pl-10 font-['inter']-1 placeholder:text-[#A1A0A0]"
                                     placeholder="example12345"
                                     onChange={(e) => 
                                         data.role ==='user'
@@ -167,7 +167,7 @@ export default function Register() {
                                     id="email"
                                     type="email"
                                     value={data.email}
-                                    className="mt-1 block w-full bg-gray-50 border-none rounded-xl py-3 pl-11 font-['inter']-1"
+                                    className="mt-1 block w-full bg-[#F6F6F6] border-none rounded-xl py-3 pl-11 font-['inter']-1 placeholder:text-[#A1A0A0]"
                                     placeholder="example@gmail.com"
                                     onChange={(e) => setData('email', e.target.value)}
                                     required
@@ -193,7 +193,7 @@ export default function Register() {
                                     id="password"
                                     type={showPassword ? 'text' : 'password'} // Logika ubah tipe
                                     value={data.password}
-                                    className="mt-1 block w-full bg-gray-50 border-none rounded-xl py-3 pl-12 pr-12 font-['inter']-1"
+                                    className="mt-1 block w-full bg-[#F6F6F6] border-none rounded-xl py-3 pl-12 pr-12 font-['inter']-1 placeholder:text-[#A1A0A0]"
                                     placeholder="•••••••••••"
                                     onChange={(e) => setData('password', e.target.value)}
                                     required
@@ -240,7 +240,7 @@ export default function Register() {
                                     id="password_confirmation"
                                     type={showConfirmPassword ? 'text' : 'password'}
                                     value={data.password_confirmation}
-                                    className="mt-1 block w-full bg-gray-50 border-none rounded-xl py-3 pl-12 pr-12 font-['inter']-1"
+                                    className="mt-1 block w-full bg-[#F6F6F6] border-none rounded-xl py-3 pl-12 pr-12 font-['inter']-1 placeholder:text-[#A1A0A0]"
                                     placeholder="•••••••••••"
                                     onChange={(e) => setData('password_confirmation', e.target.value)}
                                     required
@@ -275,7 +275,7 @@ export default function Register() {
                         {/* REGISTER BUTTON */}
                         <div className="pt-2">
                             <PrimaryButton 
-                                className="w-full justify-center py-4 bg-[#005D67] 
+                                className="w-full justify-center py-4 bg-[#005d67] 
                                 hover:bg-[#004a52] 
                                 rounded-xl transition-all 
                                 font-['inter']-5 text-[16px] leading-[100%] 

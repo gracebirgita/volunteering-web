@@ -105,7 +105,7 @@ export default function Login({ status, canResetPassword }) {
                                     id="email"
                                     type="email"
                                     value={data.email}
-                                    className="mt-1 block w-full bg-gray-50 border-none rounded-xl py-3 pl-11 font-['inter']-1"
+                                    className="mt-1 block w-full bg-[#F6F6F6] border-none rounded-xl py-3 pl-11 font-['inter']-1 placeholder:text-gray-400"
                                     placeholder="example@gmail.com"
                                     onChange={(e) => setData('email', e.target.value)}
                                     required
@@ -129,9 +129,9 @@ export default function Login({ status, canResetPassword }) {
                                 {/* TextInput: sesuai show/hide */}
                                 <TextInput
                                     id="password"
-                                    type={showPassword ? 'text' : 'password'} // Logika ubah tipe
+                                    type={showPassword ? 'text' : 'password'} // Logika ubah tipe show/not
                                     value={data.password}
-                                    className="mt-1 block w-full bg-gray-50 border-none rounded-xl py-3 pl-12 pr-12 font-['inter']-1"
+                                    className="mt-1 block w-full bg-[#F6F6F6] border-none rounded-xl py-3 pl-12 pr-12 font-['inter']-1 placeholder:text-gray-400 placeholder:font-light"
                                     placeholder="•••••••••••"
                                     onChange={(e) => setData('password', e.target.value)}
                                     required
@@ -246,7 +246,6 @@ export default function Login({ status, canResetPassword }) {
                     backgroundPosition: 'center'
                 }}
             >
-                {/* Overlay Gradient tetap 180deg sesuai referensi gambar login Anda */}
                 <div 
                     className="absolute inset-0"
                     style={{
