@@ -16,7 +16,7 @@ export default function Profile({ account, profile }) {
 
                 <h3>Informasi Personal</h3>
                 <p><strong>Nama:</strong> {profile?.user_name}</p>
-                <p><strong>Email:</strong> {account.email}</p>
+                <p><strong>Email:</strong> {account?.email}</p>
                 <p><strong>Nomor Telepon/user_phone:</strong> {profile?.user_phone ?? '-'}</p>
                 <p><strong>Bio/user_interest:</strong> {profile?.user_interest ?? '-'}</p>
 

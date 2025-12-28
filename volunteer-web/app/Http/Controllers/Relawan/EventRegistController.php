@@ -29,6 +29,10 @@ class EventRegistController extends Controller
         if($alreadyRegistered){
             return back()->with('error', 'Anda sudah terdaftar di event ini');
         }
+        // Pastikan user memiliki profil terlebih dahulu
+        if (!$user->users_profiles) {
+            return back()->with('error', 'Silakan lengkapi profil Anda terlebih dahulu.');
+        }
 
         // daftarkan relawan (blm registered)
         $regist = new EventRegist();

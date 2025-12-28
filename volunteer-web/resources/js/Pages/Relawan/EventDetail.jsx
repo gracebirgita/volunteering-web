@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { Head, router, Link } from '@inertiajs/react'
+import { useState, useEffect } from 'react'
+import { Head, router, Link, usePage } from '@inertiajs/react'
 
+// export default FlashMessage;
 export default function EventDetail({ event, institute, volunteers,
     isRegistered,
     isAccepted,
@@ -26,11 +27,38 @@ export default function EventDetail({ event, institute, volunteers,
         }
     }
 
+     // 1. Ambil flash dari props melalui hook usePage
+    const { flash } = usePage().props;
 
+    // 2. State untuk kontrol alert
+    const [showFlash, setShowFlash] = useState(false);
+
+    // 3. Efek untuk otomatis munculkan alert jika ada flash message baru
+    useEffect(() => {
+        if (flash.success || flash.error) {
+            setShowFlash(true);
+        }
+    }, [flash]);
 
     return (
         <>
             <Head title={event.name} />
+            {/* Bagian Flash Message */}
+            <div className="fixed top-5 right-5 z-50">
+                {showFlash && flash.success && (
+                    <div className="bg-green-500 text-white p-4 rounded shadow-lg flex justify-between items-center mb-2">
+                        <span>{flash.success}</span>
+                        <button onClick={() => setShowFlash(false)} className="ml-4 font-bold">×</button>
+                    </div>
+                )}
+
+                {showFlash && flash.error && (
+                    <div className="bg-red-500 text-white p-4 rounded shadow-lg flex justify-between items-center">
+                        <span>{flash.error}</span>
+                        <button onClick={() => setShowFlash(false)} className="ml-4 font-bold">×</button>
+                    </div>
+                )}
+            </div>
 
             <h2 className="font-bold text-lg">{event.name}</h2>
             <div className="h-60 bg-gray-200 mb-2">
@@ -219,7 +247,7 @@ export default function EventDetail({ event, institute, volunteers,
 
                     <div className="w-full">
                         {/* 1: BELUM DAFTAR */}
-                        {!isRegistered && (
+                        {!isRegistered && event.status!=='finished' && (
                             <button
                                 onClick={handleJoin}
                                 className="w-full p-2 rounded bg-[#005D67] hover:bg-[#004a52] text-white font-medium transition-colors"
@@ -227,6 +255,16 @@ export default function EventDetail({ event, institute, volunteers,
                                 Jadi Relawan
                             </button>
                         )}
+                        {/* Opsional: Tampilkan status jika event sudah selesai */}
+                        {!isRegistered && event.status === 'finished' && (
+                            <button
+                                disabled
+                                className="w-full p-2 rounded bg-gray-300 text-gray-600 cursor-not-allowed font-medium"
+                            >
+                                Pendaftaran ditutup
+                            </button>
+                        )}
+
 
                         {/*2: PENDING (BISA BATAL) */}
                         {isRegistered && !isAccepted && !isRejected && (

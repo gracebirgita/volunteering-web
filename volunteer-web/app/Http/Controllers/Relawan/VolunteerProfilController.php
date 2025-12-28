@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Relawan;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
+use App\Http\Controllers\Controller;
+
 
 class VolunteerProfilController extends Controller
 {
@@ -13,7 +16,7 @@ class VolunteerProfilController extends Controller
         $account = auth()->user();
         // dd(auth()->user()->userProfile);
 
-        return Inertia::render('Profile/VolProfile', [
+        return Inertia::render('Relawan/VolProfile', [
             'account' => $account,
             'profile' => $account->userProfile, //object
         ]);
