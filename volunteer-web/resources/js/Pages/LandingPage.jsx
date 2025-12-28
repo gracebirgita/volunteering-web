@@ -185,7 +185,7 @@ export default function LandingPage({ auth }) {
                 <div className="absolute inset-0 bg-black/70 z-0"></div>
 
                 {/* Navbar  */}
-                <div className="relative z-50">
+                <div className="fixed top-0 left-0 w-full z-50">
                     <Navbar user={auth.user} />
                 </div>
 
@@ -214,7 +214,7 @@ export default function LandingPage({ auth }) {
                         ) : (
                             <Link
                                 href={route("login")}
-                                className="px-8 py-4 bg-green-600 text-white font-bold rounded-full hover:bg-green-700 transition shadow-lg text-lg inline-block"
+                                className="px-8 py-4 bg-[#33CCB5] text-black font-bold rounded-xl hover:bg-[#28A08D] transition shadow-lg text-lg inline-block"
                             >
                                 Ke Dashboard Saya
                             </Link>
