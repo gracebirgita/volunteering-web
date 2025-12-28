@@ -50,15 +50,17 @@ export default function EventDetail({ event, institute, volunteers,
                     year: 'numeric'
                 })}
 
+
+
             </div>
             <br />
             <br />
 
             <Link
-                href="/events"
+                href={route('events.index')}
                 className="flex items-center text-[#005D67] text-lg"
             >
-                Balik page image
+                Balik page events
             </Link>
             <br />
             <br />
@@ -172,7 +174,20 @@ export default function EventDetail({ event, institute, volunteers,
                         {institute.name}
                     </span>
 
+                    {/* INFO KUOTA RELAWAN */}
+                    <div className="my-3 p-2 border-y border-gray-100">
+                        <h3 className="font-bold text-sm">Kuota Relawan</h3>
+                        {event.is_full ? (
+                            <p className="text-red-600 font-bold text-sm italic">Penuh (Kuota Habis)</p>
+                        ) : (
+                            <p className="text-gray-700 text-sm">
+                                Tersisa <span className="font-bold text-[#005D67]">{event.quota_remaining}</span> dari {event.quota} slot
+                            </p>
+                        )}
+                    </div>
                     <br />
+
+
                     {/* LOKASI */}
                     <h3 className="font-bold">Lokasi</h3>
                     <p>{event.location}</p>

@@ -13,16 +13,7 @@ use App\Http\Controllers\Controller;
 
 class EventController extends Controller
 {
-    //  $table->id('event_id');
-    //         $table->foreignId('institute_id')->constrained('institutes', 'institute_id')->cascadeOnDelete(); //FK
-    //         $table->string('event_name', 100);
-    //         $table->text('event_description');
-    //         $table->date('event_start');
-    //         $table->date('event_finish');
-    //         $table->string('event_location', 255);
-    //         $table->string('event_status', 20);
-    //         $table->integer('event_quota')->default(0);
-    //         $table->timestamps();
+
     public function index(Request $request): Response{
         // dd($events->toArray());
         $search = $request->input('search');
@@ -31,9 +22,15 @@ class EventController extends Controller
         $institute_cat =$request->institute_cat;
         $institute=$request->institute;
         $location=$request->location;
+        $status=$request->status;
         $date=$request->input('date');
 
         $events = Event::with('institute')
+            // hitung relawan ACCEPTED
+            ->withCount(['registrations as accepted_count' => function($query){
+                $query->where('regist_status', 'Accepted');
+            }])
+
             // search bar
             ->when($search, function($query, $search){
                 $query->where('event_name', 'like', "%{$search}%")
@@ -52,6 +49,9 @@ class EventController extends Controller
                 );
             })
 
+            ->when($status, fn($q)=>
+                $q->where('event_status', $status)
+            )
             ->when($location, fn($q)=>
                 $q->where('event_location', $location)
             )
@@ -61,7 +61,35 @@ class EventController extends Controller
 
             // get order by event start
             ->orderBy('event_start')
-            ->get();
+            ->get()
+            ->map(function ($event) {
+                $quota = (int) $event->event_quota;
+                $accepted = (int) $event->accepted_count;
+                $remaining = $quota -$accepted;
+                
+                $isFull = ($quota > 0) && ($remaining <= 0);
+                
+                return [
+                    'event_id' => $event->event_id,
+                    'event_name' => $event->event_name,
+                    'event_location' => $event->event_location,
+                    'event_description' => $event->event_description,
+                    'event_start' => $event->event_start,
+                    'event_finish' => $event->event_finish,
+                    'event_quota' => $event->event_quota, 
+                    'event_status' => $event->event_status,
+
+                    // remaining quota
+                    'quota_remaining'=>$remaining,
+                    'is_full'=>$isFull, //tanda relawan event full capacity
+                    'display_quota'=> $isFull ? 'Full' : 'Slot relawan tersedia : '.$remaining,
+                    'institute' => [
+                        'institute_name' => $event->institute->institute_name,
+                        'institute_category' => $event->institute->institute_category,
+                    ],
+                    // utk show di card event
+                ];
+            });
         
         return Inertia::render('Relawan/ExploreEvent',[
                 'events'=>$events,
@@ -81,10 +109,13 @@ class EventController extends Controller
 
                 'locations' => Event::select('event_location')
                     ->distinct()->pluck('event_location'),
+                
+                'status'=>Event::select('event_status')
+                    ->distinct()->pluck('event_status'),
 
-                // search bar folter
+                // search bar filter
                 'filters' => $request->only([
-                    'search', 'category', 'organization', 'location', 'date'
+                    'search', 'category', 'organization', 'location', 'date', 'status'
                 ]),
             ]);
     }
@@ -97,6 +128,9 @@ class EventController extends Controller
             'institute.account',
             'registrations.userProfile' //relawan terdaftar
         ]);
+        // jml accepted 1 event
+        $acceptedCount = $event->registrations->where('regist_status', 'Accepted')->count();
+        $remaining=$event->event_quota - $acceptedCount;
 
         // get user yang sedang login
         $userId = auth()->id();
@@ -104,6 +138,7 @@ class EventController extends Controller
         $userRegistration = $event->registrations()
             ->where('user_id', $userId)
             ->first();
+
 
         return Inertia::render('Relawan/EventDetail',[
             'event'=>[
@@ -114,6 +149,11 @@ class EventController extends Controller
                 'start' => $event->event_start,
                 'finish' => $event->event_finish,
                 'status' => $event->event_status,
+                'quota'=>$event->event_quota,
+
+                // remaining relawan quota
+                'quota_remaining'=>$remaining,
+                'is_full'=> $remaining <=0,
             ],
             'institute'=>[
                 'name' => $event->institute->institute_name,
