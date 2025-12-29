@@ -36,7 +36,7 @@ const Institute = ({ auth }) => {
                         <div className="w-8 h-8 bg-[#005D67] rounded-full flex items-center justify-center text-white font-bold">
                             <img
                                 src="/assets/logo-color.png"
-                                alt="VH"
+                                alt="Logo"
                                 className="h-5 w-5 object-contain"
                             />
                         </div>

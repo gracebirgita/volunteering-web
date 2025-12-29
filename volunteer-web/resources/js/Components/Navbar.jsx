@@ -203,7 +203,7 @@ export default function MyNavbar({
                     </nav>
 
                     {/* Footer Sidebar */}
-                    <div className="p-4 border-gray-100 flex items-center gap-3 bg-white">
+                    <div className="p-4 border-t border-gray-100 flex items-center gap-3 bg-white shrink-0">
                         <img
                             src={
                                 user?.profile_photo_url ||
@@ -213,7 +213,9 @@ export default function MyNavbar({
                             className="w-8 h-8 rounded-full object-cover border border-gray-200"
                         />
                         <span className="text-sm font-semibold text-gray-700 truncate">
-                            {user?.name || "Institute"}
+                            {user?.institute?.institute_name ||
+                                user?.name ||
+                                "Institute"}
                         </span>
                     </div>
                 </aside>
@@ -249,22 +251,12 @@ export default function MyNavbar({
                             <span className="hidden sm:block font-semibold">
                                 {user.name}
                             </span>
-                            <Link href={route("dashboard.user")}>
-                                <Button
-                                    color="light"
-                                    pill
-                                    size="sm"
-                                    className="bg-white/10 text-white border-white/20 hover:bg-white hover:text-gray-900 backdrop-blur-sm"
-                                >
-                                    Dashboard
-                                </Button>
-                            </Link>
                             <Button
                                 onClick={handleLogout}
                                 color="light"
                                 pill
                                 size="sm"
-                                className="bg-white/10 text-white border-white/20 hover:bg-white hover:bg-red-700 backdrop-blur-sm"
+                                className="!bg-transparent rounded-lg !text-white !border !border-white hover:!bg-white hover:!text-gray-900 focus:ring-0 shadow-none"
                             >
                                 Keluar
                             </Button>
