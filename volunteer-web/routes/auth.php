@@ -21,6 +21,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\VolunteerSettingsController;
 use App\Http\Controllers\InstituteProfileController;
+use App\Http\Controllers\InstituteSettingsController;
 // relawan
 use App\Http\Controllers\Relawan\EventController;
 use App\Http\Controllers\Relawan\EventRegistController;
@@ -167,10 +168,18 @@ Route::middleware(['auth'])->group(function(){
                 Route::get('/institute/profile', [InstituteProfileController::class, 'show'])->name('institute.profile');
 
                 // 7. pengaturan
-                Route::get('/institute/settings', function () {
-                        return Inertia::render('Institute/Settings');
-                })->name('institute.settings');
-                
+                Route::get('/institute/settings', [InstituteSettingsController::class, 'edit'])
+                ->name('institute.settings');
+
+                Route::post('/institute/settings/profile', [InstituteSettingsController::class, 'updateProfile'])
+                ->name('institute.settings.profile');
+
+                Route::post('/institute/settings/email', [InstituteSettingsController::class, 'updateEmail'])
+                ->name('institute.settings.email');
+
+                Route::post('/institute/settings/password', [InstituteSettingsController::class, 'updatePassword'])
+                ->name('institute.settings.password');
+                                
         });
         
         // -- LOGOUT / KELUAR

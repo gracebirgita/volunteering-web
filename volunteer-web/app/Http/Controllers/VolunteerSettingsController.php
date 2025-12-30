@@ -22,9 +22,12 @@ class VolunteerSettingsController extends Controller
         return view('volunteer.settings', compact('account', 'profile'));
     }
 
+    
+
     public function updateProfile(Request $request)
     {
         $account = auth()->user();
+        if (!$account) abort(403);
 
         $data = $request->validate([
             'user_name'     => 'required|string|max:100',
@@ -35,20 +38,26 @@ class VolunteerSettingsController extends Controller
             'user_interest' => 'nullable|string|max:255',
         ]);
 
-        $data['account_id'] = $account->account_id;
+        $data['account_id'] = $account->account_id ?? $account->id;
 
-        $profile = $account->users_profiles()->latest('user_id')->first();
-        if ($profile) $profile->update($data);
-        else UserProfile::create($data);
+        $profile = $account->users_profiles()
+            ->latest('user_id')
+            ->first();
 
-        // sync email akun
-        if (!empty($data['user_email'])) {
+        if ($profile) {
+            $profile->update($data);
+        } else {
+            UserProfile::create($data);
+        }
+
+        if (!empty($data['user_email']) && $data['user_email'] !== $account->email) {
             $account->email = $data['user_email'];
             $account->save();
         }
 
         return back()->with('status_profile', 'Profile updated.');
     }
+
 
     public function updatePassword(Request $request)
     {

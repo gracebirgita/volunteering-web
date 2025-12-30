@@ -21,7 +21,9 @@ class Institute extends Model
         'institute_phone',
         'institute_pic_name',
         'institute_address',
-        'institute_category'
+        'institute_category',
+        'institute_desc',
+        'postal_code'
     ];
 
     // RELATIONS

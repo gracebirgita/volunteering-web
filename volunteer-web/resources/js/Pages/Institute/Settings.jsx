@@ -62,24 +62,28 @@ export default function Settings({ auth }) {
 
     const handleSubmitProfile = (e) => {
         e.preventDefault();
-        console.log("Profile Data saved:", data);
-        alert("Profil disimpan (Mock)");
+        post(route("institute.settings.profile"), {
+            forceFormData: true,
+        });
     };
 
     const handleSubmitEmail = (e) => {
         e.preventDefault();
-        console.log("Email change requested:", emailForm.data);
-        alert("Permintaan ganti email dikirim (Mock)");
-        setIsEditingEmail(false);
+        emailForm.post(route("institute.settings.email"), {
+            onSuccess: () => setIsEditingEmail(false),
+        });
     };
 
     const handleSubmitPassword = (e) => {
         e.preventDefault();
-        console.log("Password change requested:", passwordForm.data);
-        alert("Password berhasil diubah (Mock)");
-        setIsEditingPassword(false);
-        passwordForm.reset();
+        passwordForm.post(route("institute.settings.password"), {
+            onSuccess: () => {
+                setIsEditingPassword(false);
+                passwordForm.reset();
+            },
+        });
     };
+
 
     const inputClasses =
         "w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67] placeholder-gray-400";
