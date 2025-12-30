@@ -67,11 +67,11 @@ class InstituteSettingsController extends Controller
         ]);
 
         // upload photo (optional)
-        if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('institutes', 'public');
-            $institute->logo = $path;
-            $institute->save();
-        }
+        // if ($request->hasFile('photo')) {
+        //     $path = $request->file('photo')->store('institutes', 'public');
+        //     $institute->logo = $path;
+        //     $institute->save();
+        // }
 
         return back()->with('success', 'Profil berhasil diperbarui');
     }
