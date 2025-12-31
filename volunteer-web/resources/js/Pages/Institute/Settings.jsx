@@ -64,6 +64,14 @@ export default function Settings({ auth }) {
         e.preventDefault();
         post(route("institute.settings.profile"), {
             forceFormData: true,
+
+            onSuccess: () => {
+                alert("Data berhasil disimpan!");
+            },
+            onError: (errors) => {
+                console.error(errors);
+                alert("Gagal menyimpan perubahan!");
+            },
         });
     };
 
@@ -83,7 +91,6 @@ export default function Settings({ auth }) {
             },
         });
     };
-
 
     const inputClasses =
         "w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67] placeholder-gray-400";

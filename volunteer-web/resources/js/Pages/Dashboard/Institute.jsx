@@ -3,7 +3,7 @@ import MyNavbar from "@/Components/Navbar";
 import { Head, Link } from "@inertiajs/react";
 import {
     SquarePlus,
-    CalendarDays,
+    SlidersHorizontal,
     Users,
     MapPin,
     FileCheck,
@@ -12,10 +12,33 @@ import {
     ArrowRight,
     CircleEllipsis,
     Menu,
+    Calendar,
 } from "lucide-react";
 
-const Institute = ({ auth }) => {
+const Institute = ({ auth, institute, stats, ongoingList, upcomingList }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    const formatDate = (dateString) => {
+        if (!dateString) return "-";
+        return new Date(dateString).toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        });
+    };
+
+    // Data stats supaya ga error
+    const safeStats = stats || {
+        totalEvents: 0,
+        ongoingEvents: 0,
+        totalVolunteers: 0,
+        pendingApprovals: 0,
+    };
+
+    const displayName =
+        institute?.institute_name || auth?.user?.name || "Institute";
+    const displayPhoto =
+        auth?.user?.profile_photo_url || "/assets/Dashboard/Institute/who.png";
 
     return (
         <div className="flex min-h-screen bg-gray-50 font-sans text-gray-800 relative">
@@ -57,23 +80,19 @@ const Institute = ({ auth }) => {
                     <div className="flex flex-col mb-8">
                         <div className="hidden md:flex justify-end items-center gap-4 mb-6">
                             <img
-                                src={
-                                    auth?.user?.profile_photo_url ||
-                                    "/assets/Dashboard/Institute/who.png"
-                                }
+                                src={displayPhoto}
                                 alt="Institute Logo"
                                 className="w-16 h-16 rounded-full object-cover border border-gray-200"
                             />
                             <span className="text-lg font-semibold text-black">
-                                {auth?.user?.name || "Institute"}
+                                {displayName}
                             </span>
                         </div>
 
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
                             <div>
                                 <h1 className="text-xl md:text-2xl font-bold text-gray-900">
-                                    Selamat Datang Kembali,{" "}
-                                    {auth?.user?.name || "Institute"}
+                                    Selamat Datang Kembali, {displayName}
                                 </h1>
                                 <p className="text-sm md:text-base text-black mt-1">
                                     Kelola kegiatan, pantau relawan, dan perluas
@@ -86,14 +105,22 @@ const Institute = ({ auth }) => {
                                     href={route("institute.create")}
                                     className="flex-1 md:flex-none justify-center flex items-center gap-2 bg-[#005D67] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition"
                                 >
-                                    <SquarePlus size={16} /> <span className="hidden sm:inline">Create</span> Event
+                                    <SquarePlus size={16} />{" "}
+                                    <span className="hidden sm:inline">
+                                        Buat
+                                    </span>{" "}
+                                    Event
                                 </Link>
 
                                 <Link
                                     href={route("institute.organize")}
                                     className="flex-1 md:flex-none justify-center flex items-center gap-2 bg-[#C2F0E9] text-[#005D67] px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-100 transition border border-teal-200"
                                 >
-                                    <CalendarDays size={16} /> <span className="hidden sm:inline">Lihat</span> Event
+                                    <SlidersHorizontal size={16} />{" "}
+                                    <span className="hidden sm:inline">
+                                        Lihat
+                                    </span>{" "}
+                                    Event
                                 </Link>
                             </div>
                         </div>
@@ -103,22 +130,22 @@ const Institute = ({ auth }) => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
                         <StatCard
                             title="Lihat Semua Event"
-                            value="38"
+                            value={safeStats.totalEvents}
                             sub="Jumlah Event Yang Dibuat Organisasi Anda"
                         />
                         <StatCard
                             title="Lihat Event Aktif"
-                            value="2"
+                            value={safeStats.ongoingEvents}
                             sub="Event Aktif yang Anda pernah buat"
                         />
                         <StatCard
                             title="Atur Relawan"
-                            value="612"
+                            value={safeStats.totalVolunteers}
                             sub="Jumlah Relawan Terlibat dengan Organisasi Anda"
                         />
                         <StatCard
                             title="Atur Relawan"
-                            value="23"
+                            value={safeStats.pendingApprovals}
                             sub="Pendaftar Menunggu Persetujuan"
                         />
                     </div>
@@ -141,42 +168,38 @@ const Institute = ({ auth }) => {
                                 </div>
                             </div>
 
-                            {/* Responsive Event Cards Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                                <EventCard
-                                    title="Aksi Bersih Pantai Balekambang"
-                                    desc="Bergabung untuk membersihkan sampah plastik dan menjaga ekosistem."
-                                    date="15 Desember 2025"
-                                    location="Pantai Balekambang Dusun Sumber..."
-                                    slot="100 Slot"
-                                    stats={{
-                                        registered: 128,
-                                        accepted: 80,
-                                        pending: 48,
-                                    }}
-                                />
-                                <EventCard
-                                    title="Aksi Amal Panti Werdha"
-                                    desc="Bergabung untuk membantu yang membutuhkan."
-                                    date="12 Januari 2026"
-                                    location="Panti Asuhan Werdha, Jl.Sudirman..."
-                                    slot="50 Slot"
-                                    stats={{
-                                        registered: 70,
-                                        accepted: 40,
-                                        pending: 30,
-                                    }}
-                                />
+                                {ongoingList && ongoingList.length > 0 ? (
+                                    ongoingList.map((event) => (
+                                        <EventCard
+                                            key={event.event_id}
+                                            title={event.event_name}
+                                            desc={event.event_description}
+                                            date={formatDate(event.event_start)}
+                                            location={event.event_location}
+                                            slot={`${event.event_quota} Slot`}
+                                            stats={{
+                                                registered: 0,
+                                                accepted: 0,
+                                                pending: 0,
+                                            }}
+                                        />
+                                    ))
+                                ) : (
+                                    <div className="col-span-2 text-center py-8 text-gray-400 border border-dashed border-gray-200 rounded-xl">
+                                        Tidak ada event aktif saat ini.
+                                    </div>
+                                )}
                             </div>
                         </div>
 
-                        {/* Applicants */}
+                        {/* Applicants (Masih Static Mockup) */}
                         <div className="col-span-1 lg:col-span-4 bg-white p-6 rounded-xl border border-gray-100 shadow-sm h-fit">
                             <h3 className="text-lg font-bold text-gray-900 mb-1">
                                 Applicants Today
                             </h3>
                             <p className="text-sm text-gray-400 mb-6">
-                                5 pendaftar hari ini
+                                {safeStats.pendingApprovals} pendaftar hari ini
                             </p>
 
                             <div className="space-y-6">
@@ -247,18 +270,21 @@ const EventCard = ({ title, desc, date, location, slot, stats }) => (
     <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col h-full">
         <div className="flex gap-2 mb-3">
             <span className="bg-teal-50 text-teal-700 text-[10px] font-bold px-2 py-1 rounded">
-                Lingkungan
+                Lingkungan{" "}
+                {/* masih belum dikirim dari BE jd masih data sementara(?) */}
             </span>
             <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded">
                 Active
             </span>
         </div>
-        <h3 className="font-bold text-gray-900 mb-2 text-sm md:text-base">{title}</h3>
+        <h3 className="font-bold text-gray-900 mb-2 text-sm md:text-base">
+            {title}
+        </h3>
         <p className="text-xs text-black mb-4 line-clamp-2">{desc}</p>
 
         <div className="space-y-2 mb-4 text-black">
             <div className="flex items-center gap-2 text-xs">
-                <CalendarDays size={14} className="text-[#005D67]" /> {date}
+                <Calendar size={14} className="text-[#005D67]" /> {date}
             </div>
             <div className="flex items-center gap-2 text-xs">
                 <MapPin size={14} className="text-[#005D67]" /> {location}
@@ -288,7 +314,10 @@ const EventCard = ({ title, desc, date, location, slot, stats }) => (
             </div>
         </div>
 
-        <Link href={route('institute.organize')} className="mt-auto block text-center w-full bg-[#005D67] text-white py-2 rounded-lg text-xs font-bold hover:bg-teal-700 transition">
+        <Link
+            href={route("institute.organize")}
+            className="mt-auto block text-center w-full bg-[#005D67] text-white py-2 rounded-lg text-xs font-bold hover:bg-teal-700 transition"
+        >
             Manage Event
         </Link>
     </div>

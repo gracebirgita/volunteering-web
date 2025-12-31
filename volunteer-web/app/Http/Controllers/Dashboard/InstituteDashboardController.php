@@ -50,7 +50,9 @@ class InstituteDashboardController extends Controller
                     'event_start',
                     'event_finish',
                     'event_location',
-                    'event_status'
+                    'event_status',
+                    'event_description',
+                    'event_quota'
                 ]);
 
             $upcomingList = (clone $eventsQuery)
@@ -63,7 +65,9 @@ class InstituteDashboardController extends Controller
                     'event_start',
                     'event_finish',
                     'event_location',
-                    'event_status'
+                    'event_status',
+                    'event_description',
+                    'event_quota'
                 ]);
         }else{
             $totalEvents = 0;
