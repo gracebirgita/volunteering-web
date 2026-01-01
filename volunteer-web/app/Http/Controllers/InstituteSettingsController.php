@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Institute;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class InstituteSettingsController extends Controller
@@ -30,6 +31,7 @@ class InstituteSettingsController extends Controller
                         'institute_phone'   => $institute->institute_phone,
                         'postal_code'       => $institute->postal_code,
                         'bio'               => $institute->institute_desc,
+                        'institute_logo'    => $institute->institute_logo,
                     ],
                 ],
             ],
@@ -47,7 +49,7 @@ class InstituteSettingsController extends Controller
             'address'     => 'nullable|string|max:255',
             'postal_code' => 'nullable|string|max:20',
             'bio'         => 'nullable|string',
-            'photo'       => 'nullable|image|max:2048',
+            'photo'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $institute = $account->institute;
@@ -66,17 +68,22 @@ class InstituteSettingsController extends Controller
             'institute_desc'    => $data['bio'] ?? null,
         ]);
 
-        // upload photo (optional)
-        // if ($request->hasFile('photo')) {
-        //     $path = $request->file('photo')->store('institutes', 'public');
-        //     $institute->logo = $path;
-        //     $institute->save();
-        // }
+        // change logo
+        if ($request->hasFile('photo')) {
+            if ($institute->institute_logo) {
+                Storage::disk('public')->delete($institute->institute_logo);
+            }
+
+            $path = $request->file('photo')->store('institutes', 'public');
+
+            $institute->update([
+                'institute_logo' => $path,
+            ]);
+        }
 
         return back()->with('success', 'Profil berhasil diperbarui');
     }
 
-    // change email
     public function updateEmail(Request $request)
     {
         $account = auth()->user();
@@ -100,7 +107,6 @@ class InstituteSettingsController extends Controller
         return back()->with('success', 'Email berhasil diubah');
     }
 
-    // change password
     public function updatePassword(Request $request)
     {
         $account = auth()->user();

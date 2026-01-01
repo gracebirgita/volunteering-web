@@ -147,15 +147,16 @@ export default function Settings({ auth }) {
                                 <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
                                     <div className="w-24 h-24 rounded-full border border-gray-200 p-1 bg-white">
                                         <img
+                                            
                                             src={
                                                 data.photo
-                                                    ? URL.createObjectURL(
-                                                          data.photo
-                                                      )
-                                                    : user.profile_photo_url ||
-                                                      "/assets/Dashboard/Institute/who.png"
+                                                    ? URL.createObjectURL(data.photo)
+                                                    : institute.institute_logo
+                                                    ? `/storage/${institute.institute_logo}`
+                                                    : "/assets/Dashboard/Institute/who.png"
                                             }
                                             alt="Profile"
+                            
                                             className="w-full h-full object-contain rounded-full"
                                         />
                                     </div>

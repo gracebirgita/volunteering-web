@@ -29,7 +29,7 @@ class InstituteProfileController extends Controller
                 'description'    => $institute->institute_desc,
                 'location'       => $institute->institute_address,
                 'postal_code'    => $institute->postal_code,
-                'logo'           => $institute->logo,
+                'logo'           => $institute->institute_logo,
                 'cover_image'    => $institute->cover_image,
             ],
         ]);

@@ -23,7 +23,8 @@ class Institute extends Model
         'institute_address',
         'institute_category',
         'institute_desc',
-        'postal_code'
+        'postal_code',
+        'institute_logo'
     ];
 
     // RELATIONS
