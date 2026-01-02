@@ -44,7 +44,7 @@ export default function Settings({ auth }) {
     }
     const institute = user.institute || {};
 
-    // --- FORMS (TIDAK DIUBAH LOGIKANYA) ---
+    // Forms
     const { data, setData, post, processing, errors } = useForm({
         name: institute.institute_name || user.name || "",
         address: institute.institute_address || "",
