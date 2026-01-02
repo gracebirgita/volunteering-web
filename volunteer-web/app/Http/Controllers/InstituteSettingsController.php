@@ -21,10 +21,10 @@ class InstituteSettingsController extends Controller
         return inertia('Institute/Settings', [
             'auth' => [
                 'user' => [
-                    'id' => $account->id,
+                    'id' => $account->account_id,
                     'name' => $institute->institute_name,
                     'email' => $account->email,
-                    'email_verified_at' => $account->email_verified_at,
+                   // 'email_verified_at' => $account->email_verified_at,
                     'institute' => [
                         'institute_name'    => $institute->institute_name,
                         'institute_address' => $institute->institute_address,
