@@ -16,7 +16,7 @@ return new class extends Migration
             $table->time('event_end_time')->after('event_start_time');
             $table->string('address')->after('event_location');
 
-            $table->integer('quota')->after('address');
+            //$table->integer('quota')->after('address');
 
             $table->date('registration_deadline')->after('quota');
 
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('contact_person', 50)->after('benefit_jam_volunt');
             $table->string('group_link')->nullable()->after('contact_person');
 
-            $table->enum('status', ['active', 'closed'])->default('active');
+            //$table->enum('status', ['active', 'closed'])->default('active');
         });
     }
 
