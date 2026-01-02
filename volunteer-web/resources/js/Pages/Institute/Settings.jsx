@@ -12,23 +12,20 @@ import {
     Save,
     Check,
     Eye,
-    EyeOff, // Import icon mata
+    EyeOff,
 } from "lucide-react";
 
 export default function Settings({ auth }) {
     const [activeTab, setActiveTab] = useState("account");
 
-    // State untuk kontrol Modal (Popup)
     const [isEditingEmail, setIsEditingEmail] = useState(false);
     const [isEditingPassword, setIsEditingPassword] = useState(false);
 
-    // State untuk toggle lihat password (mata)
-    const [showPasswordEmail, setShowPasswordEmail] = useState(false); // Untuk konfirmasi di ubah email
+    const [showPasswordEmail, setShowPasswordEmail] = useState(false);
     const [showCurrentPass, setShowCurrentPass] = useState(false);
     const [showNewPass, setShowNewPass] = useState(false);
     const [showConfirmPass, setShowConfirmPass] = useState(false);
 
-    // State popup sukses profile
     const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     const fileInputRef = useRef(null);
@@ -68,7 +65,7 @@ export default function Settings({ auth }) {
         password_confirmation: "",
     });
 
-    // --- HANDLERS ---
+    // Handlers
     const handleFileChange = (e) => {
         setData("photo", e.target.files[0]);
     };
@@ -116,7 +113,6 @@ export default function Settings({ auth }) {
         <InstituteLayout user={user} title="Pengaturan">
             <Head title="Pengaturan - Institute" />
 
-            {/* ================= MODAL SUCCESS PROFILE ================= */}
             {showSuccessModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
                     <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm flex flex-col items-center text-center">
@@ -143,7 +139,6 @@ export default function Settings({ auth }) {
                 </div>
             )}
 
-            {/* ================= MODAL UBAH EMAIL ================= */}
             {isEditingEmail && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in p-4">
                     <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
@@ -156,7 +151,7 @@ export default function Settings({ auth }) {
                                 onSubmit={handleSubmitEmail}
                                 className="space-y-4"
                             >
-                                {/* Email Lama (Display Only) */}
+                                {/* Email Lama */}
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-1">
                                         Email Lama:
@@ -193,7 +188,7 @@ export default function Settings({ auth }) {
                                     )}
                                 </div>
 
-                                {/* Konfirmasi Password (Required by Backend Logic) */}
+                                {/* Password */}
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-1">
                                         Konfirmasi Password:
@@ -260,7 +255,7 @@ export default function Settings({ auth }) {
                 </div>
             )}
 
-            {/* ================= MODAL UBAH PASSWORD ================= */}
+            {/* Ganti Password */}
             {isEditingPassword && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in p-4">
                     <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
@@ -367,7 +362,7 @@ export default function Settings({ auth }) {
                                     )}
                                 </div>
 
-                                {/* Konfirmasi Password Baru */}
+                                {/* Konfirmasi Password */}
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-1">
                                         Konfirmasi Password:
@@ -614,7 +609,6 @@ export default function Settings({ auth }) {
                                     Keamanan Akun
                                 </h2>
                                 <div className="space-y-8">
-                                    {/* LIST VIEW EMAIL */}
                                     <div className="pb-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                         <div>
                                             <label className="block text-sm font-bold text-black mb-1">
@@ -654,7 +648,6 @@ export default function Settings({ auth }) {
                                         </div>
                                     </div>
 
-                                    {/* LIST VIEW PASSWORD */}
                                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                         <div>
                                             <label className="block text-sm font-bold text-black mb-1">
