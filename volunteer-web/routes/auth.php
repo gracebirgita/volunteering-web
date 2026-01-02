@@ -22,6 +22,7 @@ use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\VolunteerSettingsController;
 use App\Http\Controllers\InstituteProfileController;
 use App\Http\Controllers\InstituteSettingsController;
+use App\Http\Controllers\InstituteEventController;
 // relawan
 use App\Http\Controllers\Relawan\EventController;
 use App\Http\Controllers\Relawan\EventRegistController;
@@ -146,9 +147,15 @@ Route::middleware(['auth'])->group(function(){
                         ->name('dashboard.institute');
                 // 2. create event
                 Route::get('/institute/create-event', function () {
-                        return Inertia::render('Institute/CreateEvent');
+                return Inertia::render('Institute/CreateEvent');
                 })->name('institute.create');
 
+                Route::post('/institute/events', [InstituteEventController::class, 'store'])
+                ->name('institute.events.store');
+
+                Route::get('/institute/events', function () {
+                return Inertia::render('Institute/EventIndex');
+                })->name('institute.events.index');
                 // 3. atur event 
                 Route::get('/institute/organize-event', function () {
                         return Inertia::render('Institute/OrganizeEvent');

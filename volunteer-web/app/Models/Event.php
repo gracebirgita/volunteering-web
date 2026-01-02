@@ -14,13 +14,39 @@ class Event extends Model
 
     protected $fillable=[
         'institute_id',
-        'category_id',
-        'title',
-        'description',
-        'location',
-        'start_date',
-        'end_date',
+        'category',
+
+        'event_name',
+        'event_description',
+        'event_location',
+        'address',
+
+        'event_start',
+        'event_finish',
+        'event_start_time',
+        'event_end_time',
+        'registration_deadline',
+
+        'quota',
+        'thumbnail',
+
+        'benefit_consumption',
+        'benefit_certificate',
+        'benefit_jam_volunt',
+        'other_benefit',
+
+        'divisions',
+        'contact_person',
+        'group_link',
+        'event_status',
         // 'thumbnail', //image 
+    ];
+
+    protected $casts = [
+        'divisions' => 'array',
+        'benefit_consumption' => 'boolean',
+        'benefit_certificate' => 'boolean',
+        'benefit_other' => 'boolean',
     ];
 
     // RELATIONS
@@ -31,5 +57,9 @@ class Event extends Model
     // 1 event -> byk eventregist
     public function registrations(){
         return $this->hasMany(EventRegist::class, 'event_id', 'event_id');
+    }
+
+    public function category(){
+        return $this->belongsTo(EventCategory::class, 'category_id', 'category_id');
     }
 }
