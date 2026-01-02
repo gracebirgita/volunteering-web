@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('thumbnail')->nullable()->after('category');
             $table->time('event_start_time')->after('thumbnail');
             $table->time('event_end_time')->after('event_start_time');
-            $table->string('address')->after('location');
+            $table->string('address')->after('event_location');
 
             $table->integer('quota')->after('address');
 
