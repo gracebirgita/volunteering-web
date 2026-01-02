@@ -18,7 +18,7 @@ return new class extends Migration
 
             //$table->integer('quota')->after('address');
 
-            $table->date('registration_deadline')->after('quota');
+            $table->date('registration_deadline')->after('address');
 
             $table->boolean('benefit_consumption')->default(false);
             $table->boolean('benefit_certificate')->default(false);
@@ -42,7 +42,7 @@ return new class extends Migration
                 'event_start_time',
                 'event_end_time',
                 'address',
-                'quota',
+                //'quota',
                 'registration_deadline',
                 'benefit_consumption',
                 'benefit_certificate',
