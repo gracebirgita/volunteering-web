@@ -27,7 +27,7 @@ class Event extends Model
         'event_end_time',
         'registration_deadline',
 
-        'quota',
+        'event_quota',
         'thumbnail',
 
         'benefit_consumption',
