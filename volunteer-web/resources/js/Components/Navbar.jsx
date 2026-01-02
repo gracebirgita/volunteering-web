@@ -5,7 +5,6 @@ import {
     SquarePlus,
     HandHeart,
     UserRound,
-    ClipboardList,
     Settings,
     LogOut,
     X,
@@ -394,17 +393,6 @@ export default function MyNavbar({
                                         Atur Event
                                     </Link>
                                 </li>
-                                <li>
-                                    <Link
-                                        href={route("institute.appvol")}
-                                        className={getSidebarLinkClass(
-                                            "institute.appvol"
-                                        )}
-                                    >
-                                        <HandHeart size={20} />
-                                        Aplikasi Volunteer
-                                    </Link>
-                                </li>
                             </ul>
                         </div>
 
@@ -416,13 +404,13 @@ export default function MyNavbar({
                             <ul className="space-y-1">
                                 <li>
                                     <Link
-                                        href={route("institute.attendance")}
+                                        href={route("institute.appvol")}
                                         className={getSidebarLinkClass(
-                                            "institute.attendance"
+                                            "institute.appvol"
                                         )}
                                     >
-                                        <ClipboardList size={20} />
-                                        Atur Absensi
+                                        <HandHeart size={20} />
+                                        Aplikasi Volunteer
                                     </Link>
                                 </li>
                             </ul>

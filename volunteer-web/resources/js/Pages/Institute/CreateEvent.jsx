@@ -14,7 +14,6 @@ import {
     Utensils,
     Award,
     Clock,
-    Calendar,
 } from "lucide-react";
 
 export default function CreateEvent({ auth }) {
