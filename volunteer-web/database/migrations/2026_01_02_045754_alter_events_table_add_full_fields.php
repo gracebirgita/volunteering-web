@@ -9,9 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('events', function (Blueprint $table) {
-
             
-            $table->string('category', 20) ->after('description');
+            $table->string('category', 20) ->after('event_description');
             $table->string('thumbnail')->nullable()->after('category');
             $table->time('event_start_time')->after('thumbnail');
             $table->time('event_end_time')->after('event_start_time');
