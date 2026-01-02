@@ -210,3 +210,16 @@ Route::middleware(['auth'])->group(function(){
 //     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
 //         ->name('logout');
 // });
+
+Route::get('/_debug/dashboard/user', function () {
+    return Inertia::render('Dashboard/User', [
+        'auth' => [
+            'user' => [
+                'id' => 999,
+                'name' => 'DEBUG USER',
+                'email' => 'debug@local.test',
+                'role' => 'user',
+            ],
+        ],
+    ]);
+});

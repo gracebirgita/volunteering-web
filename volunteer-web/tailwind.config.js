@@ -16,6 +16,8 @@ export default {
         extend: {
             fontFamily: {
                 sans: ["Roboto", ...defaultTheme.fontFamily.sans],
+                hand:["Dancing Script", 'cursive'],
+                inter:['Inter', 'cursive'],
             },
         },
     },
