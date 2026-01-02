@@ -35,10 +35,9 @@ return new class extends Migration
     {
         Schema::table('events', function (Blueprint $table) {
 
-            $table->dropForeign(['category_id']);
-            $table->dropColumn('category_id');
 
             $table->dropColumn([
+                'category',
                 'thumbnail',
                 'event_start_time',
                 'event_end_time',
