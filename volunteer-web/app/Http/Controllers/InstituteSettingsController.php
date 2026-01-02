@@ -90,7 +90,7 @@ class InstituteSettingsController extends Controller
         if (!$account || !$account->isInstitute()) abort(403);
 
         $request->validate([
-            'email'    => 'required|email|unique:accounts,email,' . $account->id,
+            'email'    => 'required|email|unique:accounts,email,' . $account->account_id,
             'password' => 'required',
         ]);
 
