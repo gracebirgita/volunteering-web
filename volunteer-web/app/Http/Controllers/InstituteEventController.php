@@ -40,6 +40,9 @@ class InstituteEventController extends Controller
             'benefit_jam_volunt'      => 'boolean',
             'other_benefit'           => 'nullable|string|max:100',
 
+            // 'divisions'     => 'required|array', // Validasi array divisions
+            // 'divisions.*.name'   => 'required|string',
+            // 'divisions.*.amount' => 'required|integer|min:1',
             'contact_person'          => 'nullable|string|max:50',
             'group_link'              => 'nullable|string',
             'event_status'            => 'required|in:active,closed',
@@ -112,6 +115,9 @@ class InstituteEventController extends Controller
             'benefit_jam_volunt'    => 'boolean',
             'other_benefit'         => 'nullable|string|max:100',
             'contact_person'        => 'nullable|string|max:50',
+            // 'divisions'     => 'required|array', // Validasi array divisions
+            // 'divisions.*.name'   => 'required|string',
+            // 'divisions.*.amount' => 'required|integer|min:1',
             'group_link'            => 'nullable|string',
             'event_status'          => 'required|in:active,closed',
         ]);

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->boolean('benefit_jam_volunt')->default(false);
             $table->string('other_benefit')->nullable()->after('benefit_jam_volunt');
 
+            //$table->json('divisons')->nullable()->after('other_benefit');
             $table->string('contact_person', 50)->after('other_benefit');
             $table->string('group_link')->nullable()->after('contact_person');
 
@@ -49,6 +50,7 @@ return new class extends Migration
                 'benefit_certificate',
                 'benefit_jam_volunt',
                 'other_benefit',
+                //'divisions',
                 'contact_person',
                 'group_link',
                 'status',
