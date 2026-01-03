@@ -23,8 +23,9 @@ return new class extends Migration
             $table->boolean('benefit_consumption')->default(false);
             $table->boolean('benefit_certificate')->default(false);
             $table->boolean('benefit_jam_volunt')->default(false);
+            $table->string('other_benefit')->nullable()->after('benefit_jam_volunt');
 
-            $table->string('contact_person', 50)->after('benefit_jam_volunt');
+            $table->string('contact_person', 50)->after('other_benefit');
             $table->string('group_link')->nullable()->after('contact_person');
 
             //$table->enum('status', ['active', 'closed'])->default('active');
@@ -47,6 +48,7 @@ return new class extends Migration
                 'benefit_consumption',
                 'benefit_certificate',
                 'benefit_jam_volunt',
+                'other_benefit',
                 'contact_person',
                 'group_link',
                 'status',

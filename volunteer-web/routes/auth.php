@@ -153,13 +153,12 @@ Route::middleware(['auth'])->group(function(){
                 Route::post('/institute/events', [InstituteEventController::class, 'store'])
                 ->name('institute.events.store');
 
-                Route::get('/institute/events', function () {
-                return Inertia::render('Institute/EventIndex');
-                })->name('institute.events.index');
                 // 3. atur event 
-                Route::get('/institute/organize-event', function () {
-                        return Inertia::render('Institute/OrganizeEvent');
-                })->name('institute.organize');
+                Route::get('/institute/organize-event', [InstituteEventController::class, 'index'])
+                ->name('institute.organize');
+
+                Route::put('/institute/events/{event}', [InstituteEventController::class, 'update'])
+                ->name('institute.events.update');
 
                 // 4. app volunteer 
                 Route::get('/institute/app-volunteer', function () {

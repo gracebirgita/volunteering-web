@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 class InstituteSettingsController extends Controller
 {
@@ -90,7 +91,12 @@ class InstituteSettingsController extends Controller
         if (!$account || !$account->isInstitute()) abort(403);
 
         $request->validate([
-            'email'    => 'required|email|unique:accounts,email,' . $account->account_id,
+        // Menggunakan Rule::unique lebih minim error typo
+            'email' => [
+                'required', 
+                'email', 
+                Rule::unique('accounts', 'email')->ignore($account->account_id, 'account_id')
+            ],
             'password' => 'required',
         ]);
 

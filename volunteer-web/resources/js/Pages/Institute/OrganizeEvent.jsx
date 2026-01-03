@@ -426,3 +426,248 @@ export default function MyEvent({ auth }) {
         </div>
     );
 }
+
+
+
+// HANYA BUAT TESTING
+// import React, { useState } from "react";
+// import MyNavbar from "@/Components/Navbar";
+// import { Head, Link } from "@inertiajs/react";
+// import {
+//     Menu,
+//     Search,
+//     MapPin,
+//     Calendar,
+//     Clock,
+//     LayoutTemplate,
+//     Sprout,
+//     UserRound,
+//     GraduationCap,
+//     Hospital,
+//     X,
+//     Plus
+// } from "lucide-react";
+
+// export default function OrganizeEvent({ auth, events }) {
+//     const [sidebarOpen, setSidebarOpen] = useState(false);
+//     const [searchQuery, setSearchQuery] = useState("");
+//     const [selectedCategory, setSelectedCategory] = useState(null);
+//     const [selectedDate, setSelectedDate] = useState("");
+
+//     // Filtering logic menggunakan data asli dari database
+//     const filteredEvents = (events || []).filter((event) => {
+//         // Filter Berdasarkan Nama (Database: event_name)
+//         const matchSearch = event.event_name
+//             ?.toLowerCase()
+//             .includes(searchQuery.toLowerCase());
+
+//         // Filter Berdasarkan Kategori (Database: category)
+//         const matchCategory = selectedCategory
+//             ? event.category === selectedCategory
+//             : true;
+
+//         // Filter Berdasarkan Tanggal (Database: event_start)
+//         let matchDate = true;
+//         if (selectedDate) {
+//             const eventDate = event.event_start?.split(" ")[0];
+//             matchDate = eventDate === selectedDate;
+//         }
+
+//         return matchSearch && matchCategory && matchDate;
+//     });
+
+//     const getCategoryStyle = (cat) => {
+//         switch (cat) {
+//             case "Lingkungan": return "bg-[#E7F8F1] text-[#00772A]";
+//             case "Social": return "bg-[#FEEDE5] text-[#FF7A00]";
+//             case "Pendidikan": return "bg-[#E7F0FF] text-[#07ACE6]";
+//             case "Kesehatan": return "bg-[#E9FBFF] text-[#33CCB5]";
+//             default: return "bg-gray-100 text-gray-600";
+//         }
+//     };
+
+//     const getCategoryIcon = (cat) => {
+//         switch (cat) {
+//             case "Lingkungan": return <Sprout size={14} />;
+//             case "Social": return <UserRound size={14} />;
+//             case "Pendidikan": return <GraduationCap size={14} />;
+//             case "Kesehatan": return <Hospital size={14} />;
+//             default: return <LayoutTemplate size={14} />;
+//         }
+//     };
+
+//     return (
+//         <div className="flex min-h-screen bg-gray-50 font-sans text-black relative">
+//             <Head title="Atur Event - Institute" />
+
+//             <MyNavbar
+//                 user={auth?.user}
+//                 variant="sidebar"
+//                 isOpen={sidebarOpen}
+//                 setIsOpen={setSidebarOpen}
+//             />
+
+//             <main className="flex-1 w-full overflow-x-hidden">
+//                 {/* Mobile Header */}
+//                 <div className="md:hidden bg-white border-b border-gray-200 p-4 flex justify-between items-center sticky top-0 z-30">
+//                     <span className="font-bold text-[#005D67]">VolunteerHub</span>
+//                     <button onClick={() => setSidebarOpen(true)} className="text-gray-600">
+//                         <Menu size={24} />
+//                     </button>
+//                 </div>
+
+//                 <div className="p-4 pt-6 md:p-8">
+//                     {/* Top Section: Search & Institute Info */}
+//                     <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+//                         <div className="relative w-full md:max-w-xl">
+//                             <input
+//                                 type="text"
+//                                 placeholder="Cari Event Anda"
+//                                 className="w-full pl-10 pr-4 py-3 rounded-full border-none bg-white shadow-sm focus:ring-2 focus:ring-[#005D67] text-sm"
+//                                 value={searchQuery}
+//                                 onChange={(e) => setSearchQuery(e.target.value)}
+//                             />
+//                             <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+//                         </div>
+
+//                         <div className="flex items-center gap-4">
+//                              <Link 
+//                                 href={route('institute.create')}
+//                                 className="flex items-center gap-2 bg-[#005D67] text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-[#004a52] transition shadow-sm"
+//                             >
+//                                 <Plus size={18} /> Buat Event
+//                             </Link>
+//                             <div className="hidden md:flex items-center gap-3 bg-white p-2 pr-5 rounded-full shadow-sm border border-gray-100">
+//                                 <img
+//                                     src={auth?.user?.profile_photo_url || "/assets/Dashboard/Institute/who.png"}
+//                                     alt="Profile"
+//                                     className="w-10 h-10 rounded-full object-cover"
+//                                 />
+//                                 <span className="text-sm font-bold text-gray-700">
+//                                     {auth.user.institute?.institute_name}
+//                                 </span>
+//                             </div>
+//                         </div>
+//                     </div>
+
+//                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+//                         <div className="lg:col-span-3">
+//                             {filteredEvents.length === 0 ? (
+//                                 <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-gray-300 text-gray-500">
+//                                     <LayoutTemplate size={48} className="mb-4 opacity-20" />
+//                                     <p className="mb-2 font-medium">Belum ada event yang sesuai.</p>
+//                                     <button
+//                                         onClick={() => {
+//                                             setSelectedCategory(null);
+//                                             setSearchQuery("");
+//                                             setSelectedDate("");
+//                                         }}
+//                                         className="text-[#005D67] font-bold text-sm hover:underline"
+//                                     >
+//                                         Reset Semua Filter
+//                                     </button>
+//                                 </div>
+//                             ) : (
+//                                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+//                                     {filteredEvents.map((event) => (
+//                                         <div
+//                                             key={event.id}
+//                                             className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition duration-300"
+//                                         >
+//                                             {/* Thumbnail */}
+//                                             <div className="h-44 bg-gray-200 relative overflow-hidden">
+//                                                 <img
+//                                                     src={event.thumbnail ? `/storage/${event.thumbnail}` : "/assets/landing-page/event3.png"}
+//                                                     alt={event.event_name}
+//                                                     className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+//                                                 />
+//                                                 <div className="absolute top-3 left-3">
+//                                                     <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase shadow-sm ${getCategoryStyle(event.category)}`}>
+//                                                         {event.category}
+//                                                     </span>
+//                                                 </div>
+//                                             </div>
+
+//                                             {/* Content */}
+//                                             <div className="p-5 flex flex-col flex-1">
+//                                                 <h3 className="font-bold text-gray-900 text-base mb-2 line-clamp-1">
+//                                                     {event.event_name}
+//                                                 </h3>
+//                                                 <p className="text-xs text-gray-500 mb-5 line-clamp-2 leading-relaxed">
+//                                                     {event.event_description}
+//                                                 </p>
+
+//                                                 <div className="mt-auto space-y-2.5 mb-5">
+//                                                     <div className="flex items-center gap-2.5 text-[11px] font-medium text-gray-600">
+//                                                         <Calendar size={14} className="text-[#005D67]" />
+//                                                         {new Date(event.event_start).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+//                                                     </div>
+//                                                     <div className="flex items-center gap-2.5 text-[11px] font-medium text-gray-600">
+//                                                         <MapPin size={14} className="text-[#005D67]" />
+//                                                         <span className="line-clamp-1">{event.event_location}</span>
+//                                                     </div>
+//                                                 </div>
+
+//                                                 <div className="grid grid-cols-2 gap-3">
+//                                                     <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-xs font-bold transition">
+//                                                         Detail
+//                                                     </button>
+//                                                     <button className="bg-[#33CCB5] hover:bg-[#2bb39e] text-white py-2.5 rounded-xl text-xs font-bold transition shadow-sm">
+//                                                         Edit
+//                                                     </button>
+//                                                 </div>
+//                                             </div>
+//                                         </div>
+//                                     ))}
+//                                 </div>
+//                             )}
+//                         </div>
+
+//                         {/* Right Sidebar: Filters */}
+//                         <div className="lg:col-span-1 space-y-8">
+//                             <div>
+//                                 <div className="flex justify-between items-center mb-5">
+//                                     <h3 className="font-bold text-gray-900 flex items-center gap-2">
+//                                         <LayoutTemplate size={18} className="text-[#005D67]" /> Kategori
+//                                     </h3>
+//                                     {selectedCategory && (
+//                                         <button onClick={() => setSelectedCategory(null)} className="text-[10px] text-red-500 font-bold flex items-center hover:underline">
+//                                             <X size={12} className="mr-1" /> Reset
+//                                         </button>
+//                                     )}
+//                                 </div>
+//                                 <div className="space-y-2.5">
+//                                     {["Lingkungan", "Social", "Pendidikan", "Kesehatan"].map((cat) => (
+//                                         <button
+//                                             key={cat}
+//                                             onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
+//                                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition border-2 
+//                                                 ${selectedCategory === cat ? "border-[#005D67] bg-white" : "border-transparent bg-white shadow-sm hover:bg-gray-50"}`}
+//                                         >
+//                                             <span className={`p-1.5 rounded-lg ${getCategoryStyle(cat)}`}>
+//                                                 {getCategoryIcon(cat)}
+//                                             </span>
+//                                             {cat}
+//                                         </button>
+//                                     ))}
+//                                 </div>
+//                             </div>
+
+//                             <div>
+//                                 <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+//                                     <Calendar size={18} className="text-[#005D67]" /> Tanggal Event
+//                                 </h3>
+//                                 <input
+//                                     type="date"
+//                                     className="w-full bg-white border-gray-200 rounded-xl py-3 px-4 text-xs shadow-sm focus:ring-[#005D67] focus:border-[#005D67]"
+//                                     value={selectedDate}
+//                                     onChange={(e) => setSelectedDate(e.target.value)}
+//                                 />
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </main>
+//         </div>
+//     );
+// }
