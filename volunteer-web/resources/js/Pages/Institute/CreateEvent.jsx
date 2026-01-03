@@ -27,8 +27,16 @@ export default function CreateEvent({ auth }) {
         // Informasi
         judul: "",
         deskripsiSingkat: "",
-        kategori: "Lingkungan", // Default
+        kategori: "Lingkungan",
         thumbnail: null,
+
+        // Logistik
+        tanggalMulai: "",
+        tanggalSelesai: "",
+        waktuMulai: "",
+        waktuSelesai: "",
+        lokasi: "",
+
         // Relawan
         targetRelawan: 0,
         batasPendaftaran: "",
@@ -72,49 +80,6 @@ export default function CreateEvent({ auth }) {
             setActiveTab(tabs[currentIndex + 1]);
             window.scrollTo(0, 0);
         }
-    };
-
-    const addDivisi = () => {
-        setFormData({
-            ...formData,
-            divisi: [
-                ...formData.divisi,
-                { id: Date.now(), name: "", quota: 0 },
-            ],
-        });
-    };
-
-    // update kuota divisi
-    const updateDivisiQuota = (id, delta) => {
-        setFormData((prev) => ({
-            ...prev,
-            divisi: prev.divisi.map((item) => {
-                if (item.id === id) {
-                    // Mencegah angka negatif (Math.max 0)
-                    const newQuota = Math.max(0, item.quota + delta);
-                    return { ...item, quota: newQuota };
-                }
-                return item;
-            }),
-        }));
-    };
-
-    // update nama divisi
-    const updateDivisiName = (id, val) => {
-        setFormData((prev) => ({
-            ...prev,
-            divisi: prev.divisi.map((item) =>
-                item.id === id ? { ...item, name: val } : item
-            ),
-        }));
-    };
-
-    // hapus divisi
-    const removeDivisi = (id) => {
-        setFormData((prev) => ({
-            ...prev,
-            divisi: prev.divisi.filter((item) => item.id !== id),
-        }));
     };
 
     return (
@@ -286,20 +251,47 @@ export default function CreateEvent({ auth }) {
                                     <label className="block text-md font-bold text-black mb-2">
                                         Tanggal Pelaksanaan:
                                     </label>
-                                    <div className="relative">
-                                        <input
-                                            type="date"
-                                            className="w-full md:w-1/2 border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67]"
-                                            value={formData.tanggal}
-                                            onChange={(e) =>
-                                                setFormData({
-                                                    ...formData,
-                                                    tanggal: e.target.value,
-                                                })
-                                            }
-                                        />
+                                    <div className="flex gap-4">
+                                        {/* Tanggal Mulai */}
+                                        <div className="w-1/2">
+                                            <span className="text-md text-black mb-1 block">
+                                                Mulai:
+                                            </span>
+                                            <input
+                                                type="date"
+                                                className="w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67]"
+                                                value={formData.tanggalMulai}
+                                                onChange={(e) =>
+                                                    setFormData({
+                                                        ...formData,
+                                                        tanggalMulai:
+                                                            e.target.value,
+                                                    })
+                                                }
+                                            />
+                                        </div>
+
+                                        {/* Tanggal Selesai */}
+                                        <div className="w-1/2">
+                                            <span className="text-md text-black mb-1 block">
+                                                Selesai:
+                                            </span>
+                                            <input
+                                                type="date"
+                                                className="w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67]"
+                                                value={formData.tanggalSelesai}
+                                                onChange={(e) =>
+                                                    setFormData({
+                                                        ...formData,
+                                                        tanggalSelesai:
+                                                            e.target.value,
+                                                    })
+                                                }
+                                            />
+                                        </div>
                                     </div>
                                 </div>
+
                                 <div>
                                     <label className="block text-md font-bold text-black mb-2">
                                         Waktu Mulai & Selesai:
@@ -544,101 +536,6 @@ export default function CreateEvent({ auth }) {
                                         }
                                     />
                                 </div>
-
-                                {/* Divisi */}
-                                <div className="border-t border-gray-100 pt-6">
-                                    <label className="block text-md font-bold text-black mb-4">
-                                        Divisi & Kuota
-                                    </label>
-
-                                    {formData.divisi.map((div, i) => (
-                                        <div
-                                            key={div.id}
-                                            className="flex flex-col md:flex-row gap-4 mb-4 items-start md:items-end"
-                                        >
-                                            <div className="flex-1 w-full">
-                                                <span className="text-xs text-black mb-1 block">
-                                                    Divisi:
-                                                </span>
-                                                <input
-                                                    type="text"
-                                                    className="w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67] placeholder:text-gray-400 text-gray-800"
-                                                    placeholder="Divisi Publikasi"
-                                                    value={div.name}
-                                                    onChange={(e) =>
-                                                        updateDivisiName(
-                                                            div.id,
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                            <div className="w-fit">
-                                                <span className="text-xs text-black mb-1 block">
-                                                    Total Relawan:
-                                                </span>
-                                                <div className="flex items-center border border-gray-300 rounded-lg w-[140px] overflow-hidden bg-white">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            updateDivisiQuota(
-                                                                div.id,
-                                                                -1
-                                                            )
-                                                        }
-                                                        className="px-3 py-2 hover:bg-gray-100 border-r border-gray-200 text-gray-500 transition active:bg-gray-200"
-                                                    >
-                                                        <Minus size={14} />
-                                                    </button>
-
-                                                    <input
-                                                        type="text"
-                                                        className="w-full text-center border-none p-0 text-sm focus:ring-0 text-gray-800 placeholder:text-gray-300 font-medium"
-                                                        placeholder="0"
-                                                        value={
-                                                            div.quota > 0
-                                                                ? div.quota
-                                                                : ""
-                                                        }
-                                                        readOnly
-                                                    />
-
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            updateDivisiQuota(
-                                                                div.id,
-                                                                1
-                                                            )
-                                                        }
-                                                        className="px-3 py-2 hover:bg-gray-100 border-l border-gray-200 text-gray-500 transition active:bg-gray-200"
-                                                    >
-                                                        <Plus size={14} />
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            {/* delete */}
-                                            {formData.divisi.length > 1 && (
-                                                <button
-                                                    onClick={() =>
-                                                        removeDivisi(div.id)
-                                                    }
-                                                    className="p-2.5 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition mb-[2px]"
-                                                >
-                                                    <Trash2 size={18} />
-                                                </button>
-                                            )}
-                                        </div>
-                                    ))}
-
-                                    <button
-                                        onClick={addDivisi}
-                                        className="mt-2 bg-[#33CCB5] hover:bg-teal-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2"
-                                    >
-                                        <Plus size={14} /> Tambah Divisi
-                                    </button>
-                                </div>
                             </div>
                         )}
 
@@ -821,7 +718,7 @@ export default function CreateEvent({ auth }) {
 //                     </div>
 
 //                     <div className="bg-white rounded-b-xl shadow-sm border border-t-0 border-gray-200 p-6 md:p-8 min-h-[500px]">
-                        
+
 //                         {/* Tab 1: Informasi */}
 //                         {activeTab === "Informasi" && (
 //                             <div className="space-y-6">
