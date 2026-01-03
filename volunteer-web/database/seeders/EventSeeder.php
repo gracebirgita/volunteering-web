@@ -16,33 +16,53 @@ class EventSeeder extends Seeder
      */
     public function run(): void
     {
-        //
         $faker = Faker::create('id_ID');
 
-        // get semua institute
-        // event = active, finished
-        $institutes=DB::table('institutes')->pluck('institute_id');
+        $institutes = DB::table('institutes')->pluck('institute_id');
 
-        // 1 institute -> many event
-        foreach($institutes as $instituteId){
-            $totalEvent = rand(3,6); //event 3-6 per institute
+        $categories = [
+            'Sosial',
+            'Lingkungan',
+            'Pendidikan',
+            'Kesehatan',
+        ];
 
-            for($i=1; $i<=$totalEvent; $i++){
-                $start = $faker->dateTimeBetween('-1 month', '+1 month');
-                $finish = (clone $start)->modify('+'.rand(1,5).'days');
+        $start  = $faker->dateTimeBetween('-1 month', '+1 month');
+        $finish = (clone $start)->modify('+'.rand(1, 5).' days');
+
+        $registrationDeadline = (clone $start)->modify('-'.rand(1, 14).' days');
+
+        foreach ($institutes as $instituteId) {
+            $totalEvent = rand(3, 6);
+
+            for ($i = 1; $i <= $totalEvent; $i++) {
+                $start  = $faker->dateTimeBetween('-1 month', '+1 month');
+                $finish = (clone $start)->modify('+'.rand(1, 5).' days');
 
                 DB::table('events')->insert([
-                    'institute_id'   => $instituteId,
-                    'event_name'     => $faker->words(3, true),
-                    'event_description' => $faker->paragraph(3),
-                    'event_start'    => $start->format('Y-m-d'),
-                    'event_finish'   => $finish->format('Y-m-d'),
-                    'event_location' => $faker->city(),
-                    'event_status'   => $faker->randomElement(['active', 'finished']),
-                    'event_quota'    => rand(10, 100),
-                    'created_at'     => now(),
-                    'updated_at'     => now(),
+                    'institute_id'          => $instituteId,
+                    'thumbnail'             => null,
+                    'event_name'            => $faker->words(3, true),
+                    'event_description'     => $faker->paragraph(3),
+                    'category'              => $faker->randomElement($categories), 
+                    'event_start'           => $start->format('Y-m-d'),
+                    'event_finish'          => $finish->format('Y-m-d'),
+                    'event_start_time'      => null,
+                    'event_end_time'        => null,
+                    'event_location'        => $faker->city(),
+                    'address'               => $faker->address(),
+                    'quota'                 => rand(10, 100),
+                    'registration_deadline' => $registrationDeadline->format('Y-m-d'),
+                    'benefit_consumption'   => $faker->boolean(),
+                    'benefit_certificate'   => $faker->boolean(),
+                    'benefit_jam_volunt'    => $faker->boolean(),
+                    'contact_person'        => $faker->phoneNumber(),
+                    'group_link'            => null,
+                    'event_status'          => $faker->randomElement(['active', 'finished']),
+                    'created_at'            => now(),
+                    'updated_at'            => now(),
                 ]);
+
             }
         }
     }

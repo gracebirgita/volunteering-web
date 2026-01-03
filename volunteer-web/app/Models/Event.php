@@ -10,16 +10,26 @@ class Event extends Model
 {
     //
     protected $primaryKey='event_id';
-    protected $table = 'events';
 
     protected $fillable=[
         'institute_id',
-        'category_id',
-        'title',
-        'description',
-        'location',
-        'start_date',
-        'end_date',
+        'event_name',
+        'event_description',
+        'category',
+        'event_start',
+        'event_finish',
+        'event_start_time',
+        'event_end_time',
+        'event_location',
+        'address',
+        'quota',
+        'registration_deadline',
+        'benefit_consumption',
+        'benefit_certificate',
+        'benefit_jam_volunt',
+        'contact_person',
+        'group_link',
+        'event_status',
         // 'thumbnail', //image 
     ];
 
@@ -30,6 +40,6 @@ class Event extends Model
 
     // 1 event -> byk eventregist
     public function registrations(){
-        return $this->hasMany(EventRegist::class, 'event_id', 'event_id');
+        return $this->hasMany(EventRegistration::class, 'event_id', 'event_id');
     }
 }

@@ -35,6 +35,6 @@ class UserProfile extends Model
 
     // 1 user -> byk eventregist
     public function registrations(){
-        return $this->hasMany(EventRegist::class, 'user_id', 'user_id');
+        return $this->hasMany(EventRegistration::class, 'user_id', 'user_id');
     }
 }

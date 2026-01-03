@@ -17,12 +17,13 @@ class AccountSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create('id_ID');
-
+       
         // RELAWAN
         for ($i=1; $i<=12; $i++){
             $userName=$faker->unique()->name;
             $cleanName = strtolower(str_replace(' ', '.',$userName));
             $email = "{$cleanName}{$i}@mail.com";
+            $totalEvents = $faker->numberBetween(0, 20);
 
             // id akun baru dibuat
             if(!DB::table('accounts')->where('email', $email)->exists()){
@@ -48,6 +49,9 @@ class AccountSeeder extends Seeder
                         'Pendidikan',
                         'Kesehatan'
                     ]), //category
+                    // 'total_event_visited'  => 0,
+                    // 'total_volunteer_hour' => 0,
+                    // 'total_certificate'    => 0,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

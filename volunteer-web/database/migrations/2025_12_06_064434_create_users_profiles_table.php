@@ -22,7 +22,10 @@ return new class extends Migration
             $table->string('user_domicile', 50)->nullable();
             $table->date('user_dob')->nullable();
             $table->string('user_interest', 50)->nullable();
-
+            $table->string('profile_picture')->nullable();
+            // $table->unsignedInteger('total_event_visited')->default(0);
+            // $table->unsignedInteger('total_volunteer_hour')->default(0);
+            // $table->unsignedInteger('total_certificate')->default(0);
             $table->timestamps();
         });
     }

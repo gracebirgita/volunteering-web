@@ -19,6 +19,9 @@ export default {
                 hand:["Dancing Script", 'cursive'],
                 inter:['Inter', 'cursive'],
             },
+            screens:{
+                'hp-land': { min: '640px', max: '767px' }
+            }
         },
     },
 

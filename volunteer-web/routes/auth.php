@@ -223,3 +223,13 @@ Route::get('/_debug/dashboard/user', function () {
         ],
     ]);
 });
+
+use Illuminate\Support\Facades\Auth;
+
+
+if (app()->environment('local')) {
+    Route::get('/_dev/login-user', function () {
+        Auth::loginUsingId(2);
+        return redirect()->route('dashboard.user');
+    });
+}
