@@ -58,9 +58,7 @@ class InstituteEventController extends Controller
 
         Event::create($data);
 
-        return redirect()
-            ->route('institute.organize')
-            ->with('success', 'Event berhasil dibuat');
+        return redirect()->back()->with('success', 'Event berhasil dibuat');
     }
 
     public function index(Request $request)
