@@ -25,7 +25,7 @@ class InstituteSettingsController extends Controller
                     'id' => $account->account_id,
                     'name' => $institute->institute_name,
                     'email' => $account->email,
-                   // 'email_verified_at' => $account->email_verified_at,
+                   'email_verified_at' => $account->email_verified_at,
                     'institute' => [
                         'institute_name'    => $institute->institute_name,
                         'institute_address' => $institute->institute_address,
@@ -107,7 +107,7 @@ class InstituteSettingsController extends Controller
         }
 
         $account->email = $request->email;
-        $account->email_verified_at = null;
+        $account->email_verified_at = now();
         $account->save();
 
         return back()->with('success', 'Email berhasil diubah');

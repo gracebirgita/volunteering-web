@@ -23,6 +23,7 @@ use App\Http\Controllers\VolunteerSettingsController;
 use App\Http\Controllers\InstituteProfileController;
 use App\Http\Controllers\InstituteSettingsController;
 use App\Http\Controllers\InstituteEventController;
+use App\Http\Controllers\InstituteAppVolunteerController;
 // relawan
 use App\Http\Controllers\Relawan\EventController;
 use App\Http\Controllers\Relawan\EventRegistController;
@@ -161,9 +162,10 @@ Route::middleware(['auth'])->group(function(){
                 ->name('institute.events.update');
 
                 // 4. app volunteer 
-                Route::get('/institute/app-volunteer', function () {
-                        return Inertia::render('Institute/AppVolunteer');
-                })->name('institute.appvol');
+                Route::get('/institute/app-volunteer', [InstituteAppVolunteerController::class, 'index'])->name('institute.appvol');
+
+                // Update status pendaftar (Accepted/Rejected/Pending) + Update Kuota
+                Route::patch('/institute/applications/{regist_id}/status', [InstituteAppVolunteerController::class, 'updateStatus'])->name('institute.applications.update');
 
                 // 5. atur absensi 
                 Route::get('/institute/attendance', function () {

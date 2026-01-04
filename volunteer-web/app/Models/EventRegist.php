@@ -33,6 +33,7 @@ class EventRegist extends Model
     protected $fillable=[
         'event_id',
         'user_id',
+        'regist_date',
         'regist_status',
     ];
 
