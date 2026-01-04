@@ -22,7 +22,7 @@ class InstituteAppVolunteerController extends Controller
         $events = Event::where('institute_id', $institute->institute_id)
             // Pastikan relasi di model Event bernama 'eventRegists'
             // dan relasi di model EventRegist bernama 'user'
-            ->with(['eventRegists.user']) 
+            ->with(['eventRegists.userProfile']) 
             ->when($search, function ($query, $search) {
                 return $query->where('event_name', 'like', "%{$search}%");
             })
