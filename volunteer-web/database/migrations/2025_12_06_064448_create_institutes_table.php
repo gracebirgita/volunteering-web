@@ -16,12 +16,10 @@ return new class extends Migration
             $table->foreignId('account_id')
             ->constrained('accounts', 'account_id')
             ->cascadeOnDelete(); //FK
-            
             $table->string('institute_name', 50);
             $table->string('institute_phone', 20)->nullable();
             $table->string('institute_pic_name', 50)->nullable();
             $table->string('institute_address', 255)->nullable();
-            $table->string('institute_category', 20)->nullable();
             $table->timestamps();
         });
     }

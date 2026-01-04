@@ -12,7 +12,7 @@ class EventController extends Controller
     public function index()
     {
         $events = Event::with('institute')
-            ->orderBy('start_date', 'asc')
+            ->orderBy('event_start', 'asc')
             ->get();
 
         return view('events.index', compact('events'));

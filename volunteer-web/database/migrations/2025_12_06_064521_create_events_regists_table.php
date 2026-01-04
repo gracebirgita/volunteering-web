@@ -24,12 +24,12 @@ return new class extends Migration
 
             $table->enum('status', [
                 'Pending',    // daftar, nunggu persetujuan
-                'Approved',   // diterima institute
+                'Accepted',   // diterima institute
                 'Rejected',   // ditolak
             ])->default('pending');
 
             $table->timestamp('applied_at')->useCurrent();
-            $table->timestamp('approved_at')->nullable();
+            $table->timestamp('accepted_at')->nullable();
             $table->timestamp('rejected_at')->nullable();
 
             $table->text('note')->nullable(); // catatan dari institute

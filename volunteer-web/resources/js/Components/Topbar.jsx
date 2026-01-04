@@ -1,5 +1,6 @@
-import { Menu } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { useMemo } from "react";
+import { CATEGORY_CONFIG } from "@/Components/AddOns";
 
 const PROFILE_PLACEHOLDERS = [
     "/assets/Placeholder/placeholder_profile1.png",
@@ -7,43 +8,127 @@ const PROFILE_PLACEHOLDERS = [
     "/assets/Placeholder/placeholder_profile3.png",
 ];
 
+function FilterChip({ label, onRemove, className = "" }) {
+    return (
+        <div
+            className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${className}`}
+        >
+            <span className="line-clamp-1">{label}</span>
+            <button onClick={onRemove} className="hover:opacity-70">
+                <X size={12} />
+            </button>
+        </div>
+    );
+}
 
-export default function Topbar({ user, onMenuClick }) {
-
-    function getRandomItem(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
-    }
-
+export default function Topbar({
+    user,
+    onMenuClick,
+    type = "default",
+    searchValue = "",
+    onSearchChange,
+    filters,
+    onFilterRemove,
+}) {
     const placeholderAvatar = useMemo(
-        () => getRandomItem(PROFILE_PLACEHOLDERS),
+        () =>
+            PROFILE_PLACEHOLDERS[
+                Math.floor(Math.random() * PROFILE_PLACEHOLDERS.length)
+            ],
         []
     );
 
-   
-    const avatarSrc = user.profile_picture
+    const avatarSrc = user?.profile_picture
         ? `/storage/${user.profile_picture}`
         : placeholderAvatar;
 
     return (
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6">
-            <button
-                onClick={onMenuClick}
-                className="md:hidden text-gray-600"
-            >
-                <Menu size={24} />
-            </button>
+        <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-2">
+            <div className="flex items-center gap-4">
+                {/* BURGER */}
+                <button onClick={onMenuClick} className="lg:hidden text-gray-600">
+                    <Menu size={24} />
+                </button>
 
-            <div className="ml-auto flex items-center gap-5">
-                <span className="hidden sm:block text-sm font-semibold">
-                    {user.user_name}
-                </span>
+                {/* SEARCH */}
+                {type === "explore" && (
+                    <div className="relative flex-1 max-w-xl">
+                        <Search
+                            size={18}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                        />
+                        <input
+                            type="text"
+                            value={searchValue}
+                            onChange={(e) =>
+                                onSearchChange?.(e.target.value)
+                            }
+                            placeholder="Cari kegiatan, organisasi, atau kategori..."
+                            className="
+                                w-full
+                                pl-11 pr-4 py-2
+                                rounded-full
+                                bg-white
+                                border border-gray-300
+                                focus:bg-white
+                                focus:outline-none
+                                focus:ring-2
+                                focus:ring-[#33CCB5]/30
+                                text-sm
+                            "
+                        />
+                    </div>
+                )}
 
-                <img
-                    src={avatarSrc}
-                    alt={user.user_name}
-                    className="w-10 h-10 rounded-full object-cover"
-                />
+                {/* PROFILE */}
+                <div className="ml-auto flex items-center gap-4">
+                    <span className="hidden sm:block text-sm font-semibold">
+                        {user?.user_name}
+                    </span>
+                    <img
+                        src={avatarSrc}
+                        alt={user?.user_name}
+                        className="w-10 h-10 rounded-full object-cover"
+                    />
+                </div>
             </div>
+
+            {/* FILTER CHIPS */}
+            {type === "explore" && filters && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                    {filters.category && CATEGORY_CONFIG[filters.category] && (
+                        <FilterChip
+                            label={CATEGORY_CONFIG[filters.category].label}
+                            className={`${CATEGORY_CONFIG[filters.category].bg} ${CATEGORY_CONFIG[filters.category].text}`}
+                            onRemove={() => onFilterRemove("category")}
+                        />
+                    )}
+
+                    {filters.institute && (
+                        <FilterChip
+                            label={filters.institute}
+                            className="bg-gray-100 text-gray-700"
+                            onRemove={() => onFilterRemove("institute")}
+                        />
+                    )}
+
+                    {filters.location && (
+                        <FilterChip
+                            label={filters.location}
+                            className="bg-gray-100 text-gray-700"
+                            onRemove={() => onFilterRemove("location")}
+                        />
+                    )}
+
+                    {filters.date && (
+                        <FilterChip
+                            label={filters.date}
+                            className="bg-gray-100 text-gray-700"
+                            onRemove={() => onFilterRemove("date")}
+                        />
+                    )}
+                </div>
+            )}
         </header>
     );
 }

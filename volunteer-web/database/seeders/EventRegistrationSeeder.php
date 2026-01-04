@@ -38,9 +38,9 @@ class EventRegistrationSeeder extends Seeder
                     'user_id'    => $userId,
                     'event_id'   => $eventId,
                     'status'     => $faker->randomElement([
-                        'pending',
-                        'approved',
-                        'rejected',
+                        'Pending',
+                        'Accepted',
+                        'Rejected',
                     ]),
                     'created_at'=> now(),
                     'updated_at'=> now(),

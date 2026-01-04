@@ -37,10 +37,13 @@ export default function EventCard({ event }) {
     return (
         <div className=" relative bg-white rounded-xl overflow-hidden shadow-sm flex flex-col ">
 
-            {/* Status Event */}
-            <div className="absolute top-3 right-3 z-20">
-                <AddOns status={event.event_status}/>
-            </div>
+           {/* Status Event (hanya jika BELUM terdaftar) */}
+            {!registered && (
+                <div className="absolute top-3 right-3 z-20">
+                    <AddOns status={event.event_status} />
+                </div>
+            )}
+
           
             {/* Thumbnail */}
             <div className="relative h-40">
@@ -80,7 +83,7 @@ export default function EventCard({ event }) {
                 <div className="flex flex-row items-center mt-2 gap-3 text-sm text-gray-500 pl-2">
                     <div className="flex items-center gap-2">
                         <CalendarDays size={16} />
-                        <span>
+                        <span className="line-clamp-1">
                             {new Date(event_start).toLocaleDateString("id-ID", {
                                 day: "numeric",
                                 month: "long",

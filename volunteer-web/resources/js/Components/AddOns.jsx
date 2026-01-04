@@ -5,7 +5,7 @@ import {
     HeartPulse,
 } from "lucide-react";
 
-const CATEGORY_CONFIG = {
+export const CATEGORY_CONFIG = {
     Lingkungan: {
         label: "Lingkungan",
         icon: Leaf,
@@ -45,7 +45,7 @@ const STATUS_CONFIG = {
     },
 };
 
-export default function addOns({ category, organizer, status }) {
+export default function AddOns({ category, organizer, status }) {
     if (!category && !organizer && !status) return null;
 
     const categoryConfig = category
@@ -53,13 +53,11 @@ export default function addOns({ category, organizer, status }) {
         : null;
 
     const statusConfig = status
-    ? STATUS_CONFIG[status]
-    : null;
-
+        ? STATUS_CONFIG[status]
+        : null;
 
     return (
         <div className="flex items-center gap-3 flex-wrap">
-            {/* CATEGORY BADGE */}
             {categoryConfig && (
                 <div
                     className={`flex items-center gap-2 px-4 py-1 rounded-full text-xs font-semibold line-clamp-1
@@ -70,14 +68,12 @@ export default function addOns({ category, organizer, status }) {
                 </div>
             )}
 
-            {/* ORGANIZER BADGE */}
             {organizer && (
-                <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-xs font-medium line-clamp-1">
+                <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-xs font-medium truncate max-w-[140px]">
                     {organizer}
                 </span>
             )}
 
-            {/* STATUS BADGE */}
             {statusConfig && (
                 <span
                     className={`px-3 py-1 rounded-full text-xs font-semibold
@@ -86,7 +82,6 @@ export default function addOns({ category, organizer, status }) {
                     {statusConfig.label}
                 </span>
             )}
-
         </div>
     );
 }

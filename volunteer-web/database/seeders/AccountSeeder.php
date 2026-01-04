@@ -83,11 +83,6 @@ class AccountSeeder extends Seeder
                     'institute_phone'=> $faker->phoneNumber(),
                     'institute_pic_name'=>$faker->name(),
                     'institute_address'=>$faker->address,
-                    'institute_category' => $faker->randomElement(['Lingkungan', 
-                    'Sosial', 
-                    'Pendidikan', 
-                    'Kesehatan']),
-        
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
