@@ -17,7 +17,8 @@ export default function ExploreEvent({
     status = [],
     filters: serverFilters,
 }) {
-    const user = auth.user;
+    const user = auth.account;
+    const UserProfile = auth.profile;
 
     const {
         data,
@@ -133,7 +134,7 @@ export default function ExploreEvent({
             <div className="flex-1 flex flex-col">
                 {/* TOPBAR */}
                 <Topbar 
-                    user={user}
+                    user={UserProfile}
                     type="explore"
                     searchValue={filters.search}
                     onSearchChange={(value) => updateFilter("search", value)}

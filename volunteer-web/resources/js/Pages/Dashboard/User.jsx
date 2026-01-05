@@ -18,11 +18,13 @@ const STAT_ICONS = {
 };
 
 
+
+
 export default function Dashboard({ auth, events = [], stats = null }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const user = auth.user      // UserProfile
 
-    
+    const user = auth.user  
+    const  userProfile = auth.profile
 
     const EVENTS_PER_PAGE = 3;
     const [eventIndex, setEventIndex] = useState(0);
@@ -48,7 +50,7 @@ export default function Dashboard({ auth, events = [], stats = null }) {
             />
 
             <div className="flex-1 flex flex-col">
-                <Topbar user={user} onMenuClick={() => setSidebarOpen(true)} />
+                <Topbar user={userProfile} onMenuClick={() => setSidebarOpen(true)} />
 
                 <main className="flex-1 px-4 md:px-8 py-6 mx-auto w-full lg:max-w-7xl lg:mx-auto">
 

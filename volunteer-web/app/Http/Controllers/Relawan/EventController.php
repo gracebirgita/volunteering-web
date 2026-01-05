@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
+
+
 class EventController extends Controller
 {
     /**
@@ -16,6 +18,7 @@ class EventController extends Controller
      */
     public function index(Request $request): Response
     {
+        
         $filters = $request->only([
             'search',
             'category',
@@ -73,6 +76,7 @@ class EventController extends Controller
                 'address'         => $event->address,
                 'thumbnail'       => $event->thumbnail,
                 'event_organizer' => $event->institute->institute_name,
+                'image_url' => event_image_url($event),
 
                 // OPTIONAL (bagus buat FE)
                 'quota_remaining' => $remaining,
@@ -125,6 +129,7 @@ class EventController extends Controller
      */
     public function show(Event $event): Response
     {
+
         $event->load([
             'institute.account',
             'registrations.userProfile',
@@ -157,9 +162,11 @@ class EventController extends Controller
                 'finish' => $event->event_finish,
                 'status' => $event->event_status,
                 'quota' => $event->quota,
+                'image_url' => event_image_url($event), 
 
                 'quota_remaining' => $remaining,
                 'is_full' => $remaining <= 0,
+                
             ],
 
             'institute' => [

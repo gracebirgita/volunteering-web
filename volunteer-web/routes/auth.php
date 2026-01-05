@@ -211,18 +211,6 @@ Route::middleware(['auth'])->group(function(){
 //         ->name('logout');
 // });
 
-Route::get('/_debug/dashboard/user', function () {
-    return Inertia::render('Dashboard/User', [
-        'auth' => [
-            'user' => [
-                'id' => 999,
-                'name' => 'DEBUG USER',
-                'email' => 'debug@local.test',
-                'role' => 'user',
-            ],
-        ],
-    ]);
-});
 
 use Illuminate\Support\Facades\Auth;
 

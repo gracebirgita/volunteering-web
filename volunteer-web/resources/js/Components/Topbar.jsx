@@ -1,12 +1,7 @@
 import { Menu, Search, X } from "lucide-react";
-import { useMemo } from "react";
 import { CATEGORY_CONFIG } from "@/Components/AddOns";
 
-const PROFILE_PLACEHOLDERS = [
-    "/assets/Placeholder/placeholder_profile1.png",
-    "/assets/Placeholder/placeholder_profile2.png",
-    "/assets/Placeholder/placeholder_profile3.png",
-];
+
 
 function FilterChip({ label, onRemove, className = "" }) {
     return (
@@ -30,18 +25,6 @@ export default function Topbar({
     filters,
     onFilterRemove,
 }) {
-    const placeholderAvatar = useMemo(
-        () =>
-            PROFILE_PLACEHOLDERS[
-                Math.floor(Math.random() * PROFILE_PLACEHOLDERS.length)
-            ],
-        []
-    );
-
-    const avatarSrc = user?.profile_picture
-        ? `/storage/${user.profile_picture}`
-        : placeholderAvatar;
-
     return (
         <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-2">
             <div className="flex items-center gap-4">
@@ -86,9 +69,9 @@ export default function Topbar({
                         {user?.user_name}
                     </span>
                     <img
-                        src={avatarSrc}
+                        src={user?.avatar_url}
                         alt={user?.user_name}
-                        className="w-10 h-10 rounded-full object-cover"
+                        className="w-10 h-10 rounded-full object-cover border"
                     />
                 </div>
             </div>

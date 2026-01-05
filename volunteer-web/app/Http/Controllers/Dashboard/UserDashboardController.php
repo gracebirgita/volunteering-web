@@ -43,6 +43,7 @@ class UserDashboardController extends Controller
                     'registered'     => $event->registrations()
                         ->where('user_id', $userProfile->user_id)
                         ->exists(),
+                    'image_url' => event_image_url($event),
                 ];
             });
 
@@ -68,6 +69,10 @@ class UserDashboardController extends Controller
         return inertia('Dashboard/User', [
             'events' => $events,
             'stats'  => $stats,
+            'profileUser' => [
+                'user_name' => $userProfile->user_name,
+                'avatar_url' => profile_image_url($userProfile),
+            ],
         ]);
     }
 }
