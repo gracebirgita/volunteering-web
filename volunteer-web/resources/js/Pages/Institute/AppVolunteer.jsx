@@ -255,19 +255,19 @@ const EventListView = ({
                                         {event.event_name}
                                     </h3>
                                     <p className="text-xs text-gray-500 line-clamp-3 mb-4 leading-relaxed">
-                                        {event.description ||
+                                        {event.event_description ||
                                             "Tidak ada deskripsi"}
                                     </p>
 
                                     <div className="mt-auto space-y-2 mb-4 border-t border-gray-50 pt-3">
                                         <div className="flex items-center gap-2 text-xs text-gray-600">
                                             <Clock size={14} />{" "}
-                                            {event.start_date}
+                                            {event.event_start}
                                         </div>
                                         <div className="flex items-center gap-2 text-xs text-gray-600">
                                             <MapPin size={14} />{" "}
-                                            {event.location
-                                                ? event.location.substring(
+                                            {event.event_location
+                                                ? event.event_location.substring(
                                                       0,
                                                       25
                                                   ) + "..."

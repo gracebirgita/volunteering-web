@@ -58,7 +58,6 @@ class InstituteDashboardController extends Controller
             ->whereDate('event_start', '<=', $today)
             ->whereDate('event_finish', '>=', $today)
             ->orderBy('event_finish')
-            ->limit(5)
             ->get([
                 'event_id',
                 'event_name',
@@ -68,6 +67,7 @@ class InstituteDashboardController extends Controller
                 'event_status',
                 'event_description',
                 'event_quota',
+                'category',
             ]);
 
         // event yang akan datang
