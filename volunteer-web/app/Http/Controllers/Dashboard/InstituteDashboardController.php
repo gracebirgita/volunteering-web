@@ -43,7 +43,7 @@ class InstituteDashboardController extends Controller
         // total pending approval (semua event, lama & baru)
         $pendingApprovals = (clone $eventsQuery)
             ->join('events_regists', 'events.event_id', '=', 'events_regists.event_id')
-            ->where('events_regists.regist_status', 'pending')
+            ->where('events_regists.regist_status', 'Pending')
             ->whereDate('events.event_finish', '>', $today)
             ->count();
 

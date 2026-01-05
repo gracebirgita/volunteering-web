@@ -91,7 +91,7 @@ class InstituteEventController extends Controller
     {
         $account = auth()->user();
         // Pastikan hanya pemilik event (institute tersebut) yang bisa edit
-        if (!$account || $event->institute_id !== $account->institute->id) {
+        if (!$account || $event->institute_id !== $account->institute->institute_id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -128,6 +128,8 @@ class InstituteEventController extends Controller
             }
 
             $data['thumbnail'] = $request->file('thumbnail')->store('events', 'public');
+        }else{
+            unset($data['thumbnail']);
         }
 
         $event->update($data);
