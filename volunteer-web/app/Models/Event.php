@@ -11,6 +11,12 @@ class Event extends Model
     //
     protected $primaryKey='event_id';
 
+    protected $casts = [
+        'benefit_consumption' => 'boolean',
+        'benefit_certificate' => 'boolean',
+        'benefit_jam_volunt'  => 'boolean',
+    ];
+
     protected $fillable=[
         'institute_id',
         'event_name',

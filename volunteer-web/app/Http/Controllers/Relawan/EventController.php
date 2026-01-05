@@ -152,17 +152,27 @@ class EventController extends Controller
             $profile->user_phone !== '-' &&
             $profile->user_domicile !== '-';
 
+        
+
+
         return Inertia::render('Relawan/EventDetail', [
             'event' => [
                 'id' => $event->event_id,
                 'name' => $event->event_name,
                 'description' => $event->event_description,
+                'category' => $event->category,
                 'location' => $event->event_location,
-                'start' => $event->event_start,
-                'finish' => $event->event_finish,
+                'start_date' => $event->event_start,
+                'finish_date' => $event->event_finish,
+                'start_time'=>$event->event_start_time,
+                'finish_time'=>$event->event_finish_time,
                 'status' => $event->event_status,
                 'quota' => $event->quota,
                 'image_url' => event_image_url($event), 
+
+                'benefit_consumption' => $event->benefit_consumption, #boolean
+                'benefit_certificate' => $event->benefit_certificate, #boolean
+                'benefit_hour_volunt' => $event->benefit_jam_volunt, #boolean
 
                 'quota_remaining' => $remaining,
                 'is_full' => $remaining <= 0,

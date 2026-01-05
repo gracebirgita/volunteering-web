@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Head, router, Link, usePage } from '@inertiajs/react'
 import MyNavbar from '@/Components/Navbar'
+import { CalendarDays, Clock, ArrowLeft,MapPin, Gift, Phone, Users } from "lucide-react";
+import AddOns from "@/Components/AddOns";
+
 
 // export default FlashMessage;
 export default function EventDetail({auth,  event, institute, volunteers,
@@ -47,6 +50,7 @@ export default function EventDetail({auth,  event, institute, volunteers,
         }
     }, [flash]);
 
+
     return (
         <div className='flex flex-row relative'>
             <Head title={event.name} />
@@ -77,287 +81,398 @@ export default function EventDetail({auth,  event, institute, volunteers,
             />
 
             {/* Main */}
-            <main className='flex flex-col'>
+            <main className='flex flex-col flex-1'>
                 {/* Banner */}
-                <div className='flex flex-row flex-1 bg'>
-                    <div className='flex flex-col'>
-                        <h2 className="font-bold text-lg">{event.name}</h2>
-                        {new Date(event.start).toLocaleDateString('id-ID', {
-                            day: '2-digit',
-                            month: 'long',
-                            year: 'numeric'
-                        })}
-                        {" - "}
-                        {new Date(event.finish).toLocaleDateString('id-ID', {
-                            day: '2-digit',
-                            month: 'long',
-                            year: 'numeric'
-                        })}
+                <div className="relative w-full h-32  md:h-48  overflow-hidden mb-6">
+                    {/* Blurred background */}
+                    <img
+                        src={event.image_url}
+                        alt=""
+                        className="absolute inset-0 w-full h-full object-cover scale-110 blur-sm"
+                    />
+
+                    {/* Dark overlay */}
+                    <div className="absolute inset-0 bg-black/40" />
+
+                    {/* Content */}
+                    <div className="relative z-20 flex items-center justify-between px-12  py-8">
+                        <div className='flex flex-col gap-2'>
+                            <h2 className=" font-hand text-white font-bold text-xl md:text-5xl mb-1">
+                                {event.name}
+                            </h2>
+                            <div className="flex items-center gap-2 text-sm text-white/90">
+                                <CalendarDays size={16} />
+                                <span className='text-md'>
+                                    {new Date(event.start_date).toLocaleDateString("id-ID", {
+                                        day: "2-digit",
+                                        month: "long",
+                                        year: "numeric",
+                                    })}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-white/90">
+                                <Clock size={16} />
+                                <span className='text-md'>
+                                    {event.start_time} - {event.finish_time}
+                                </span>
+                            </div>
+
+                        </div>
                     </div>
-                    <div className='flex flex-row'>
+                    <div className="absolute top-6 right-6 z-20">
                         <Link
-                            href={route('events.index')}
-                            className="flex items-center text-[#005D67] text-lg"
+                            href={route("events.index")}
+                            className="
+                                inline-flex items-center gap-2
+                                px-3 py-1.5
+                                text-sm font-medium
+                                text-white
+                                bg-white/10
+                                backdrop-blur-sm
+                                rounded-lg
+                                hover:bg-white/20
+                                transition
+                            "
                         >
-                        Balik page events
+                        <ArrowLeft size={16} />
+                            Kembali
                         </Link>
                     </div>
                 </div>
 
-                <div className="flex gap-6">
-                    {/* LEFT */}
-                    <div className="w-3/4">
-                        <div className="flex gap-4 mb-6">
-                            <button
-                                onClick={() => setTab('description')}
-                                className={tab === 'description' ? 'font-bold' : ''}
-                            > Deskripsi </button>
-                            
-                            <button
-                                onClick={() => setTab('volunteers')}
-                                className={tab === 'volunteers' ? 'font-bold' : ''}
-                            >Relawan </button>
-                            
-                            <button
-                                onClick={() => setTab('institute')}
-                                className={tab === 'institute' ? 'font-bold' : ''}
-                            >Organisasi </button>
+                {/* Main Area */}
+                <div className="w-full px-8 py-3">
+                    <div className="max-w-7xl mx-auto grid grid-cols-12 gap-8">
+                        {/* LEFT */}
+                        <div className="col-span-8">
+                            {/*Sub-Nav Area*/}
+                            <div className="flex gap-8 border-b mb-6">
+                                {[
+                                    ['description', 'Deskripsi'],
+                                    ['agenda', 'Agenda'],
+                                    ['volunteers', 'Relawan'],
+                                    ['institute', 'Organisasi'],
+                                    ['gallery', 'Galeri'],
+                                ].map(([key, label]) => (
+                                    <button
+                                        key={key}
+                                        onClick={() => setTab(key)}
+                                        className={`pb-3 text-sm font-medium transition
+                                            ${tab === key
+                                                ? 'text-[#005D67] border-b-2 border-[#005D67]'
+                                                : 'text-gray-500 hover:text-gray-700'
+                                            }
+                                        `}
+                                    >
+                                        {label}
+                                    </button>
+                                ))}
+                            </div>
 
-                            <button
-                                onClick={() => setTab('gallery')}
-                                className={tab === 'gallery' ? 'font-bold' : ''}
-                            > Galery</button>
+                            {/* ISI PER TAB */}
+                            {tab === 'description' && (
+                                <div className="space-y-6">
+                                    <p className="text-gray-700 leading-relaxed">
+                                        {event.description}
+                                    </p>
+                                </div>
+                            )}
+
+                            {tab === 'volunteers' && (
+                                <>
+                                    {volunteers.length===0?(
+                                        <p>Belum ada relawan</p>
+                                    ):(
+                                        <ul className="space-y-2">
+                                            {volunteers.map((v, i) => (
+                                                <li key={i} className="border p-2 rounded">
+                                                    {v.name} — {v.status}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+
+
+                                </>
+                            )}
+                            {tab === 'institute' && (
+                                <>
+                                    <h3 className='text-[20px]'>{institute.name}</h3>
+                                    <hr />
+                                    <br />
+
+                                    <h2 className='text-[20px] font-bold'>Informasi </h2>
+
+                                    <br />
+                                    <p>Nama Organisasi : </p>
+                                    <p><strong>{institute.name}</strong></p>
+
+                                    <br />
+                                    <p>Email: <br /><strong>{institute.email}</strong></p>
+
+                                    <br />
+                                    <p>Nomor Telepon Organisasi: <br /><strong>{institute.phone}</strong></p>
+                                    {/* <p>Bio: {institute.bio}</p> */}
+                                </>
+                            )}
+
+                            {tab === 'gallery' && (
+                            <>
+                                <h3 className="font-bold mb-4">Galeri Kegiatan</h3>
+
+                                <div className="grid grid-cols-3 gap-4">
+                                {[1,2,3].map(i => (
+                                    <div
+                                    key={i}
+                                    className="h-40 bg-gray-200 flex items-center justify-center"
+                                    >
+                                    Foto {i}
+                                    </div>
+                                ))}
+                                </div>
+                            </>
+                            )}
+
                         </div>
 
-                        {/* ISI PER TAB */}
-                        {tab === 'description' && (
-                            <>
-                                <h2 className="text-xl font-bold">{event.name}</h2>
-                                <div className="h-64 bg-gray-200 mb-4">
-                                    [ Placeholder Image Kegiatan ]
+                        {/* RIGHT CARD */}
+                        <div className="col-span-4 border border-gray-300 p-5 rounded-lg flex flex-col gap-5">
+                            {/* HEADER */}
+                            <div>
+                                <h2 className="font-inter font-bold md:text-2xl line-clamp-2 mb-2">{event.name}</h2>
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+                                        <AddOns category={event.category}/>
+                                    </span>
+                                    <span className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
+                                        <AddOns organizer={institute.name} />
+                                    </span>
                                 </div>
-                                <p>{event.description}</p>
-                            </>
-                        )}
+                            </div>
 
-                        {tab === 'volunteers' && (
-                            <>
-                                <h3>Daftar Relawan</h3>
-                                {volunteers.length===0?(
-                                    <p>Belum ada relawan</p>
-                                ):(
-                                    <ul className="space-y-2">
-                                        {volunteers.map((v, i) => (
-                                            <li key={i} className="border p-2 rounded">
-                                                {v.name} — {v.status}
-                                            </li>
-                                        ))}
+                            {/* Card Data */}
+                            <div className='flex flex-col gap-3 p-5 border border-gray-300 rounded-lg'>
+
+                                {/* INFO KUOTA RELAWAN */}
+                                <div>
+                            
+                                    <div className="flex items-center gap-2 text-[#005D67] font-semibold mb-2">
+                                        <Users size={16} />
+                                        <span>Kuota Relawan</span>
+                                    </div>
+
+                                    <hr className="mb-1" />
+
+                                    {event.is_full ? (
+                                        <p className="text-red-600 font-semibold italic text-sm mt-2">
+                                            Penuh (Kuota Habis)
+                                        </p>
+                                    ) : (
+                                        <p className="text-gray-700 text-sm mt-2">
+                                            Tersisa{" "}
+                                            <span className="font-bold text-[#005D67]">
+                                                {event.quota_remaining}
+                                            </span>{" "}
+                                            dari {event.quota} slot
+                                        </p>
+                                    )}
+                                </div>
+
+
+                                {/* LOKASI */}
+                                <div>
+                                    <div className="flex items-center gap-2 text-[#005D67] font-semibold mb-2">
+                                        <MapPin size={16} />
+                                        <span>Lokasi</span>
+                                    </div>
+                                    <hr className="mb-1" />
+                                    <p className="text-gray-700 leading-relaxed text-sm mt-1">
+                                        {event.location}
+                                    </p>
+                                </div>
+
+                                {/* JADWAL EVENT */}
+                                <div>
+                                    <div className="flex items-center gap-2 text-[#005D67] font-semibold mb-2">
+                                        <CalendarDays size={16} />
+                                        <span>Jadwal Event</span>
+                                    </div>
+                                    <hr className="mb-1" />
+                                    <ul className="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                                        <li>
+                                            {new Date(event.start_date).toLocaleDateString("id-ID", {
+                                            day: "2-digit",
+                                            month: "long",
+                                            year: "numeric",
+                                            })}
+                                            -
+                                            {new Date(event.finish_date).toLocaleDateString("id-ID", {
+                                                day: "2-digit",
+                                                month: "long",
+                                                year: "numeric",
+                                            })}
+                                        </li>
+                                        <li>
+                                            Pukul {event.start_time} – {event.finish_time}
+                                        </li>
                                     </ul>
+                                </div>
+
+                                {/* BENEFIT RELAWAN */}
+                                <div>
+                                    <div className="flex items-center gap-2 text-[#005D67] font-semibold mb-2 tex">
+                                        <Gift size={16} />
+                                        <span>Benefit Relawan</span>
+                                    </div>
+                                    <hr className="mb-1" />
+                                    <ul className="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                                        {event.benefit_consumption && <li>Konsumsi</li>}
+                                        {event.benefit_certificate && <li>Sertifikat</li>}
+                                        {event.benefit_hour_volunt && <li>Jam Volunteer</li>}
+
+                                        {!event.benefit_consumption &&
+                                        !event.benefit_certificate &&
+                                        !event.benefit_hour_volunt && (
+                                            <li className="italic text-gray-400">
+                                                Tidak ada benefit tambahan
+                                            </li>
+                                        )}
+                                    </ul>
+                                </div>
+
+                                {/* CONTACT PERSON */}
+                                <div>
+                                    <div className="flex items-center gap-2 text-[#005D67] font-semibold mb-2">
+                                        <Phone size={16} />
+                                        <span>Contact Person</span>
+                                    </div>
+                                    <hr className="mb-1" />
+                                    <ul className="list-disc list-inside text-gray-700 space-y-1 text-sm">
+                                        <li>{institute.phone}</li>
+                                        {institute.whatsapp && (
+                                            <li>
+                                                <a
+                                                    href={institute.whatsapp}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-[#005D67] hover:underline break-all"
+                                                >
+                                                    {institute.whatsapp}
+                                                </a>
+                                            </li>
+                                        )}
+                                    </ul>
+                                </div>
+
+                               
+                            </div>
+
+
+
+                            <div className="w-full">
+                                {/* 1: BELUM DAFTAR */}
+                                {!isRegistered && event.status !== 'finished' && (
+                                    <>
+                                        {isProfileComplete ? (
+                                            // Tampilkan tombol jika profil lengkap
+                                            <button
+                                                onClick={handleJoin}
+                                                className="w-full p-2 rounded bg-[#005D67] text-white"
+                                            >
+                                                Jadi Relawan
+                                            </button>
+                                        ) : (
+                                            // Tampilkan peringatan jika profil belum lengkap
+                                            <div className="flex flex-col gap-2">
+                                                <p className="text-sm text-red-600 font-medium">
+                                                    * Anda harus melengkapi profil (No. Telp & Domisili) untuk mendaftar.
+                                                </p>
+                                                <a 
+                                                    href="/profile" // Sesuaikan dengan route profil Anda
+                                                    className="w-full p-2 rounded bg-gray-200 text-gray-700 text-center font-medium"
+                                                >
+                                                    Lengkapi Profil Sekarang
+                                                </a>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                                {/* {!isRegistered && event.status!=='finished' && (
+                                    <button
+                                        onClick={handleJoin}
+                                        className="w-full p-2 rounded bg-[#005D67] hover:bg-[#004a52] text-white font-medium transition-colors"
+                                    >
+                                        Jadi Relawan
+                                    </button>
+                                )} */}
+                                {/* Opsional: Tampilkan status jika event sudah selesai */}
+                                {!isRegistered && event.status === 'finished' && (
+                                    <button
+                                        disabled
+                                        className="w-full p-2 rounded bg-gray-300 text-gray-600 cursor-not-allowed font-medium"
+                                    >
+                                        Pendaftaran ditutup
+                                    </button>
                                 )}
 
 
-                            </>
-                        )}
-
-                        {tab === 'institute' && (
-                            <>
-                                <h3 className='text-[20px]'>{institute.name}</h3>
-                                <hr />
-                                <br />
-
-                                <h2 className='text-[20px] font-bold'>Informasi </h2>
-
-                                <br />
-                                <p>Nama Organisasi : </p>
-                                <p><strong>{institute.name}</strong></p>
-
-                                <br />
-                                <p>Email: <br /><strong>{institute.email}</strong></p>
-
-                                <br />
-                                <p>Nomor Telepon Organisasi: <br /><strong>{institute.phone}</strong></p>
-                                {/* <p>Bio: {institute.bio}</p> */}
-                            </>
-                        )}
-
-                        {tab === 'gallery' && (
-                        <>
-                            <h3 className="font-bold mb-4">Galeri Kegiatan</h3>
-
-                            <div className="grid grid-cols-3 gap-4">
-                            {[1,2,3].map(i => (
-                                <div
-                                key={i}
-                                className="h-40 bg-gray-200 flex items-center justify-center"
-                                >
-                                Foto {i}
-                                </div>
-                            ))}
-                            </div>
-                        </>
-                        )}
-
-                    </div>
-
-                    {/* RIGHT CARD */}
-                    <div className="w-1/4 border p-4 rounded">
-                        <h2 className="font-bold">{event.name}</h2>
-                        {/* kategori institute + nama institute penyelenggara*/}
-                        {/* Institute category */}
-                        <span className="px-2 py-1 bg-red-100 rounded">
-                            <strong>({institute.category})</strong>
-                        </span>
-                        {/* institute name penyelenggara */}
-                        <span className="px-2 py-1 bg-green-100 rounded">
-                            {institute.name}
-                        </span>
-
-                        {/* INFO KUOTA RELAWAN */}
-                        <div className="my-3 p-2 border-y border-gray-100">
-                            <h3 className="font-bold text-sm">Kuota Relawan</h3>
-                            {event.is_full ? (
-                                <p className="text-red-600 font-bold text-sm italic">Penuh (Kuota Habis)</p>
-                            ) : (
-                                <p className="text-gray-700 text-sm">
-                                    Tersisa <span className="font-bold text-[#005D67]">{event.quota_remaining}</span> dari {event.quota} slot
-                                </p>
-                            )}
-                        </div>
-                        <br />
-
-
-                        {/* LOKASI */}
-                        <h3 className="font-bold">Lokasi</h3>
-                        <p>{event.location}</p>
-
-                        <br />
-                        {/* JADWAL EVENT */}
-                        <h3 className="font-bold">Jadwal Event</h3>
-                        {/* <p>{event.start} - {event.finish}</p> */}
-                        {new Date(event.start).toLocaleDateString('id-ID', {
-                            day: '2-digit',
-                            month: 'long',
-                            year: 'numeric'
-                        })}
-                        {" - "}
-                        {new Date(event.finish).toLocaleDateString('id-ID', {
-                            day: '2-digit',
-                            month: 'long',
-                            year: 'numeric'
-                        })}                    
-
-                        <br />
-                        {/* CONTACT PERSON */}
-                        <h3 className="font-bold">Contact Person</h3>
-                        <ul>
-                            <li>{institute.pic}</li>
-                            <li>{institute.phone}</li>
-                        </ul>
-
-
-                        <div className="w-full">
-                            {/* 1: BELUM DAFTAR */}
-                            {!isRegistered && event.status !== 'finished' && (
-                                <>
-                                    {isProfileComplete ? (
-                                        // Tampilkan tombol jika profil lengkap
+                                {/*2: PENDING (BISA BATAL) */}
+                                {isRegistered && !isAccepted && !isRejected && (
+                                    <div className="flex flex-col gap-2">
                                         <button
-                                            onClick={handleJoin}
-                                            className="w-full p-2 rounded bg-[#005D67] text-white"
+                                            disabled
+                                            className="w-full p-2 rounded bg-gray-400 text-white cursor-not-allowed font-medium"
                                         >
-                                            Jadi Relawan
+                                            Pending
                                         </button>
-                                    ) : (
-                                        // Tampilkan peringatan jika profil belum lengkap
-                                        <div className="flex flex-col gap-2">
-                                            <p className="text-sm text-red-600 font-medium">
-                                                * Anda harus melengkapi profil (No. Telp & Domisili) untuk mendaftar.
-                                            </p>
-                                            <a 
-                                                href="/profile" // Sesuaikan dengan route profil Anda
-                                                className="w-full p-2 rounded bg-gray-200 text-gray-700 text-center font-medium"
-                                            >
-                                                Lengkapi Profil Sekarang
-                                            </a>
-                                        </div>
-                                    )}
-                                </>
-                            )}
-                            {/* {!isRegistered && event.status!=='finished' && (
-                                <button
-                                    onClick={handleJoin}
-                                    className="w-full p-2 rounded bg-[#005D67] hover:bg-[#004a52] text-white font-medium transition-colors"
-                                >
-                                    Jadi Relawan
-                                </button>
-                            )} */}
-                            {/* Opsional: Tampilkan status jika event sudah selesai */}
-                            {!isRegistered && event.status === 'finished' && (
-                                <button
-                                    disabled
-                                    className="w-full p-2 rounded bg-gray-300 text-gray-600 cursor-not-allowed font-medium"
-                                >
-                                    Pendaftaran ditutup
-                                </button>
-                            )}
+                                        <button
+                                            onClick={handleCancel}
+                                            className="w-full p-2 text-red-600 hover:text-red-800 text-sm font-semibold underline transition-colors"
+                                        >
+                                            Batalkan Pendaftaran
+                                        </button>
+                                    </div>
+                                )}
 
-
-                            {/*2: PENDING (BISA BATAL) */}
-                            {isRegistered && !isAccepted && !isRejected && (
-                                <div className="flex flex-col gap-2">
+                                {/* 3: ACC*/}
+                                {isAccepted && (
                                     <button
                                         disabled
-                                        className="w-full p-2 rounded bg-gray-400 text-white cursor-not-allowed font-medium"
+                                        className="w-full p-2 rounded bg-green-600 text-white cursor-not-allowed font-medium"
                                     >
-                                        Pending
+                                        Accepted
                                     </button>
+                                )}
+
+                                {/* 4. REJECT */}
+                                {isRejected && (
                                     <button
-                                        onClick={handleCancel}
-                                        className="w-full p-2 text-red-600 hover:text-red-800 text-sm font-semibold underline transition-colors"
+                                        disabled
+                                        className="w-full p-2 rounded bg-red-600 text-white cursor-not-allowed font-medium"
                                     >
-                                        Batalkan Pendaftaran
+                                        Rejected
                                     </button>
-                                </div>
-                            )}
+                                )}
+                            </div>
 
-                            {/* 3: ACC*/}
-                            {isAccepted && (
-                                <button
-                                    disabled
-                                    className="w-full p-2 rounded bg-green-600 text-white cursor-not-allowed font-medium"
-                                >
-                                    Accepted
-                                </button>
-                            )}
-
-                            {/* 4. REJECT */}
-                            {isRejected && (
-                                <button
-                                    disabled
-                                    className="w-full p-2 rounded bg-red-600 text-white cursor-not-allowed font-medium"
-                                >
-                                    Rejected
-                                </button>
-                            )}
+                            {/* <button
+                                disabled={isRegistered}
+                                onClick={handleJoin}
+                                className={`w-full p-2 rounded text-white font-medium transition-colors
+                                    ${!isRegistered ? 'bg-[#005D67] hover:bg-[#004a52]' : ''}
+                                    ${isRegistered && !isAccepted && !isRejected ? 'bg-gray-400 cursor-not-allowed' : ''}
+                                    ${isAccepted ? 'bg-green-600 cursor-not-allowed' : ''}
+                                    ${isRejected ? 'bg-red-600 cursor-not-allowed' : ''}
+                                `}
+                            >
+                                {getButtonLabel()}
+                            </button> */}
                         </div>
 
-                        {/* <button
-                            disabled={isRegistered}
-                            onClick={handleJoin}
-                            className={`w-full p-2 rounded text-white font-medium transition-colors
-                                ${!isRegistered ? 'bg-[#005D67] hover:bg-[#004a52]' : ''}
-                                ${isRegistered && !isAccepted && !isRejected ? 'bg-gray-400 cursor-not-allowed' : ''}
-                                ${isAccepted ? 'bg-green-600 cursor-not-allowed' : ''}
-                                ${isRejected ? 'bg-red-600 cursor-not-allowed' : ''}
-                            `}
-                        >
-                            {getButtonLabel()}
-                        </button> */}
-                    </div>
 
+                    </div>
                 </div>
             </main>
-            
         </div>
     )
 }
