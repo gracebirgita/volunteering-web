@@ -5,25 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class EventsRegist extends Model
-{
-    protected $table = 'events_regists';
-    protected $primaryKey = 'regist_id';
-
-    protected $fillable = [
-        'user_id',
-        'event_id',
-        'regist_date',
-        'regist_status'
-    ];
-
-    public function event()
-    {
-        return $this->belongsTo(Event::class, 'event_id', 'event_id');
-    }
-}
-
-
 class EventRegist extends Model
 {
     //
@@ -33,6 +14,7 @@ class EventRegist extends Model
     protected $fillable=[
         'event_id',
         'user_id',
+        'regist_date',
         'regist_status',
     ];
 

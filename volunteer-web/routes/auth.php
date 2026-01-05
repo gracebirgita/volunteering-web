@@ -22,6 +22,8 @@ use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\VolunteerSettingsController;
 use App\Http\Controllers\InstituteProfileController;
 use App\Http\Controllers\InstituteSettingsController;
+use App\Http\Controllers\InstituteEventController;
+use App\Http\Controllers\InstituteAppVolunteerController;
 // relawan
 use App\Http\Controllers\Relawan\EventController;
 use App\Http\Controllers\Relawan\EventRegistController;
@@ -146,18 +148,24 @@ Route::middleware(['auth'])->group(function(){
                         ->name('dashboard.institute');
                 // 2. create event
                 Route::get('/institute/create-event', function () {
-                        return Inertia::render('Institute/CreateEvent');
+                return Inertia::render('Institute/CreateEvent');
                 })->name('institute.create');
 
+                Route::post('/institute/events', [InstituteEventController::class, 'store'])
+                ->name('institute.events.store');
+
                 // 3. atur event 
-                Route::get('/institute/organize-event', function () {
-                        return Inertia::render('Institute/OrganizeEvent');
-                })->name('institute.organize');
+                Route::get('/institute/organize-event', [InstituteEventController::class, 'index'])
+                ->name('institute.organize');
+
+                Route::put('/institute/events/{event}', [InstituteEventController::class, 'update'])
+                ->name('institute.events.update');
 
                 // 4. app volunteer 
-                Route::get('/institute/app-volunteer', function () {
-                        return Inertia::render('Institute/AppVolunteer');
-                })->name('institute.appvol');
+                Route::get('/institute/app-volunteer', [InstituteAppVolunteerController::class, 'index'])->name('institute.appvol');
+
+                // Update status pendaftar (Accepted/Rejected/Pending) + Update Kuota
+                Route::patch('/institute/applications/{regist_id}/status', [InstituteAppVolunteerController::class, 'updateStatus'])->name('institute.applications.update');
 
                 // 5. atur absensi 
                 Route::get('/institute/attendance', function () {

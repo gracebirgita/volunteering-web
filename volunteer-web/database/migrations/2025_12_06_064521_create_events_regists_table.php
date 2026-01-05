@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users_profiles', 'user_id')->cascadeOnDelete(); //FK
             $table->foreignId('event_id')->constrained('events', 'event_id')->cascadeOnDelete(); //FK
             $table->date('regist_date');
-            $table->string('regist_status', 20);
+            $table->string('regist_status', 20)->default('Pending');
             $table->timestamps();
 
             // 1 user bs daftar 1x saja
