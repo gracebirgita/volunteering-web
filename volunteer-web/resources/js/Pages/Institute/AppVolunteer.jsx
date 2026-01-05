@@ -21,12 +21,10 @@ import {
 
 export default function AppVolunteer({ auth, events = [] }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-
     const [selectedEventId, setSelectedEventId] = useState(null);
 
     // state filtering event list
     const [searchQuery, setSearchQuery] = useState("");
-    const [filterStatus, setFilterStatus] = useState("");
     const [filterCategory, setFilterCategory] = useState("");
 
     const selectedEvent = events.find((e) => e.event_id === selectedEventId);
@@ -44,16 +42,15 @@ export default function AppVolunteer({ auth, events = [] }) {
     }, [selectedEvent]);
 
     const filteredEvents = events.filter((event) => {
-        const eventStatus = event.event_quota > 0 ? "Active" : "Closed";
-
         const matchSearch = (event.event_name || "")
             .toLowerCase()
             .includes(searchQuery.toLowerCase());
-        const matchStatus = filterStatus ? eventStatus === filterStatus : true;
+
         const matchCategory = filterCategory
             ? event.category === filterCategory
             : true;
-        return matchSearch && matchStatus && matchCategory;
+
+        return matchSearch && matchCategory;
     });
 
     // update status
@@ -110,8 +107,6 @@ export default function AppVolunteer({ auth, events = [] }) {
                             }
                             searchQuery={searchQuery}
                             setSearchQuery={setSearchQuery}
-                            filterStatus={filterStatus}
-                            setFilterStatus={setFilterStatus}
                             filterCategory={filterCategory}
                             setFilterCategory={setFilterCategory}
                         />
@@ -127,8 +122,6 @@ const EventListView = ({
     onSelectEvent,
     searchQuery,
     setSearchQuery,
-    filterStatus,
-    setFilterStatus,
     filterCategory,
     setFilterCategory,
 }) => {
@@ -136,7 +129,7 @@ const EventListView = ({
         switch (cat) {
             case "Lingkungan":
                 return <Sprout size={12} />;
-            case "Social":
+            case "Sosial":
                 return <UserRound size={12} />;
             case "Pendidikan":
                 return <GraduationCap size={12} />;
@@ -151,7 +144,7 @@ const EventListView = ({
         switch (cat) {
             case "Lingkungan":
                 return "bg-[#E7F8F1] text-[#00772A]";
-            case "Social":
+            case "Sosial":
                 return "bg-[#FEEDE5] text-[#FF7A00]";
             case "Pendidikan":
                 return "bg-[#E7F0FF] text-[#07ACE6]";
@@ -193,28 +186,13 @@ const EventListView = ({
                     <div className="relative w-full md:w-40">
                         <select
                             className="w-full appearance-none px-4 py-3 rounded-lg border border-gray-200 text-sm text-gray-600 focus:ring-1 focus:ring-[#005D67] bg-white cursor-pointer"
-                            value={filterStatus}
-                            onChange={(e) => setFilterStatus(e.target.value)}
-                        >
-                            <option value="">Status Event</option>
-                            <option value="Active">Active</option>
-                            <option value="Closed">Closed</option>
-                        </select>
-                        <ChevronDown
-                            className="absolute right-3 top-3.5 text-gray-400 pointer-events-none"
-                            size={16}
-                        />
-                    </div>
-                    <div className="relative w-full md:w-40">
-                        <select
-                            className="w-full appearance-none px-4 py-3 rounded-lg border border-gray-200 text-sm text-gray-600 focus:ring-1 focus:ring-[#005D67] bg-white cursor-pointer"
                             value={filterCategory}
                             onChange={(e) => setFilterCategory(e.target.value)}
                         >
                             <option value="">Kategori Event</option>
                             <option value="Lingkungan">Lingkungan</option>
                             <option value="Pendidikan">Pendidikan</option>
-                            <option value="Social">Social</option>
+                            <option value="Sosial">Sosial</option>
                             <option value="Kesehatan">Kesehatan</option>
                         </select>
                         <ChevronDown
@@ -313,7 +291,6 @@ const EventListView = ({
     );
 };
 
-// detail volunteer
 const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
     // filter state
     const [detailSearch, setDetailSearch] = useState("");
