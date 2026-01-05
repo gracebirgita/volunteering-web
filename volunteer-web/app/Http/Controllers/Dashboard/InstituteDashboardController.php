@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Dashboard;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Carbon;
 
@@ -29,34 +28,43 @@ class InstituteDashboardController extends Controller
         $today = Carbon::today();
         $eventsQuery = $institute->events();
 
-        
-
-        // total event pernah dibuat 
+        // total event yang dibuat
         $totalEvents = (clone $eventsQuery)->count();
 
-        // total pendaftar unik ke semua event
+        // jumlah pendaftar unik
         $totalVolunteers = (clone $eventsQuery)
             ->join('events_regists', 'events.event_id', '=', 'events_regists.event_id')
             ->distinct('events_regists.user_id')
             ->count('events_regists.user_id');
 
-        // total pending approval (semua event, lama & baru)
+        // pendaftar status pending
         $pendingApprovals = (clone $eventsQuery)
             ->join('events_regists', 'events.event_id', '=', 'events_regists.event_id')
             ->where('events_regists.regist_status', 'Pending')
             ->whereDate('events.event_finish', '>', $today)
             ->count();
 
-        // event yang sedang berlangsung
+        // jumlah event aktif hari ini
         $ongoingEvents = (clone $eventsQuery)
             ->whereDate('event_start', '<=', $today)
             ->whereDate('event_finish', '>=', $today)
             ->count();
 
-        // event aktif 
+        // list event berlangsung & jumlah pendaftar per status
         $ongoingList = (clone $eventsQuery)
             ->whereDate('event_start', '<=', $today)
             ->whereDate('event_finish', '>=', $today)
+            ->withCount([
+                'registrations as total_pending' => function ($query) {
+                    $query->where('regist_status', 'Pending');
+                },
+                'registrations as total_accepted' => function ($query) {
+                    $query->where('regist_status', 'Accepted');
+                },
+                'registrations as total_rejected' => function ($query) {
+                    $query->where('regist_status', 'Rejected');
+                }
+            ])
             ->orderBy('event_finish')
             ->get([
                 'event_id',
@@ -70,11 +78,21 @@ class InstituteDashboardController extends Controller
                 'category',
             ]);
 
-        // event yang akan datang
+        // list event mendatang & jumlah pendaftar per status
         $upcomingList = (clone $eventsQuery)
             ->whereDate('event_start', '>', $today)
+            ->withCount([
+                'registrations as total_pending' => function ($query) {
+                    $query->where('regist_status', 'Pending');
+                },
+                'registrations as total_accepted' => function ($query) {
+                    $query->where('regist_status', 'Accepted');
+                },
+                'registrations as total_rejected' => function ($query) {
+                    $query->where('regist_status', 'Rejected');
+                }
+            ])
             ->orderBy('event_start')
-            ->limit(5)
             ->get([
                 'event_id',
                 'event_name',
@@ -84,6 +102,7 @@ class InstituteDashboardController extends Controller
                 'event_status',
                 'event_description',
                 'event_quota',
+                'category',
             ]);
 
         return inertia('Dashboard/Institute', [

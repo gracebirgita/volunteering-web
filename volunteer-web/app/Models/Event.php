@@ -35,7 +35,7 @@ class Event extends Model
         'benefit_jam_volunt',
         'other_benefit',
 
-        'divisions',
+        //'divisions',
         'contact_person',
         'group_link',
         'event_status',
@@ -43,7 +43,7 @@ class Event extends Model
     ];
 
     protected $casts = [
-        'divisions' => 'array',
+        //'divisions' => 'array',
         'benefit_consumption' => 'boolean',
         'benefit_certificate' => 'boolean',
         'benefit_other' => 'boolean',
@@ -63,8 +63,4 @@ class Event extends Model
         return $this->belongsTo(EventCategory::class, 'category_id', 'category_id');
     }
 
-    public function eventRegists()
-    {
-        return $this->hasMany(EventRegist::class, 'event_id', 'event_id');
-    }
 }
