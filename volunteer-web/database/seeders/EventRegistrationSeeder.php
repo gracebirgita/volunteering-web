@@ -15,7 +15,7 @@ class EventRegistrationSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
-        $users  = DB::table('users_profiles')->pluck('user_id');
+        $users  = DB::table('users_profiles')->pluck('profile_id');
         $events = DB::table('events')->pluck('event_id');
 
 
@@ -26,8 +26,8 @@ class EventRegistrationSeeder extends Seeder
             foreach ($eventSample as $eventId) {
 
                 // prevent duplicate (important even for seeder)
-                $exists = DB::table('event_registrations')
-                    ->where('user_id', $userId)
+                $exists = DB::table('events_registrations')
+                    ->where('profile_id', $userId)
                     ->where('event_id', $eventId)
                     ->exists();
 
@@ -35,8 +35,8 @@ class EventRegistrationSeeder extends Seeder
                     continue;
                 }
 
-                DB::table('event_registrations')->insert([
-                    'user_id'    => $userId,
+                DB::table('events_registrations')->insert([
+                    'profile_id'    => $userId,
                     'event_id'   => $eventId,
                     'regist_status'     => $faker->randomElement([
                         'Pending',

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class EventRegistration extends Model
 {
-    protected $table = 'event_registrations';
+    protected $table = 'events_registrations';
     protected $primaryKey = 'registration_id';
 
     protected $fillable = [

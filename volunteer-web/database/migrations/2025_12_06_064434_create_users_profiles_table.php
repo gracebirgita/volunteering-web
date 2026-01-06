@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users_profiles', function (Blueprint $table) {
-            $table->id('user_id');
+            $table->id('profile_id');
             $table->foreignId('account_id')
                   ->constrained('accounts', 'account_id')
                   ->cascadeOnDelete(); //FK

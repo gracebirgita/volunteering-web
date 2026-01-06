@@ -11,20 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
-        Schema::create('event_agendas', function (Blueprint $table) {
-            $table->id();
+        Schema::create('events_divisions', function (Blueprint $table) {
+            $table->id('division_id');
             $table->foreignId('event_id')
                 ->constrained('events', 'event_id')
                 ->cascadeOnDelete();
 
-            $table->time('start_time');
-            $table->time('end_time');
-
-            $table->string('title');
-            $table->text('description')->nullable();
-
-            $table->unsignedInteger('order')->default(0);
+            $table->string('name');
+            $table->unsignedInteger('quota')->default(0);
 
             $table->timestamps();
         });
@@ -35,7 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
-        Schema::dropIfExists('event_agendas');
+        Schema::dropIfExists('event_divisions');
     }
 };

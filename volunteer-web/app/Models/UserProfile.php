@@ -13,7 +13,7 @@ class UserProfile extends Model
     //
     use HasFactory;
     protected $table = 'users_profiles';
-    protected $primaryKey= 'user_id';
+    protected $primaryKey = 'profile_id';
 
     protected $fillable = [
         'account_id',
@@ -35,6 +35,6 @@ class UserProfile extends Model
 
     // 1 user -> byk eventregist
     public function registrations(){
-        return $this->hasMany(EventRegistration::class, 'user_id', 'user_id');
+        return $this->hasMany(EventRegistration::class, 'profile_id', 'profile_id');
     }
 }

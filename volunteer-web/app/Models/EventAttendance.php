@@ -10,7 +10,7 @@ class EventAttendance extends Model
 {
     use HasFactory;
 
-    protected $table = 'event_attendances';
+    protected $table = 'events_attendances';
     protected $primaryKey = 'attendance_id';
 
     protected $fillable = [

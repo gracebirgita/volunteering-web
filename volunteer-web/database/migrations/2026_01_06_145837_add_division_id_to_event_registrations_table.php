@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('event_registrations', function (Blueprint $table) {
+        Schema::table('events_registrations', function (Blueprint $table) {
             //
-            $table->foreignId('division_id')->nullable()->after('event_id')->constrained('event_divisions', 'division_id')->nullOnDelete();
+            $table->foreignId('division_id')->nullable()->after('event_id')->constrained('events_divisions', 'division_id')->nullOnDelete();
         });
     }
 

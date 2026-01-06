@@ -10,6 +10,7 @@ import {
     MoveRight,
     MoveLeft,
 } from 'lucide-react';
+import Profile from "../Institute/Profile";
 
 const STAT_ICONS = {
     events: CalendarCheck,
@@ -20,11 +21,10 @@ const STAT_ICONS = {
 
 
 
-export default function Dashboard({ auth, events = [], stats = null }) {
+export default function Dashboard({ auth, events = [], stats = null, profileUser }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const user = auth.user  
-    const  userProfile = auth.profile
 
     const EVENTS_PER_PAGE = 3;
     const [eventIndex, setEventIndex] = useState(0);
@@ -50,7 +50,7 @@ export default function Dashboard({ auth, events = [], stats = null }) {
             />
 
             <div className="flex-1 flex flex-col">
-                <Topbar user={userProfile} onMenuClick={() => setSidebarOpen(true)} />
+                <Topbar user={profileUser} onMenuClick={() => setSidebarOpen(true)} />
 
                 <main className="flex-1 px-4 md:px-8 py-6 mx-auto w-full lg:max-w-7xl lg:mx-auto">
 
@@ -64,7 +64,7 @@ export default function Dashboard({ auth, events = [], stats = null }) {
                                     Selamat Datang <br/>
                                     Kembali
                                     <span className="text-orange-400 font-bold ml-3">
-                                        {user?.user_name?.trim()?.split(" ")?.[0] ?? "Relawan"}
+                                        {profileUser?.user_name?.trim()?.split(" ")?.[0] ?? "Relawan"}
                                     </span>
                                 </h1>
                                 <p className="mt-4 md:text-xl font-thin sm:text-xs hp-land:text-base">

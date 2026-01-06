@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         //
-        Schema::create('event_attendances', function (Blueprint $table) {
+        Schema::create('events_attendances', function (Blueprint $table) {
             $table->id('attendance_id');
-            $table->foreignId('registration_id')->constrained('event_registrations', 'registration_id')->cascadeOnDelete();
+            $table->foreignId('registration_id')->constrained('events_registrations', 'registration_id')->cascadeOnDelete();
             $table->date('attendance_date');
             $table->time('check_in')->nullable();
             $table->time('check_out')->nullable();

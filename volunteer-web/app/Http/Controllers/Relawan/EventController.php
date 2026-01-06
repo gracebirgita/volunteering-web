@@ -91,9 +91,17 @@ class EventController extends Controller
             ->groupBy('category')
             ->pluck('total', 'category');
 
+        $user = auth()->user();
+        $profile = $user?->profile;
+
 
         return Inertia::render('Relawan/ExploreEvent', [
             'events' => $events,
+
+            'profileUser' => $profile ? [
+                'user_name'  => $profile->user_name,
+                'avatar_url' => profile_image_url($profile),
+            ] : null,
 
             // FILTER OPTIONS
             'categories' => Event::select('category')
@@ -140,16 +148,16 @@ class EventController extends Controller
         ]);
 
         $accepted = $event->registrations
-            ->where('status', 'Accepted')
+            ->where('regist_status', 'Accepted')
             ->count();
 
         $remaining = max(0, $event->quota - $accepted);
 
         $user = auth()->user();
-        $profile = $user?->users_profiles;
+        $profile = $user?->profile;
 
         $userRegistration = $event->registrations()
-            ->where('user_id', $profile?->user_id)
+            ->where('profile_id', $profile?->profile_id)
             ->first();
 
         $isProfileComplete = $profile &&
@@ -200,13 +208,14 @@ class EventController extends Controller
             ],
 
             'volunteers' => $event->registrations->map(fn ($r) => [
-                'name'     => $r->userProfile->user_name ?? '-',
+                'name' => $r->userProfile?->user_name ?? '-',
                 'avatar' => $r->userProfile
                             ? profile_image_url($r->userProfile)
                             : asset('images/avatar-placeholder.png'),
                 'division' => $r->division->name ?? '-',
                 'status'   => $r->regist_status,
             ])->values(),
+            
 
             'isRegistered' => (bool) $userRegistration,
             'isProfileComplete' => $isProfileComplete,

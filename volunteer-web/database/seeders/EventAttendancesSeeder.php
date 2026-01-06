@@ -14,7 +14,7 @@ class EventAttendancesSeeder extends Seeder
         $faker = Faker::create('id_ID');
 
         // Ambil hanya registration yang APPROVED
-        $registrations = DB::table('event_registrations')
+        $registrations = DB::table('events_registrations')
             ->where('regist_status', 'Accepted')
             ->get(['registration_id', 'event_id']);
 
@@ -28,7 +28,7 @@ class EventAttendancesSeeder extends Seeder
                 $attendanceDate = Carbon::now()->subDays(rand(0, 7))->toDateString();
 
                 // Prevent duplicate attendance per date
-                $exists = DB::table('event_attendances')
+                $exists = DB::table('events_attendances')
                     ->where('registration_id', $registration->registration_id)
                     ->where('attendance_date', $attendanceDate)
                     ->exists();
@@ -41,7 +41,7 @@ class EventAttendancesSeeder extends Seeder
                     ->addMinutes(rand(0, 30));
                 $checkOut = (clone $checkIn)->addHours(rand(4, 8));
 
-                DB::table('event_attendances')->insert([
+                DB::table('events_attendances')->insert([
                     'registration_id' => $registration->registration_id,
                     'attendance_date' => $attendanceDate,
                     'check_in'        => $checkIn->format('H:i:s'),

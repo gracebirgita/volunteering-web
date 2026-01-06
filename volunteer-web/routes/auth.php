@@ -226,12 +226,36 @@ Route::middleware(['auth'])->group(function(){
 // });
 
 
+use App\Models\Account;
 use Illuminate\Support\Facades\Auth;
 
 
 if (app()->environment('local')) {
+
     Route::get('/_dev/login-user', function () {
-        Auth::loginUsingId(2);
+        $account = Account::where('account_id', 2)
+            ->where('role', 'user')
+            ->firstOrFail();
+
+        Auth::login($account);
+
+        // pastikan volunteer(profile) ada
+        if (!$account->profile) {
+            $account->profile()->create([
+                'user_name' => 'Dev Volunteer',
+            ]);
+        }
+
         return redirect()->route('dashboard.user');
+    });
+
+    Route::get('/_dev/login-institute', function () {
+        $account = Account::where('account_id', 14)
+            ->where('role', 'institute')
+            ->firstOrFail();
+
+        Auth::login($account);
+
+        return redirect()->route('dashboard.institute');
     });
 }

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('event_registrations', function (Blueprint $table) {
+        Schema::create('events_registrations', function (Blueprint $table) {
             $table->id('registration_id');
 
             $table->foreignId('event_id')
@@ -19,8 +19,8 @@ return new class extends Migration
                 ->cascadeOnDelete();
                 
 
-            $table->foreignId('user_id')
-                ->constrained('users_profiles', 'user_id')
+            $table->foreignId('profile_id')
+                ->constrained('users_profiles', 'profile_id')
                 ->cascadeOnDelete();
 
             $table->enum('regist_status', [
@@ -36,7 +36,7 @@ return new class extends Migration
             $table->text('note')->nullable(); // catatan dari institute
 
             // 1 relawan hanya bisa daftar 1x ke 1 event
-            $table->unique(['event_id', 'user_id']);
+            $table->unique(['event_id', 'profile_id']);
 
             $table->timestamps();
         });

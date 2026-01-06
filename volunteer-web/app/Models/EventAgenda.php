@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventAgenda extends Model
 {
+
+    protected $table = 'events_agendas';
+
     //
     protected $fillable = [
         'event_id',

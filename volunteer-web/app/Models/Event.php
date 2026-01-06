@@ -39,12 +39,6 @@ class Event extends Model
         // 'thumbnail', //image 
     ];
 
-    protected $casts = [
-        //'divisions' => 'array',
-        'benefit_consumption' => 'boolean',
-        'benefit_certificate' => 'boolean',
-        'benefit_other' => 'boolean',
-    ];
 
     // RELATIONS
     public function institute(){

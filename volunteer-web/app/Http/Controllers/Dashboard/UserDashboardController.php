@@ -14,8 +14,8 @@ class UserDashboardController extends Controller
         // 1. Ambil account
         $account = auth()->user();
 
-        // 2. Ambil user profile dari relasi
-        $userProfile = $account->users_profiles;
+        // 2. Ambil profile (VOLUNTEER)
+        $userProfile = $account->profile;
 
         if (!$userProfile) {
             abort(403, 'User profile not found');
@@ -30,32 +30,32 @@ class UserDashboardController extends Controller
             ->get()
             ->map(function ($event) use ($userProfile) {
                 return [
-                    'event_id'       => $event->event_id,
-                    'event_name'     => $event->event_name,
-                    'event_start'    => $event->event_start,
+                    'event_id'        => $event->event_id,
+                    'event_name'      => $event->event_name,
+                    'event_start'     => $event->event_start,
                     'event_organizer' => $event->institute?->institute_name,
-                    'event_status' => $event->event_status,
+                    'event_status'    => $event->event_status,
                     'event_description' => $event->event_description,
-                    'event_location' => $event->event_location,
-                    'category'      => $event->category,
-                    'thumbnail'      => $event->thumbnail,
-                    'quota'          => $event->quota,
-                    'registered'     => $event->registrations()
-                        ->where('user_id', $userProfile->user_id)
+                    'event_location'  => $event->event_location,
+                    'category'        => $event->category,
+                    'thumbnail'       => $event->thumbnail,
+                    'quota'           => $event->quota,
+                    'registered'      => $event->registrations()
+                        ->where('profile_id', $userProfile->profile_id)
                         ->exists(),
-                    'image_url' => event_image_url($event),
+                    'image_url'       => event_image_url($event),
                 ];
             });
 
         // 4. Statistik
         $stats = [
-            'total_events' => EventRegistration::where('user_id', $userProfile->user_id)
+            'total_events' => EventRegistration::where('profile_id', $userProfile->profile_id)
                 ->where('regist_status', 'Accepted')
                 ->count(),
 
             'total_hours' => EventAttendance::whereHas('registration', function ($q) use ($userProfile) {
-                    $q->where('user_id', $userProfile->user_id)
-                    ->where('regist_status', 'Accepted');
+                    $q->where('profile_id', $userProfile->profile_id)
+                      ->where('regist_status', 'Accepted');
                 })
                 ->selectRaw("
                     SUM(
@@ -69,7 +69,7 @@ class UserDashboardController extends Controller
                 ")
                 ->value('total') ?? 0,
 
-            'total_certificates' => EventRegistration::where('user_id', $userProfile->user_id)
+            'total_certificates' => EventRegistration::where('profile_id', $userProfile->profile_id)
                 ->where('regist_status', 'Accepted')
                 ->whereHas('event', function ($q) {
                     $q->where('benefit_certificate', true);
@@ -77,13 +77,11 @@ class UserDashboardController extends Controller
                 ->count(),
         ];
 
-
-       
         return inertia('Dashboard/User', [
             'events' => $events,
             'stats'  => $stats,
             'profileUser' => [
-                'user_name' => $userProfile->user_name,
+                'user_name'  => $userProfile->user_name,
                 'avatar_url' => profile_image_url($userProfile),
             ],
         ]);
