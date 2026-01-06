@@ -3,6 +3,8 @@ import { Head, router, Link, usePage } from '@inertiajs/react'
 import MyNavbar from '@/Components/Navbar'
 import { CalendarDays, Clock, ArrowLeft,MapPin, Gift, Phone, Users } from "lucide-react";
 import AddOns from "@/Components/AddOns";
+import AgendaTimeline from "@/Components/AgendaTimeline";
+
 
 
 // export default FlashMessage;
@@ -12,6 +14,9 @@ export default function EventDetail({auth,  event, institute, volunteers,
     isRejected,
     isProfileComplete
  }) {
+
+    console.log(event.agendas);
+
 
     const user = auth.user 
     const userPorfile = auth.profile
@@ -113,7 +118,7 @@ export default function EventDetail({auth,  event, institute, volunteers,
                             <div className="flex items-center gap-2 text-sm text-white/90">
                                 <Clock size={16} />
                                 <span className='text-md'>
-                                    {event.start_time} - {event.finish_time}
+                                    {event.start_time} - {event.end_time}
                                 </span>
                             </div>
 
@@ -178,6 +183,18 @@ export default function EventDetail({auth,  event, institute, volunteers,
                                 </div>
                             )}
 
+                            {tab === 'agenda' && (
+                                <div className="space-y-6">
+                                    {event.agendas.length === 0 ? (
+                                        <p className="text-sm text-gray-500 italic">
+                                            Agenda belum tersedia.
+                                        </p>
+                                    ) : (
+                                        <AgendaTimeline agendas={event.agendas} event={event} />
+                                    )}
+                                </div>
+                            )}
+
                             {tab === 'volunteers' && (
                                 <>
                                     {volunteers.length===0?(
@@ -186,7 +203,7 @@ export default function EventDetail({auth,  event, institute, volunteers,
                                         <ul className="space-y-2">
                                             {volunteers.map((v, i) => (
                                                 <li key={i} className="border p-2 rounded">
-                                                    {v.name} — {v.status}
+                                                    {v.name} {v.division} — {v.status}
                                                 </li>
                                             ))}
                                         </ul>
@@ -241,10 +258,10 @@ export default function EventDetail({auth,  event, institute, volunteers,
                             <div>
                                 <h2 className="font-inter font-bold md:text-2xl line-clamp-2 mb-2">{event.name}</h2>
                                 <div className="flex flex-wrap gap-2">
-                                    <span className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+                                    <span>
                                         <AddOns category={event.category}/>
                                     </span>
-                                    <span className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
+                                    <span>
                                         <AddOns organizer={institute.name} />
                                     </span>
                                 </div>
@@ -306,14 +323,14 @@ export default function EventDetail({auth,  event, institute, volunteers,
                                             year: "numeric",
                                             })}
                                             -
-                                            {new Date(event.finish_date).toLocaleDateString("id-ID", {
+                                            {new Date(event.end_date).toLocaleDateString("id-ID", {
                                                 day: "2-digit",
                                                 month: "long",
                                                 year: "numeric",
                                             })}
                                         </li>
                                         <li>
-                                            Pukul {event.start_time} – {event.finish_time}
+                                            Pukul {event.start_time} – {event.end_time}
                                         </li>
                                     </ul>
                                 </div>

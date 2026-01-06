@@ -19,13 +19,16 @@ use App\Http\Controllers\Dashboard\UserDashboardController;
 use App\Http\Controllers\Dashboard\InstituteDashboardController;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\AdminAuthController;
-use App\Http\Controllers\VolunteerSettingsController;
-use App\Http\Controllers\InstituteProfileController;
-use App\Http\Controllers\InstituteSettingsController;
+
+use App\Http\Controllers\Institute\InstituteProfileController;
+use App\Http\Controllers\Institute\InstituteSettingsController;
+use App\Http\Controllers\Institute\EventAgendaController;
+
 // relawan
 use App\Http\Controllers\Relawan\EventController;
 use App\Http\Controllers\Relawan\EventRegistController;
 use App\Http\Controllers\Relawan\VolunteerProfilController;
+use App\Http\Controllers\Relawan\VolunteerSettingsController;
 
 use App\Http\Controllers\ProfileController;
 
@@ -116,6 +119,8 @@ Route::middleware(['auth'])->group(function(){
                                 ->name('events.join');
                         // cancel (bs jk status = pending)
                         Route::delete('/events/{event}/cancel', [EventRegistController::class, 'cancel']);
+                        
+                        
 
                 // 3. Event Saya (MODIF nanti sesuai controller & function yg dipakai)**
                 Route::get('/myevents', function () {
@@ -153,6 +158,8 @@ Route::middleware(['auth'])->group(function(){
                 Route::get('/institute/organize-event', function () {
                         return Inertia::render('Institute/OrganizeEvent');
                 })->name('institute.organize');
+
+                
 
                 // 4. app volunteer 
                 Route::get('/institute/app-volunteer', function () {

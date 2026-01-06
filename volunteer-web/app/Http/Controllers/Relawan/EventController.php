@@ -11,6 +11,7 @@ use Inertia\Response;
 
 
 
+
 class EventController extends Controller
 {
     /**
@@ -133,6 +134,7 @@ class EventController extends Controller
         $event->load([
             'institute.account',
             'registrations.userProfile',
+            'agendas',
         ]);
 
         $accepted = $event->registrations
@@ -163,9 +165,9 @@ class EventController extends Controller
                 'category' => $event->category,
                 'location' => $event->event_location,
                 'start_date' => $event->event_start,
-                'finish_date' => $event->event_finish,
+                'end_date' => $event->event_finish,
                 'start_time'=>$event->event_start_time,
-                'finish_time'=>$event->event_finish_time,
+                'end_time'=>$event->event_end_time,
                 'status' => $event->event_status,
                 'quota' => $event->quota,
                 'image_url' => event_image_url($event), 
@@ -176,6 +178,16 @@ class EventController extends Controller
 
                 'quota_remaining' => $remaining,
                 'is_full' => $remaining <= 0,
+
+                // AGENDA
+                'agendas' => $event->agendas->map(fn ($a) => [
+                    'agenda_id' => $a->id,
+                    'agenda_start_time' => $a->start_time->format('H:i'),
+                    'agenda_end_time' => $a->end_time->format('H:i'),
+                    'agenda_title' => $a->title,
+                    'agenda_description' => $a->description,
+                ])->values(),
+
                 
             ],
 
@@ -189,6 +201,7 @@ class EventController extends Controller
 
             'volunteers' => $event->registrations->map(fn ($r) => [
                 'name' => $r->userProfile->user_name ?? '-',
+                'division' => $r->division ?? '-',
                 'status' => $r->status,
             ])->values(),
 
@@ -200,3 +213,5 @@ class EventController extends Controller
         ]);
     }
 }
+
+

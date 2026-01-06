@@ -3,6 +3,7 @@ import { Link } from '@inertiajs/react';
 import AddOns from "@/Components/AddOns";
 
 
+
 export default function EventCard({ event }) {
     const {
         event_id,

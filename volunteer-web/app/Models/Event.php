@@ -48,4 +48,10 @@ class Event extends Model
     public function registrations(){
         return $this->hasMany(EventRegistration::class, 'event_id', 'event_id');
     }
+
+    public function agendas(){
+        return $this->hasMany(EventAgenda::class, 'event_id')
+            ->orderBy('order')
+            ->orderBy('start_time');
+    }
 }

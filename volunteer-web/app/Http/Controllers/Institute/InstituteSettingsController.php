@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Institute;
 
+use App\Http\Controllers\Controller; 
 use App\Models\Institute;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;

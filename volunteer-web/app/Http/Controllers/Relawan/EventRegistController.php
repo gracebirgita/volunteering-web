@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\EventRegist;
 use App\Models\Event;
+use App\Models\EventRegistration;
 
 class EventRegistController extends Controller
 {
@@ -31,7 +32,7 @@ class EventRegistController extends Controller
         }
         
         // 3. cek menggunakan user_id PROFIL sdh terdaftar/blm
-        $alreadyRegistered = EventRegist::where('event_id', $event->event_id)
+        $alreadyRegistered = EventRegistration::where('event_id', $event->event_id)
             ->where('user_id', $user->users_profiles->user_id) 
             ->exists();
         if($alreadyRegistered){
@@ -40,7 +41,7 @@ class EventRegistController extends Controller
 
 
         // daftarkan relawan (blm registered)
-        $regist = new EventRegist();
+        $regist = new EventRegistration();
         $regist->event_id = $event->event_id;
         $regist->user_id = $user->users_profiles->user_id; // pastikan tidak null
         $regist->regist_status = 'Pending';
@@ -59,7 +60,7 @@ class EventRegistController extends Controller
     public function cancel(Event $event){
         $user = auth()->user();
 
-        $registration = EventRegist::where('event_id', $event->event_id)
+        $registration = EventRegistration::where('event_id', $event->event_id)
             ->where('user_id', $user->users_profiles->user_id)
             ->first();
 

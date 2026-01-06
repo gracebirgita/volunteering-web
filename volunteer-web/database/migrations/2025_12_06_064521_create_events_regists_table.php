@@ -28,6 +28,8 @@ return new class extends Migration
                 'Rejected',   // ditolak
             ])->default('pending');
 
+            $table->string('division')->nullable();
+
             $table->timestamp('applied_at')->useCurrent();
             $table->timestamp('accepted_at')->nullable();
             $table->timestamp('rejected_at')->nullable();
