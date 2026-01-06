@@ -39,6 +39,13 @@ class Event extends Model
         // 'thumbnail', //image 
     ];
 
+    protected $casts = [
+        //'divisions' => 'array',
+        'benefit_consumption' => 'boolean',
+        'benefit_certificate' => 'boolean',
+        'benefit_other' => 'boolean',
+    ];
+
     // RELATIONS
     public function institute(){
         return $this->belongsTo(Institute::class, 'institute_id', 'institute_id');
@@ -58,4 +65,6 @@ class Event extends Model
     public function divisions(){
         return $this->hasMany(EventDivision::class, 'event_id', 'event_id');
     }
+
+
 }

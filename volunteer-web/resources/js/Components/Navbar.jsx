@@ -5,7 +5,6 @@ import {
     SquarePlus,
     HandHeart,
     UserRound,
-    ClipboardList,
     Settings,
     LogOut,
     X,
@@ -70,7 +69,7 @@ export default function MyNavbar({
                         fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 
                         transform transition-transform duration-300 ease-in-out
                         ${isOpen ? "translate-x-0" : "-translate-x-full"}
-                        lg:translate-x-0 lg:static lg:h-screen lg:flex lg:flex-col
+                        md:translate-x-0 md:sticky md:top-0 md:h-screen md:flex md:flex-col
                     `}
                 >
                     {/* Header Sidebar */}
@@ -173,7 +172,7 @@ export default function MyNavbar({
                         fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 
                         transform transition-transform duration-300 ease-in-out
                         ${isOpen ? "translate-x-0" : "-translate-x-full"}
-                        lg:translate-x-0 lg:static lg:h-screen lg:flex lg:flex-col
+                        md:translate-x-0 md:sticky md:top-0 md:h-screen md:flex md:flex-col
                     `}
                 >
                     {/* Header Sidebar */}
@@ -328,7 +327,7 @@ export default function MyNavbar({
                         fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 
                         transform transition-transform duration-300 ease-in-out
                         ${isOpen ? "translate-x-0" : "-translate-x-full"}
-                        lg:translate-x-0 lg:static lg:h-screen lg:flex lg:flex-col
+                        md:translate-x-0 md:sticky md:top-0 md:h-screen md:flex md:flex-col
                     `}
                 >
                     {/* Header Sidebar */}
@@ -394,17 +393,6 @@ export default function MyNavbar({
                                         Atur Event
                                     </Link>
                                 </li>
-                                <li>
-                                    <Link
-                                        href={route("institute.appvol")}
-                                        className={getSidebarLinkClass(
-                                            "institute.appvol"
-                                        )}
-                                    >
-                                        <HandHeart size={20} />
-                                        Aplikasi Volunteer
-                                    </Link>
-                                </li>
                             </ul>
                         </div>
 
@@ -416,13 +404,13 @@ export default function MyNavbar({
                             <ul className="space-y-1">
                                 <li>
                                     <Link
-                                        href={route("institute.attendance")}
+                                        href={route("institute.appvol")}
                                         className={getSidebarLinkClass(
-                                            "institute.attendance"
+                                            "institute.appvol"
                                         )}
                                     >
-                                        <ClipboardList size={20} />
-                                        Atur Absensi
+                                        <HandHeart size={20} />
+                                        Aplikasi Volunteer
                                     </Link>
                                 </li>
                             </ul>

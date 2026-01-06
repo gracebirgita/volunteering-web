@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 class InstituteSettingsController extends Controller
 {
@@ -22,10 +23,10 @@ class InstituteSettingsController extends Controller
         return inertia('Institute/Settings', [
             'auth' => [
                 'user' => [
-                    'id' => $account->id,
+                    'id' => $account->account_id,
                     'name' => $institute->institute_name,
                     'email' => $account->email,
-                    'email_verified_at' => $account->email_verified_at,
+                   'email_verified_at' => $account->email_verified_at,
                     'institute' => [
                         'institute_name'    => $institute->institute_name,
                         'institute_address' => $institute->institute_address,
@@ -91,7 +92,12 @@ class InstituteSettingsController extends Controller
         if (!$account || !$account->isInstitute()) abort(403);
 
         $request->validate([
-            'email'    => 'required|email|unique:accounts,email,' . $account->id,
+        // Menggunakan Rule::unique lebih minim error typo
+            'email' => [
+                'required', 
+                'email', 
+                Rule::unique('accounts', 'email')->ignore($account->account_id, 'account_id')
+            ],
             'password' => 'required',
         ]);
 
@@ -102,7 +108,7 @@ class InstituteSettingsController extends Controller
         }
 
         $account->email = $request->email;
-        $account->email_verified_at = null;
+        $account->email_verified_at = now();
         $account->save();
 
         return back()->with('success', 'Email berhasil diubah');
