@@ -113,6 +113,12 @@ export default function EventDetail({auth,  event, institute, volunteers,
                                         month: "long",
                                         year: "numeric",
                                     })}
+                                    -
+                                    {new Date(event.end_date).toLocaleDateString("id-ID", {
+                                        day: "2-digit",
+                                        month: "long",
+                                        year: "numeric",
+                                    })}
                                 </span>
                             </div>
                             <div className="flex items-center gap-2 text-sm text-white/90">
@@ -196,22 +202,63 @@ export default function EventDetail({auth,  event, institute, volunteers,
                             )}
 
                             {tab === 'volunteers' && (
-                                <>
-                                    {volunteers.length===0?(
-                                        <p>Belum ada relawan</p>
-                                    ):(
-                                        <ul className="space-y-2">
+                                <div className=" max-h-[420] overflow-y-auto agenda-scroll">
+                                    {/* HEADER */}
+                                    <div className="grid grid-cols-12 px-6 py-3 text-sm font-semibold text-gray-500 border-b">
+                                        <div className="col-span-6">Nama</div>
+                                        <div className="col-span-4">Divisi</div>
+                                        <div className="col-span-2 text-right">Status</div>
+                                    </div>
+
+                                    {/* LIST */}
+                                    {volunteers.length === 0 ? (
+                                        <div className="px-6 py-8 text-center text-sm text-gray-500">
+                                            Belum ada relawan terdaftar.
+                                        </div>
+                                    ) : (
+                                        <ul className="divide-y divide-gray-200 border-b">
                                             {volunteers.map((v, i) => (
-                                                <li key={i} className="border p-2 rounded">
-                                                    {v.name} {v.division} — {v.status}
+                                                <li
+                                                    key={i}
+                                                    className="grid grid-cols-12 px-6 py-4 items-center hover:bg-white transition"
+                                                >
+                                                    {/* NAMA + AVATAR */}
+                                                    <div className="col-span-6 flex items-center gap-4">
+                                                        <img
+                                                            src={v.avatar ?? '/images/avatar-placeholder.png'}
+                                                            alt={v.name}
+                                                            className="w-10 h-10 rounded-full object-cover"
+                                                        />
+                                                        <span className="font-medium text-gray-800">
+                                                            {v.name}
+                                                        </span>
+                                                    </div>
+
+                                                    {/* DIVISI */}
+                                                    <div className="col-span-4 text-sm text-gray-700">
+                                                        Divisi {v.division}
+                                                    </div>
+
+                                                    {/* STATUS */}
+                                                    <div className="col-span-2 text-right">
+                                                        <span
+                                                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+                                                                ${v.status === 'Accepted' && 'bg-green-100 text-green-700'}
+                                                                ${v.status === 'Pending' && 'bg-yellow-100 text-yellow-700'}
+                                                                ${v.status === 'Rejected' && 'bg-red-100 text-red-700'}
+                                                            `}
+                                                        >
+                                                            {v.status}
+                                                        </span>
+                                                    </div>
                                                 </li>
                                             ))}
                                         </ul>
                                     )}
-
-
-                                </>
+                                </div>
                             )}
+
+
                             {tab === 'institute' && (
                                 <>
                                     <h3 className='text-[20px]'>{institute.name}</h3>
@@ -234,21 +281,30 @@ export default function EventDetail({auth,  event, institute, volunteers,
                             )}
 
                             {tab === 'gallery' && (
-                            <>
-                                <h3 className="font-bold mb-4">Galeri Kegiatan</h3>
-
-                                <div className="grid grid-cols-3 gap-4">
-                                {[1,2,3].map(i => (
-                                    <div
-                                    key={i}
-                                    className="h-40 bg-gray-200 flex items-center justify-center"
-                                    >
-                                    Foto {i}
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        {(!event.galleries || event.galleries.length === 0) ? (
+                                            <div className="col-span-full text-center text-gray-500 py-12 italic">
+                                                Belum ada dokumentasi kegiatan yang tersedia.
+                                            </div>
+                                        ) : (
+                                            event.galleries.map((photo, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="h-40 bg-gray-100 rounded-lg overflow-hidden shadow-sm"
+                                                >
+                                                    <img
+                                                        src={photo.image_url}
+                                                        alt={`Galeri ${index + 1}`}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </div>
+                                            ))
+                                        )}
                                     </div>
-                                ))}
                                 </div>
-                            </>
                             )}
+
 
                         </div>
 

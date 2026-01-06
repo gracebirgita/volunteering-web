@@ -50,20 +50,33 @@ class UserDashboardController extends Controller
         // 4. Statistik
         $stats = [
             'total_events' => EventRegistration::where('user_id', $userProfile->user_id)
-                ->where('status', 'approved')
+                ->where('regist_status', 'Accepted')
                 ->count(),
 
             'total_hours' => EventAttendance::whereHas('registration', function ($q) use ($userProfile) {
                     $q->where('user_id', $userProfile->user_id)
-                      ->where('status', 'approved');
+                    ->where('regist_status', 'Accepted');
                 })
-                ->selectRaw('SUM(TIMESTAMPDIFF(HOUR, check_in, check_out)) as total')
+                ->selectRaw("
+                    SUM(
+                        TIMESTAMPDIFF(
+                            MINUTE,
+                            CONCAT(attendance_date, ' ', check_in),
+                            CONCAT(attendance_date, ' ', check_out)
+                        )
+                    ) / 60
+                    as total
+                ")
                 ->value('total') ?? 0,
 
             'total_certificates' => EventRegistration::where('user_id', $userProfile->user_id)
-                ->where('status', 'approved')
+                ->where('regist_status', 'Accepted')
+                ->whereHas('event', function ($q) {
+                    $q->where('benefit_certificate', true);
+                })
                 ->count(),
         ];
+
 
        
         return inertia('Dashboard/User', [

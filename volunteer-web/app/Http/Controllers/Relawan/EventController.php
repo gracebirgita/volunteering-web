@@ -58,7 +58,7 @@ class EventController extends Controller
         ->with('institute')
         ->withCount([
             'registrations as accepted_count' => fn ($q) =>
-                $q->where('status', 'Accepted')
+                $q->where('regist_status', 'Accepted')
         ])
         ->orderBy('event_start')
         ->paginate(6)->withQueryString()
@@ -134,7 +134,9 @@ class EventController extends Controller
         $event->load([
             'institute.account',
             'registrations.userProfile',
+            'registrations.division',
             'agendas',
+
         ]);
 
         $accepted = $event->registrations
@@ -155,8 +157,6 @@ class EventController extends Controller
             $profile->user_domicile !== '-';
 
         
-
-
         return Inertia::render('Relawan/EventDetail', [
             'event' => [
                 'id' => $event->event_id,
@@ -200,9 +200,12 @@ class EventController extends Controller
             ],
 
             'volunteers' => $event->registrations->map(fn ($r) => [
-                'name' => $r->userProfile->user_name ?? '-',
-                'division' => $r->division ?? '-',
-                'status' => $r->status,
+                'name'     => $r->userProfile->user_name ?? '-',
+                'avatar' => $r->userProfile
+                            ? profile_image_url($r->userProfile)
+                            : asset('images/avatar-placeholder.png'),
+                'division' => $r->division->name ?? '-',
+                'status'   => $r->regist_status,
             ])->values(),
 
             'isRegistered' => (bool) $userRegistration,

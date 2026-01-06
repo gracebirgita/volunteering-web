@@ -19,9 +19,6 @@ class EventRegistrationSeeder extends Seeder
         $events = DB::table('events')->pluck('event_id');
 
 
-        $divisions = ['Publication', 'Marketing', 'Operation'];
-
-
         foreach ($users as $userId) {
             // 1–4 event per user (dummy data)
             $eventSample = $events->random(rand(1, min(4, $events->count())));
@@ -41,12 +38,11 @@ class EventRegistrationSeeder extends Seeder
                 DB::table('event_registrations')->insert([
                     'user_id'    => $userId,
                     'event_id'   => $eventId,
-                    'status'     => $faker->randomElement([
+                    'regist_status'     => $faker->randomElement([
                         'Pending',
                         'Accepted',
                         'Rejected',
                     ]),
-                    'division' => $faker->randomElement($divisions),
                     'created_at'=> now(),
                     'updated_at'=> now(),
                 ]);

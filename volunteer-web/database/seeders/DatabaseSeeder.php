@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
             EventRegistrationSeeder::class,
             EventAttendancesSeeder::class,
             EventAgendaSeeder::class,
+            EventDivisionSeeder::class,
+            AssignDivisionToEventRegistrationsSeeder::class,
         ]);
     }
 }

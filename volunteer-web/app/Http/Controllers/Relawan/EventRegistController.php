@@ -45,7 +45,7 @@ class EventRegistController extends Controller
         $regist->event_id = $event->event_id;
         $regist->user_id = $user->users_profiles->user_id; // pastikan tidak null
         $regist->regist_status = 'Pending';
-        $regist->regist_date=now();
+        $regist->applied_at=now();
         // dd($user->account_id);
         
 

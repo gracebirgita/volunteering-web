@@ -54,4 +54,8 @@ class Event extends Model
             ->orderBy('order')
             ->orderBy('start_time');
     }
+
+    public function divisions(){
+        return $this->hasMany(EventDivision::class, 'event_id', 'event_id');
+    }
 }

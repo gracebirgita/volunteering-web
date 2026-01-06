@@ -30,4 +30,8 @@ class EventRegistration extends Model
     {
         return $this->hasMany(EventAttendance::class, 'registration_id', 'registration_id');
     }
+
+    public function division(){
+        return $this->belongsTo(EventDivision::class, 'division_id', 'division_id');
+    }
 }

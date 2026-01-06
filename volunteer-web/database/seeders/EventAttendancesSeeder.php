@@ -15,7 +15,7 @@ class EventAttendancesSeeder extends Seeder
 
         // Ambil hanya registration yang APPROVED
         $registrations = DB::table('event_registrations')
-            ->where('status', 'Accepted')
+            ->where('regist_status', 'Accepted')
             ->get(['registration_id', 'event_id']);
 
         foreach ($registrations as $registration) {

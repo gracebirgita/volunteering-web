@@ -17,18 +17,17 @@ return new class extends Migration
             $table->foreignId('event_id')
                 ->constrained('events', 'event_id')
                 ->cascadeOnDelete();
+                
 
             $table->foreignId('user_id')
                 ->constrained('users_profiles', 'user_id')
                 ->cascadeOnDelete();
 
-            $table->enum('status', [
+            $table->enum('regist_status', [
                 'Pending',    // daftar, nunggu persetujuan
                 'Accepted',   // diterima institute
                 'Rejected',   // ditolak
             ])->default('pending');
-
-            $table->string('division')->nullable();
 
             $table->timestamp('applied_at')->useCurrent();
             $table->timestamp('accepted_at')->nullable();
