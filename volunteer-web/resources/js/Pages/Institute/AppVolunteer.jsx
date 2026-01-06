@@ -17,59 +17,148 @@ import {
     ArrowUpDown,
     ArrowUp,
     ArrowDown,
+    X,
+    AlertTriangle,
 } from "lucide-react";
 
 export default function AppVolunteer({ auth, events = [] }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [selectedEventId, setSelectedEventId] = useState(null);
-
-    // state filtering event list
     const [searchQuery, setSearchQuery] = useState("");
     const [filterCategory, setFilterCategory] = useState("");
+
+    // State popup konfirmasi
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalAction, setModalAction] = useState({
+        registId: null,
+        newStatus: null,
+    });
 
     const selectedEvent = events.find((e) => e.event_id === selectedEventId);
 
     const currentEventVolunteers = useMemo(() => {
-        if (!selectedEvent || !selectedEvent.event_regists) return [];
-        return selectedEvent.event_regists.map((reg) => ({
-            id: reg.regist_id,
-            name: reg.user?.name || "Anonim",
-            status: reg.regist_status,
-            avatar:
-                reg.user?.profile_photo_url ||
-                `https://ui-avatars.com/api/?name=${reg.user?.name}`,
-        }));
+        if (!selectedEvent || !selectedEvent.registrations) return [];
+
+        return selectedEvent.registrations.map((reg) => {
+            const profile = reg.user_profile || {};
+            const user = reg.user || {};
+            const realName =
+                profile.user_name || user.name || `User ID: ${reg.user_id}`;
+
+            return {
+                id: reg.regist_id,
+                name: realName,
+                status: reg.regist_status,
+                avatar:
+                    profile.profile_photo_url || // di database gaada
+                    user.profile_photo_url ||
+                    `https://ui-avatars.com/api/?name=${realName}`,
+            };
+        });
     }, [selectedEvent]);
 
     const filteredEvents = events.filter((event) => {
         const matchSearch = (event.event_name || "")
             .toLowerCase()
             .includes(searchQuery.toLowerCase());
-
         const matchCategory = filterCategory
             ? event.category === filterCategory
             : true;
-
         return matchSearch && matchCategory;
     });
 
-    // update status
-    const handleUpdateStatus = (registId, newStatus) => {
+    const openStatusModal = (registId, newStatus) => {
+        setModalAction({ registId, newStatus });
+        setIsModalOpen(true);
+    };
+
+    // Update status
+    const executeStatusUpdate = () => {
+        const { registId, newStatus } = modalAction;
+        if (!registId || !newStatus) return;
+
         router.patch(
             `/institute/applications/${registId}/status`,
-            {
-                status: newStatus,
-            },
+            { status: newStatus },
             {
                 preserveScroll: true,
-                onSuccess: () => console.log("Status & Kuota diperbarui"),
+                onSuccess: () => {
+                    console.log("Status & Kuota diperbarui");
+                    closeModal();
+                },
+                onError: (errors) => {
+                    console.error(errors);
+                    alert("Gagal mengubah status...");
+                    closeModal();
+                },
             }
         );
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setModalAction({ registId: null, newStatus: null });
     };
 
     return (
         <div className="flex min-h-screen bg-gray-50 font-sans text-black relative">
             <Head title="Aplikasi Volunteer" />
+
+            {/* Popup */}
+            {isModalOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 animate-fade-in">
+                    <div
+                        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+                        onClick={closeModal}
+                    ></div>
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative z-10 transform transition-all scale-100">
+                        <button
+                            onClick={closeModal}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"
+                        >
+                            <X size={20} />
+                        </button>
+
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4 bg-[#E6F2F1] text-[#005D67]">
+                                <AlertTriangle size={24} />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                Konfirmasi Perubahan Status
+                            </h3>
+                            <p className="text-sm text-gray-500 mb-6">
+                                Apakah Anda yakin ingin mengubah status relawan
+                                ini menjadi{" "}
+                                <span className="font-bold text-[#005D67]">
+                                    {modalAction.newStatus === "Accepted"
+                                        ? "Diterima"
+                                        : modalAction.newStatus === "Rejected"
+                                        ? "Ditolak"
+                                        : "Pending"}
+                                </span>
+                                ?
+                                {modalAction.newStatus === "Accepted" &&
+                                    " Kuota event akan berkurang."}
+                            </p>
+
+                            <div className="flex gap-3 w-full">
+                                <button
+                                    onClick={closeModal}
+                                    className="flex-1 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    onClick={executeStatusUpdate}
+                                    className="flex-1 py-2.5 text-white rounded-lg font-bold transition shadow-sm bg-[#005D67] hover:bg-[#004a52]"
+                                >
+                                    Ya, Konfirmasi
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <MyNavbar
                 user={auth?.user}
@@ -78,7 +167,7 @@ export default function AppVolunteer({ auth, events = [] }) {
                 setIsOpen={setSidebarOpen}
             />
 
-            <main className="flex-1 w-full overflow-x-hidden">
+            <main className="flex-1 w-full overflow-x-hidden relative z-0">
                 <div className="md:hidden bg-white border-b border-gray-200 p-4 flex justify-between items-center sticky top-0 z-30">
                     <span className="font-bold text-[#005D67]">
                         VolunteerHub
@@ -97,7 +186,7 @@ export default function AppVolunteer({ auth, events = [] }) {
                             event={selectedEvent}
                             volunteers={currentEventVolunteers}
                             onBack={() => setSelectedEventId(null)}
-                            onUpdateStatus={handleUpdateStatus}
+                            onUpdateStatus={openStatusModal}
                         />
                     ) : (
                         <EventListView
@@ -167,7 +256,6 @@ const EventListView = ({
                 </p>
             </div>
 
-            {/* Filter Bar */}
             <div className="bg-white p-4 rounded-2xl border border-gray-100 mb-8 flex flex-col md:flex-row gap-4 items-center shadow-sm">
                 <div className="relative flex-1 w-full">
                     <input
@@ -203,7 +291,6 @@ const EventListView = ({
                 </div>
             </div>
 
-            {/* Event */}
             {events.length === 0 ? (
                 <div className="text-center py-20 bg-white rounded-xl border border-dashed border-gray-300 text-gray-500">
                     Tidak ada event yang cocok dengan filter.
@@ -292,26 +379,19 @@ const EventListView = ({
 };
 
 const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
-    // filter state
     const [detailSearch, setDetailSearch] = useState("");
-
     const [sortConfig, setSortConfig] = useState({
         key: null,
         direction: "ascending",
     });
-
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
 
     const processedData = useMemo(() => {
         let data = [...volunteers];
-
-        // filtering
         data = data.filter((item) => {
             return item.name.toLowerCase().includes(detailSearch.toLowerCase());
         });
-
-        // sorting
         if (sortConfig.key) {
             data.sort((a, b) => {
                 if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -323,17 +403,14 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
                 return 0;
             });
         }
-
         return data;
     }, [volunteers, detailSearch, sortConfig]);
 
-    // Pagination slicing
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = processedData.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(processedData.length / itemsPerPage);
 
-    // sorting
     const requestSort = (key) => {
         let direction = "ascending";
         if (sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -359,7 +436,6 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
 
     return (
         <div className="animate-fade-in">
-            {/* Header */}
             <div className="mb-6">
                 <button
                     onClick={onBack}
@@ -382,7 +458,6 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
                 </p>
             </div>
 
-            {/* Filter Bar */}
             <div className="bg-white p-4 rounded-2xl border border-gray-100 mb-6 flex flex-col md:flex-row gap-4 items-center shadow-sm">
                 <div className="relative flex-1 w-full">
                     <input
@@ -402,7 +477,6 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
                 </div>
             </div>
 
-            {/* TABLE */}
             <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
@@ -470,7 +544,6 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
                                                             : "bg-yellow-500"
                                                     }`}
                                                 ></span>
-                                                {/* status */}
                                                 {vol.status === "Accepted"
                                                     ? "Diterima"
                                                     : vol.status === "Rejected"
@@ -540,7 +613,6 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
                     </table>
                 </div>
 
-                {/* Pagination */}
                 {processedData.length > 0 && (
                     <div className="p-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
                         <div>

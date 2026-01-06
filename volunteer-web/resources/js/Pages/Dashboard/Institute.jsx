@@ -31,13 +31,19 @@ const Institute = ({ auth, institute, stats, ongoingList, upcomingList }) => {
         });
     };
 
-    // Data stats supaya ga error
     const safeStats = stats || {
         totalEvents: 0,
         ongoingEvents: 0,
         totalVolunteers: 0,
         pendingApprovals: 0,
     };
+
+    const displayActiveCount =
+        safeStats.ongoingEvents > 0
+            ? safeStats.ongoingEvents
+            : ongoingList && ongoingList.length > 0
+            ? ongoingList.length
+            : 0;
 
     const displayName =
         institute?.institute_name || auth?.user?.name || "Institute";
@@ -78,9 +84,7 @@ const Institute = ({ auth, institute, stats, ongoingList, upcomingList }) => {
                 setIsOpen={setSidebarOpen}
             />
 
-            {/* MAIN CONTENT */}
             <main className="flex-1 w-full overflow-x-hidden">
-                {/* Mobile Header */}
                 <div className="md:hidden bg-white border-b border-gray-200 p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-30">
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-[#005D67] rounded-full flex items-center justify-center text-white font-bold">
@@ -159,31 +163,34 @@ const Institute = ({ auth, institute, stats, ongoingList, upcomingList }) => {
                             title="Lihat Semua Event"
                             value={safeStats.totalEvents}
                             sub="Jumlah Event Yang Dibuat Organisasi Anda"
+                            href={route("institute.organize")}
                         />
                         <StatCard
                             title="Lihat Event Aktif"
-                            value={safeStats.ongoingEvents}
+                            value={displayActiveCount}
                             sub="Event Aktif yang Anda pernah buat"
+                            href="#active-events"
                         />
                         <StatCard
                             title="Atur Relawan"
                             value={safeStats.totalVolunteers}
                             sub="Jumlah Relawan Terlibat dengan Organisasi Anda"
+                            href={route("institute.appvol")}
                         />
                         <StatCard
                             title="Atur Relawan"
                             value={safeStats.pendingApprovals}
                             sub="Pendaftar Menunggu Persetujuan"
+                            href={route("institute.appvol")}
                         />
                     </div>
 
-                    {/* Active events */}
-                    <div className="w-full">
+                    {/* Active events Section */}
+                    <div className="w-full" id="active-events">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-base md:text-lg font-bold text-gray-800">
                                 Pantau Event Aktif Anda ({totalOngoing})
                             </h2>
-                            {/* nav button */}
                             <div className="flex gap-2">
                                 <button
                                     onClick={handlePrev}
@@ -224,9 +231,13 @@ const Institute = ({ auth, institute, stats, ongoingList, upcomingList }) => {
                                         slot={`${event.event_quota} Slot`}
                                         category={event.category}
                                         stats={{
-                                            registered: 0,
-                                            accepted: 0,
-                                            pending: 0,
+                                            // Statistik pendafar
+                                            registered:
+                                                (event.total_accepted || 0) +
+                                                (event.total_pending || 0) +
+                                                (event.total_rejected || 0),
+                                            accepted: event.total_accepted || 0,
+                                            pending: event.total_pending || 0,
                                         }}
                                     />
                                 ))
@@ -244,29 +255,48 @@ const Institute = ({ auth, institute, stats, ongoingList, upcomingList }) => {
 };
 
 // Reusable Components
-const StatCard = ({ title, value, sub }) => (
-    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col h-44 md:h-48 relative group hover:border-teal-100 transition-colors cursor-pointer">
-        <div className="flex justify-between items-start mb-2">
-            <span className="text-sm font-semibold text-black line-clamp-2 leading-tight">
-                {title}
-            </span>
-            <div className="bg-[#C2F0E9] text-[#005D67] p-1 rounded-full group-hover:bg-teal-100 transition shrink-0 ml-2">
-                <ArrowRight size={16} />
+const StatCard = ({ title, value, sub, href }) => {
+    const cardContent = (
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col h-44 md:h-48 relative group hover:border-teal-100 transition-colors cursor-pointer">
+            <div className="flex justify-between items-start mb-2">
+                <span className="text-sm font-semibold text-black line-clamp-2 leading-tight">
+                    {title}
+                </span>
+                <div className="bg-[#C2F0E9] text-[#005D67] p-1 rounded-full group-hover:bg-teal-100 transition shrink-0 ml-2">
+                    <ArrowRight size={16} />
+                </div>
+            </div>
+            <div className="mt-auto">
+                <h2 className="text-3xl md:text-4xl font-bold text-[#005D67] mb-2">
+                    {value}
+                </h2>
+                <p className="text-xs text-black leading-relaxed line-clamp-2 h-8 flex items-center">
+                    {sub}
+                </p>
             </div>
         </div>
-        <div className="mt-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#005D67] mb-2">
-                {value}
-            </h2>
-            <p className="text-xs text-black leading-relaxed line-clamp-2 h-8 flex items-center">
-                {sub}
-            </p>
-        </div>
-    </div>
-);
+    );
+
+    if (href && href.startsWith("#")) {
+        return (
+            <a href={href} className="block">
+                {cardContent}
+            </a>
+        );
+    }
+
+    if (href) {
+        return (
+            <Link href={href} className="block">
+                {cardContent}
+            </Link>
+        );
+    }
+
+    return cardContent;
+};
 
 const EventCard = ({ title, desc, date, location, slot, stats, category }) => {
-    // Helper untuk warna kategori
     const getCategoryStyle = (cat) => {
         switch (cat) {
             case "Lingkungan":
