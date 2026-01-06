@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import MyNavbar from "@/Components/Navbar";
 import AdminStatCard from "@/Components/AdminStatCard";
-import { Head, Link } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
 import { Menu } from "lucide-react";
 import {
     AreaChart, Area,
@@ -11,21 +11,15 @@ import {
     ResponsiveContainer
 } from "recharts";
 
-const chartData = [
-        { week: "Week 1", registrations: 45 },
-        { week: "Week 2", registrations: 52 },
-        { week: "Week 3", registrations: 38 },
-        { week: "Week 4", registrations: 65 },
-        { week: "Week 5", registrations: 48 },
-        { week: "Week 6", registrations: 70 },
-        { week: "Week 7", registrations: 61 },
-        { week: "Week 8", registrations: 85 },
-    ];
 
-export default function AdminDashboard({ auth }) {
+export default function AdminDashboard({ auth, stats, chartData, adminName }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const user = auth.user;
 
+    // Fallback if chart data is empty (prevent blank chart error)
+    const finalChartData = chartData.length > 0 ? chartData : [
+        { week: "No Data", registrations: 0 }
+    ];
 
     return (
         <div className="flex min-h-screen bg-gray-50 font-sans text-gray-800 relative">
@@ -66,26 +60,26 @@ export default function AdminDashboard({ auth }) {
                 <div className = "p-6 md:p-10 lg:p-12 max-w-[1600px] mx-auto">
                     {/* Content Placeholder - Header Section */}
                     <div className="mb-10">
-                        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Selamat Datang Kembali, WHO Group</h1>
+                        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Selamat Datang Kembali, {adminName}</h1>
                         <p className="text-gray-900 mt-5">Selamat datang, super admin, pantau metrik VolunteerHub</p>
                     </div>
 
                     {/* Content Placeholder - AdminStatCard Section */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
                         <AdminStatCard
-                            value = "18.154"
+                            value = {stats.total_users.toLocaleString('id-ID')}
                             title = "Total Pengguna"
                         />
                         <AdminStatCard
-                            value = "5.124"
+                            value = {stats.total_institutes.toLocaleString('id-ID')}
                             title = "Total Organisasi"
                         />
                         <AdminStatCard
-                            value = "25.712"
+                            value = {stats.total_events.toLocaleString('id-ID')}
                             title = "Total Event Dibuat"
                         />
                         <AdminStatCard
-                            value = "30.000"
+                            value = {stats.total_hours.toLocaleString('id-ID')}
                             title = "Total Jam Volunteer"
                         />
                     </div>
@@ -123,6 +117,7 @@ export default function AdminDashboard({ auth }) {
                                         axisLine={true} 
                                         tickLine={false} 
                                         tick={{ fill: '#9CA3AF', fontSize: 12 }}
+                                        allowDecimals={false}
                                     />
                                     
                                     <Tooltip 

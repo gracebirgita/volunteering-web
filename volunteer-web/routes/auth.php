@@ -24,12 +24,17 @@ use App\Http\Controllers\InstituteProfileController;
 use App\Http\Controllers\InstituteSettingsController;
 use App\Http\Controllers\InstituteEventController;
 use App\Http\Controllers\InstituteAppVolunteerController;
+
 // relawan
 use App\Http\Controllers\Relawan\EventController;
 use App\Http\Controllers\Relawan\EventRegistController;
 use App\Http\Controllers\Relawan\VolunteerProfilController;
-
+use App\Http\Controllers\Relawan\MyEventController;
 use App\Http\Controllers\ProfileController;
+
+//Admin
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\UserManageController;
 
 // GUEST = belum login
 
@@ -84,19 +89,25 @@ Route::middleware(['auth'])->group(function(){
                 Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])
                         ->name('dashboard.admin');
 
-                // MODIF PAKAI CONTROLLER**
                 // 1. manajemen user
-                Route::get('/user-manage', function () {
-                        return Inertia::render('Admin/UserManage');
-                })->name('manage.user');
+                Route::get('/user-manage', [UserManageController::class, 'index'])
+                        ->name('manage.user');
+                Route::put('/user-manage/{account}/toggle', [UserManageController::class, 'toggleStatus'])
+                        ->name('admin.user.toggle');
+                Route::put('/user-manage/{account}/reset-password', [UserManageController::class, 'resetPassword'])
+                        ->name('admin.user.reset');
 
                 // 2. manajemen konten
-                Route::get('/content-manage', function () {
-                        return Inertia::render('Admin/ContentManage');
-                })->name('manage.content');
+                Route::get('/content-manage', [CategoryController::class, 'index'])
+                        ->name('manage.content');
+                Route::post('/content-manage/category', [CategoryController::class, 'store'])
+                        ->name('admin.category.store');
+                Route::put('/content-manage/category/{category}/toggle', [CategoryController::class, 'toggleStatus'])
+                    ->name('admin.category.toggle');
 
-                
-        });
+                Route::delete('/content-manage/category/{category}', [CategoryController::class, 'destroy'])
+                    ->name('admin.category.delete');
+                });
 
         // -- ROLE USER / RELAWAN  / VOLUNTEER
         Route::middleware('role:user')->group(function(){
@@ -120,9 +131,8 @@ Route::middleware(['auth'])->group(function(){
                         Route::delete('/events/{event}/cancel', [EventRegistController::class, 'cancel']);
 
                 // 3. Event Saya (MODIF nanti sesuai controller & function yg dipakai)**
-                Route::get('/myevents', function () {
-                        return Inertia::render('Relawan/MyEvent');
-                })->name('myevents.index');
+                Route::get('/myevents', [MyEventController::class, 'index'])
+                        ->name('myevents.index');
 
 
                 // === AKTIVITAS (opsional)

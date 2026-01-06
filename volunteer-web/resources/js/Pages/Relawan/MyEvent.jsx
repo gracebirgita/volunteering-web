@@ -1,92 +1,68 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, router, Link } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import MyNavbar from "@/Components/Navbar";
 import EventCard from '@/Components/EventCard';
 import HeroBanner from '@/Components/HeroBanner';
-import React, { useState } from 'react';
-import { Search, Filter, Calendar } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Search, Calendar } from 'lucide-react';
+import debounce from "lodash/debounce";  
 
-
-export const mockEvents = [
-    {
-      id: 1,
-      title: "Aksi Bersih Pantai",
-      category: "Lingkungan",
-      location: "Pantai Talise",
-      date: "12 Okt 2025",
-      image: "https://placehold.co/600x400", // Replace with real asset
-      status: "accepted", // status options: accepted, pending, rejected
-      organizer: "Green Earth"
-    },
-    {
-      id: 2,
-      title: "Kelas Daur Ulang Sampah",
-      category: "Workshop",
-      location: "Aula Kota",
-      date: "15 Okt 2025",
-      image: "https://placehold.co/600x400",
-      status: "pending",
-      organizer: "Recycle Now"
-    },
-    {
-      id: 3,
-      title: "Penanaman Bakau",
-      category: "Lingkungan",
-      location: "Pesisir Donggala",
-      date: "20 Okt 2025",
-      image: "https://placehold.co/600x400",
-      status: "rejected",
-    },
-    {
-      id: 4,
-      title: "Aksi Bersih Pantai",
-      category: "Lingkungan",
-      location: "Pantai Talise",
-      date: "12 Okt 2025",
-      image: "https://placehold.co/600x400", // Replace with real asset
-      status: "accepted", 
-      organizer: "Green Earth"
-    },
-    {
-      id: 5,
-      title: "Kelas Daur Ulang Sampah",
-      category: "Workshop",
-      location: "Aula Kota",
-      date: "15 Okt 2025",
-      image: "https://placehold.co/600x400",
-      status: "pending",
-      organizer: "Recycle Now"
-    },
-    {
-      id: 6,
-      title: "Penanaman Bakau",
-      category: "Lingkungan",
-      location: "Pesisir Donggala",
-      date: "20 Okt 2025",
-      image: "https://placehold.co/600x400",
-      status: "rejected",
-    },
-]   
-
-export default function MyEvent({ auth }) {
+export default function MyEvent({ auth, filters, events }) {
     const user = auth.user;
-    const [activeTab, setActiveTab] = useState('Semua');
-    const [searchQuery, setSearchQuery] = useState('');
+    const [activeTab, setActiveTab] = useState(filters.tab || 'Semua');
+    const [searchQuery, setSearchQuery] = useState(filters.search || '');
+    const [selectedDate, setSelectedDate] = useState(filters.date || ''); 
     const tabs = ['Semua', 'Diterima', 'Pending', 'Ditolak'];
     const [sidebarOpen, setSidebarOpen] = useState(false);
     
-    const filteredEvents = mockEvents.filter(event => {
-        // 1. Filter by Search
-        if (!event.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    const eventList = events?.data || [];
 
-        // 2. Filter by Tab
-        if (activeTab === 'Semua') return true;
-        if (activeTab === 'Diterima') return event.status === 'accepted';
-        if (activeTab === 'Pending') return event.status === 'pending';
-        if (activeTab === 'Ditolak') return event.status === 'rejected';
-        
-        return true;
-      });
+    // Helper to trigger the reload
+    const reloadData = (newParams) => {
+        router.get(route('myevents.index'), 
+            // Merge current filters with new params
+            { 
+                tab: activeTab, 
+                search: searchQuery, 
+                date: selectedDate, 
+                ...newParams 
+            }, 
+            { preserveState: true, preserveScroll: true, replace: true }
+        );
+    };
+
+    // --- Server-Side Filter Logic ---
+    const debouncedSearch = useCallback(
+        debounce((query, tab) => {
+            router.get(route('myevents.index'), { search: query, tab: tab }, {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true
+            });
+        }, 300), []
+    );
+
+    const handleSearchChange = (e) => {
+        const val = e.target.value;
+        setSearchQuery(val);
+        debouncedSearch(val, activeTab);
+    };
+
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        reloadData({ tab: tab }); // Use helper to keep other filters
+    };
+
+    const handleDateChange = (e) => {
+        const date = e.target.value;
+        setSelectedDate(date);
+        reloadData({ date: date });
+    };
+
+    const clearDate = () => {
+        setSelectedDate('');
+        reloadData({ date: '' });
+    };
+
 
     return (
         <div className="flex min-h-screen bg-gray-50 font-sans text-gray-800 relative">
@@ -126,7 +102,7 @@ export default function MyEvent({ auth }) {
                             {tabs.map((tab) => (
                                 <button
                                     key={tab}
-                                    onClick={() => setActiveTab(tab)}
+                                    onClick={() => handleTabChange(tab)}
                                     className={`pb-4 text-base font-semibold transition-colors relative ${
                                         activeTab === tab 
                                             ? 'text-teal-600 border-b-2 border-teal-600' 
@@ -147,36 +123,57 @@ export default function MyEvent({ auth }) {
                                 type="text" 
                                 placeholder="Cari nama event atau nama organisasi..." 
                                 value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onChange={handleSearchChange}
                                 className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white shadow-sm"
                             />
                         </div>
                         
-                        <div className="flex gap-4 w-full md:w-auto">
-                            <select className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none bg-white shadow-sm cursor-pointer hover:bg-gray-50">
-                                <option>Kategori Aktivitas</option>
-                            </select>
-                            <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 bg-white shadow-sm hover:bg-gray-50 transition-colors">
-                                <Calendar size={16} /> Tentukan Tanggal
-                            </button>
+                        <div className="flex gap-4 w-full md:w-auto items-center">
+                            <div className="relative">
+                                <input 
+                                    type="date"
+                                    value={selectedDate}
+                                    onChange={handleDateChange}
+                                    className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 bg-white shadow-sm hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-teal-500 focus:outline-none cursor-pointer"
+                                />
+                                {selectedDate && (
+                                    <button 
+                                        onClick={clearDate}
+                                        className="absolute -right-3 -top-3 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-all"
+                                        title="Hapus Tanggal"
+                                    >
+                                        <X size={12} />
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
 
                     {/* Grid Layout */}
-                    {filteredEvents.length > 0 ? (
+                    {eventList.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {filteredEvents.map((event) => (
+                            {eventList.map((event) => (
                                 <EventCard key={event.id} event={event} />
                             ))}
                         </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-xl border border-dashed border-gray-300">
                             <Search className="text-gray-300 mb-2" size={48} />
-                            <p className="text-gray-500">Tidak ada event ditemukan.</p>
+                            <p className="text-gray-500">
+                                {activeTab === 'Semua' 
+                                    ? 'Tidak ada event yang ditemukan sesuai filter.' 
+                                    : `Tidak ada event dengan status "${activeTab}" pada tanggal ini.`}
+                            </p>
+                            {(searchQuery || selectedDate) && (
+                                <button 
+                                    onClick={() => router.get(route('myevents.index'))}
+                                    className="mt-4 text-teal-600 font-semibold hover:underline"
+                                >
+                                    Reset Semua Filter
+                                </button>
+                            )}
                         </div>
                     )}
-
-
                 </div>
             </main>    
         </div>

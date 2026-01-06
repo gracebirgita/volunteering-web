@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
+use App\Modls\Category;
 
 class EventSeeder extends Seeder
 {
@@ -12,6 +13,12 @@ class EventSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
         $institutes = DB::table('institutes')->pluck('institute_id');
+        $categoryIds = DB::table('categories')->pluck('category_id')->toArray();
+
+        if (empty($categoryIds)) {
+            $this->command->error('No categories found. Please run CategorySeeder first.');
+            return;
+        }
 
         foreach ($institutes as $instituteId) {
             $totalEvent = rand(3, 5);
@@ -23,7 +30,7 @@ class EventSeeder extends Seeder
 
                 DB::table('events')->insert([
                     'institute_id'          => $instituteId,
-                    'category'              => $faker->randomElement(['Lingkungan', 'Sosial', 'Pendidikan', 'Kesehatan']),
+                    'category_id'              => $faker->randomElement($categoryIds),
                     'event_name'            => 'Volunteer ' . $faker->words(2, true),
                     'event_description'     => $faker->paragraph(4),
                     'event_location'        => $faker->company(),

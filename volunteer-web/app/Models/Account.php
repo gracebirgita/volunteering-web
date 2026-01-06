@@ -19,15 +19,18 @@ class Account extends Authenticatable
     protected $primaryKey = 'account_id';
 
     protected $fillable = [
-        'email', 'password', 'role'
+        'email', 'password', 'role', 'is_active'
     ];
+
+
     protected $hidden=[
         'password',
         'remember_token',
     ];
 
-    protected $casts=[
-        'password'=>'hashed',
+    protected $casts = [
+        'password' => 'hashed',
+        'is_active' => 'boolean', // <--- Cast to boolean for React
     ];
 
     // RELATIONS

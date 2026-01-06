@@ -14,7 +14,7 @@ class Event extends Model
 
     protected $fillable=[
         'institute_id',
-        'category',
+        'category_id',
 
         'event_name',
         'event_description',
@@ -58,6 +58,10 @@ class Event extends Model
     public function registrations(){
         return $this->hasMany(EventRegist::class, 'event_id', 'event_id');
     }
-
+    
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'category_id');
+    }
 
 }
