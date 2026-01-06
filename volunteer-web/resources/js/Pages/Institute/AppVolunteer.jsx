@@ -27,7 +27,7 @@ export default function AppVolunteer({ auth, events = [] }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [filterCategory, setFilterCategory] = useState("");
 
-    // State popup konfrmasi
+    // State popup konfirmasi
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalAction, setModalAction] = useState({
         registId: null,
@@ -40,14 +40,19 @@ export default function AppVolunteer({ auth, events = [] }) {
         if (!selectedEvent || !selectedEvent.registrations) return [];
 
         return selectedEvent.registrations.map((reg) => {
-            const user = reg.user_profile || reg.user || {};
+            const profile = reg.user_profile || {};
+            const user = reg.user || {};
+            const realName =
+                profile.user_name || user.name || `User ID: ${reg.user_id}`;
+
             return {
                 id: reg.regist_id,
-                name: user.name || `User ID: ${reg.user_id}`,
+                name: realName,
                 status: reg.regist_status,
                 avatar:
+                    profile.profile_photo_url || // di database gaada
                     user.profile_photo_url ||
-                    `https://ui-avatars.com/api/?name=${user.name || "User"}`,
+                    `https://ui-avatars.com/api/?name=${realName}`,
             };
         });
     }, [selectedEvent]);
@@ -67,7 +72,7 @@ export default function AppVolunteer({ auth, events = [] }) {
         setIsModalOpen(true);
     };
 
-    // untuk update status
+    // Update status
     const executeStatusUpdate = () => {
         const { registId, newStatus } = modalAction;
         if (!registId || !newStatus) return;
@@ -98,6 +103,8 @@ export default function AppVolunteer({ auth, events = [] }) {
     return (
         <div className="flex min-h-screen bg-gray-50 font-sans text-black relative">
             <Head title="Aplikasi Volunteer" />
+
+            {/* Popup */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 animate-fade-in">
                     <div
@@ -161,7 +168,6 @@ export default function AppVolunteer({ auth, events = [] }) {
             />
 
             <main className="flex-1 w-full overflow-x-hidden relative z-0">
-                {/* Header Mobile */}
                 <div className="md:hidden bg-white border-b border-gray-200 p-4 flex justify-between items-center sticky top-0 z-30">
                     <span className="font-bold text-[#005D67]">
                         VolunteerHub
@@ -250,7 +256,6 @@ const EventListView = ({
                 </p>
             </div>
 
-            {/* Filter Bar */}
             <div className="bg-white p-4 rounded-2xl border border-gray-100 mb-8 flex flex-col md:flex-row gap-4 items-center shadow-sm">
                 <div className="relative flex-1 w-full">
                     <input
@@ -286,7 +291,6 @@ const EventListView = ({
                 </div>
             </div>
 
-            {/* Event */}
             {events.length === 0 ? (
                 <div className="text-center py-20 bg-white rounded-xl border border-dashed border-gray-300 text-gray-500">
                     Tidak ada event yang cocok dengan filter.
@@ -375,26 +379,19 @@ const EventListView = ({
 };
 
 const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
-    // filter state
     const [detailSearch, setDetailSearch] = useState("");
-
     const [sortConfig, setSortConfig] = useState({
         key: null,
         direction: "ascending",
     });
-
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
 
     const processedData = useMemo(() => {
         let data = [...volunteers];
-
-        // filtering
         data = data.filter((item) => {
             return item.name.toLowerCase().includes(detailSearch.toLowerCase());
         });
-
-        // sorting
         if (sortConfig.key) {
             data.sort((a, b) => {
                 if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -406,17 +403,14 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
                 return 0;
             });
         }
-
         return data;
     }, [volunteers, detailSearch, sortConfig]);
 
-    // Pagination slicing
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = processedData.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(processedData.length / itemsPerPage);
 
-    // sorting
     const requestSort = (key) => {
         let direction = "ascending";
         if (sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -442,7 +436,6 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
 
     return (
         <div className="animate-fade-in">
-            {/* Header */}
             <div className="mb-6">
                 <button
                     onClick={onBack}
@@ -465,7 +458,6 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
                 </p>
             </div>
 
-            {/* Filter Bar */}
             <div className="bg-white p-4 rounded-2xl border border-gray-100 mb-6 flex flex-col md:flex-row gap-4 items-center shadow-sm">
                 <div className="relative flex-1 w-full">
                     <input
@@ -485,7 +477,6 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
                 </div>
             </div>
 
-            {/* TABLE */}
             <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
@@ -553,7 +544,6 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
                                                             : "bg-yellow-500"
                                                     }`}
                                                 ></span>
-                                                {/* status */}
                                                 {vol.status === "Accepted"
                                                     ? "Diterima"
                                                     : vol.status === "Rejected"
@@ -623,7 +613,6 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
                     </table>
                 </div>
 
-                {/* Pagination */}
                 {processedData.length > 0 && (
                     <div className="p-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
                         <div>
