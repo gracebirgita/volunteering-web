@@ -227,9 +227,9 @@ export default function MyNavbar({
                                 </li>
                                 <li>
                                     <Link
-                                        href="/myevents"
+                                         href={route("myevents.index")}
                                         className={getSidebarLinkClass(
-                                            "/Relawan/MyEvent"
+                                            "myevents.index"
                                         )}
                                     >
                                         <Calendar size={20} /> Event Saya

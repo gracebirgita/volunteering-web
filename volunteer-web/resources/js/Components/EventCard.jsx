@@ -21,6 +21,7 @@ export default function EventCard({ event }) {
             {!registered && (
                 <div className="absolute top-3 right-3 z-20">
                     <AddOns status={event.event_status} />
+                    <AddOns status={event.category} />
                 </div>
             )}
 

@@ -37,7 +37,7 @@ class UserDashboardController extends Controller
                     'event_status'    => $event->event_status,
                     'event_description' => $event->event_description,
                     'event_location'  => $event->event_location,
-                    'category'        => $event->category,
+                    'category' => $event->category?->name,
                     'thumbnail'       => $event->thumbnail,
                     'quota'           => $event->quota,
                     'registered'      => $event->registrations()

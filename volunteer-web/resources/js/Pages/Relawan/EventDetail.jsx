@@ -8,34 +8,31 @@ import AgendaTimeline from "@/Components/AgendaTimeline";
 
 
 // export default FlashMessage;
-export default function EventDetail({auth,  event, institute, volunteers,
+export default function EventDetail({auth,  event, institute, volunteers, divisions,
     isRegistered,
     isAccepted,
     isRejected,
     isProfileComplete
  }) {
 
-    console.log(event.agendas);
-
-
     const user = auth.user 
     const userPorfile = auth.profile
 
+    const [showDivisionModal, setShowDivisionModal] = useState(false)
+    const [selectedDivision, setSelectedDivision] = useState(null)
 
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const [tab, setTab] = useState('description')
 
-    const handleJoin = () => {
-        router.post('/events/'+ event.id+'/join')
-    }
-    const getButtonLabel=()=>{
-        if(isAccepted) return 'Accepted';
-        if(isRejected) return 'Rejected';
-        if(isRegistered) return 'Pending';
-        return 'Jadi Relawan';
+   const handleJoin = () => {
+    router.post(`/events/${event.id}/join`, {
+        division_id: selectedDivision,
+    });
+    setShowDivisionModal(false);
     };
 
+    
     const handleCancel = () => {
         if (confirm('Yakin ingin membatalkan pendaftaran?')) {
             router.delete('/events/'+event.id+'/cancel')
@@ -449,7 +446,7 @@ export default function EventDetail({auth,  event, institute, volunteers,
                                         {isProfileComplete ? (
                                             // Tampilkan tombol jika profil lengkap
                                             <button
-                                                onClick={handleJoin}
+                                                onClick={() => setShowDivisionModal(true)}
                                                 className="w-full p-2 rounded bg-[#005D67] text-white"
                                             >
                                                 Jadi Relawan
@@ -470,6 +467,50 @@ export default function EventDetail({auth,  event, institute, volunteers,
                                         )}
                                     </>
                                 )}
+                                {showDivisionModal && (
+                                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                                        <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                                        <h3 className="text-lg font-bold mb-4">Pilih Divisi</h3>
+
+                                        {divisions.map(d => {
+                                            const remaining = d.quota - d.used
+                                            return (
+                                            <button
+                                                key={d.division_id}
+                                                disabled={remaining <= 0}
+                                                onClick={() => setSelectedDivision(d.division_id)}
+                                                className={`w-full p-3 border rounded mb-2 text-left
+                                                ${remaining <= 0 ? 'opacity-50 cursor-not-allowed' : ''}
+                                                ${selectedDivision === d.division_id ? 'border-[#005D67]' : ''}
+                                                `}
+                                            >
+                                                <div className="flex justify-between">
+                                                <span>{d.name}</span>
+                                                <span className="text-sm text-gray-500">
+                                                    {remaining} / {d.quota}
+                                                </span>
+                                                </div>
+                                            </button>
+                                            )
+                                        })}
+
+                                        <button
+                                            disabled={!selectedDivision}
+                                            onClick={handleJoin}
+                                            
+                                            className="w-full mt-4 bg-[#005D67] text-white py-2 rounded"
+                                        >
+                                            Konfirmasi
+                                        </button>
+                                        <button
+                                            onClick={() => setShowDivisionModal(false)}
+                                            className="w-full mt-4 bg-[#fdffff] text-gray border border-x-gray-300 py-2 rounded"
+                                        >
+                                            Kembali
+                                        </button>
+                                        </div>
+                                    </div>
+                                    )}
                                 {/* {!isRegistered && event.status!=='finished' && (
                                     <button
                                         onClick={handleJoin}

@@ -3,82 +3,126 @@
 namespace App\Http\Controllers\Relawan;
 
 use App\Http\Controllers\Controller;
+use App\Models\EventRegistration;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
-use App\Models\EventRegist;
+use Inertia\Inertia;
 
 class MyEventController extends Controller
 {
     public function index(Request $request)
     {
+        /**
+         * ============================================================
+         * 1. AUTH & PROFILE VALIDATION
+         * ============================================================
+         */
         $user = Auth::user();
-        
-        // 1. Get the User's Profile ID (Since registrations are linked to Profile, not Account)
-        $profile = $user->users_profiles; 
+        $profile = $user->profile;
 
+        // User wajib punya profile untuk melihat event
         if (!$profile) {
-            // Edge case: User hasn't completed profile setup
-            return redirect()->route('volunteer.settings'); 
+            return redirect()->route('volunteer.settings');
         }
 
-        // 2. Start Querying Registrations
-        $query = EventRegist::query()
-            ->with(['event.institute', 'event.category']) // Eager load for performance
-            ->where('user_id', $profile->user_id);
+        /**
+         * ============================================================
+         * 2. BASE QUERY (EVENT REGISTRATIONS BY PROFILE)
+         * ============================================================
+         */
+        $query = EventRegistration::query()
+            ->where('profile_id', $profile->profile_id)
+            ->with([
+                'event.institute',
+                'event.category',
+            ]);
 
-        // 3. Handle Tabs (Mapping Indonesian UI to Database English/Enum)
+        /**
+         * ============================================================
+         * 3. TAB FILTER (UI → DATABASE STATUS MAPPING)
+         * ============================================================
+         */
         $tab = $request->input('tab', 'Semua');
+
         if ($tab !== 'Semua') {
             $statusMap = [
                 'Diterima' => 'Accepted',
                 'Pending'  => 'Pending',
-                'Ditolak'  => 'Rejected'
+                'Ditolak'  => 'Rejected',
             ];
-            
-            if (isset($statusMap[$tab])) {
+
+            if (array_key_exists($tab, $statusMap)) {
                 $query->where('regist_status', $statusMap[$tab]);
             }
         }
 
-        // 4. Handle Search (Event Name OR Organizer Name)
+        /**
+         * ============================================================
+         * 4. SEARCH FILTER
+         * - Event Name
+         * - Institute Name
+         * ============================================================
+         */
         if ($search = $request->input('search')) {
-            $query->whereHas('event', function ($q) use ($search) {
-                $q->where('event_name', 'like', "%{$search}%")
-                  ->orWhereHas('institute', function ($q2) use ($search) {
-                      $q2->where('institute_name', 'like', "%{$search}%");
-                  });
+            $query->whereHas('event', function ($eventQuery) use ($search) {
+                $eventQuery
+                    ->where('event_name', 'like', "%{$search}%")
+                    ->orWhereHas('institute', function ($instituteQuery) use ($search) {
+                        $instituteQuery->where('institute_name', 'like', "%{$search}%");
+                    });
             });
         }
 
-        // 5. Date Filter ---
+        /**
+         * ============================================================
+         * 5. DATE FILTER (EVENT START DATE)
+         * ============================================================
+         */
         if ($date = $request->input('date')) {
-            $query->whereHas('event', function ($q) use ($date) {
-                $q->whereDate('event_start', '=', $date); 
+            $query->whereHas('event', function ($eventQuery) use ($date) {
+                $eventQuery->whereDate('event_start', $date);
             });
         }
-    
-        // 6. Fetch & Format
-        $events = $query->latest('regist_date')
+
+        /**
+         * ============================================================
+         * 6. PAGINATION & DATA TRANSFORMATION (API CONTRACT)
+         * ============================================================
+         */
+        $events = $query
+            ->latest('applied_at')
             ->paginate(9)
             ->withQueryString()
-            ->through(function ($regist) {
+            ->through(function (EventRegistration $registration) {
+                $event = $registration->event;
+
                 return [
-                    'id' => $regist->event->event_id, // Link to event detail
-                    'regist_id' => $regist->regist_id, // In case we need to cancel
-                    'title' => $regist->event->event_name,
-                    'category' => $regist->event->category->name ?? 'Umum',
-                    'location' => $regist->event->event_location,
-                    'date' => \Carbon\Carbon::parse($regist->event->event_start)->translatedFormat('d M Y'),
-                    'image' => $regist->event->thumbnail ? '/storage/' . $regist->event->thumbnail : 'https://placehold.co/600x400',
-                    'status' => strtolower($regist->regist_status), // 'accepted', 'pending', 'rejected'
-                    'organizer' => $regist->event->institute->institute_name ?? 'Unknown',
+                    'event_id'        => $event->event_id,
+                    'registration_id'=> $registration->regist_id,
+
+                    'title'           => $event->event_name,
+                    'category'        => $event->category->name ?? 'Umum',
+                    'organizer'       => $event->institute->institute_name ?? 'Unknown',
+
+                    'location'        => $event->event_location,
+                    'date'            => \Carbon\Carbon::parse($event->event_start)
+                                            ->translatedFormat('d M Y'),
+
+                    'image' => event_image_url($event),
+
+                    // accepted | pending | rejected
+                    'status'          => strtolower($registration->regist_status),
                 ];
             });
 
+        /**
+         * ============================================================
+         * 7. RENDER INERTIA PAGE
+         * ============================================================
+         */
         return Inertia::render('Relawan/MyEvent', [
-            'events' => $events,
-            'filters' => $request->only(['search', 'tab']),
+            'events'  => $events,
+            'filters' => $request->only(['search', 'tab', 'date']),
         ]);
     }
 }
