@@ -54,6 +54,7 @@ class InstituteDashboardController extends Controller
         $ongoingList = (clone $eventsQuery)
             ->whereDate('event_start', '<=', $today)
             ->whereDate('event_finish', '>=', $today)
+            ->with('category:category_id,name,color')
             ->withCount([
                 'registrations as total_pending' => function ($query) {
                     $query->where('regist_status', 'Pending');
@@ -75,12 +76,13 @@ class InstituteDashboardController extends Controller
                 'event_status',
                 'event_description',
                 'quota',
-                'category',
+                'category_id',
             ]);
 
         // list event mendatang & jumlah pendaftar per status
         $upcomingList = (clone $eventsQuery)
             ->whereDate('event_start', '>', $today)
+            ->with('category:category_id,name,color')
             ->withCount([
                 'registrations as total_pending' => function ($query) {
                     $query->where('regist_status', 'Pending');
@@ -102,7 +104,7 @@ class InstituteDashboardController extends Controller
                 'event_status',
                 'event_description',
                 'quota',
-                'category',
+                'category_id',
             ]);
 
         return inertia('Dashboard/Institute', [

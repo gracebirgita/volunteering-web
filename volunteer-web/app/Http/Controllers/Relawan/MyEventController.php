@@ -12,11 +12,7 @@ class MyEventController extends Controller
 {
     public function index(Request $request)
     {
-        /**
-         * ============================================================
-         * 1. AUTH & PROFILE VALIDATION
-         * ============================================================
-         */
+        // 1. AUTH & PROFILE VALIDATION
         $user = Auth::user();
         $profile = $user->profile;
 
@@ -25,11 +21,9 @@ class MyEventController extends Controller
             return redirect()->route('volunteer.settings');
         }
 
-        /**
-         * ============================================================
-         * 2. BASE QUERY (EVENT REGISTRATIONS BY PROFILE)
-         * ============================================================
-         */
+        
+        //2. BASE QUERY (EVENT REGISTRATIONS BY PROFILE)
+
         $query = EventRegistration::query()
             ->where('profile_id', $profile->profile_id)
             ->with([
@@ -37,11 +31,9 @@ class MyEventController extends Controller
                 'event.category',
             ]);
 
-        /**
-         * ============================================================
-         * 3. TAB FILTER (UI → DATABASE STATUS MAPPING)
-         * ============================================================
-         */
+     
+        // 3. TAB FILTER (UI → DATABASE STATUS MAPPING)
+
         $tab = $request->input('tab', 'Semua');
 
         if ($tab !== 'Semua') {
@@ -57,12 +49,10 @@ class MyEventController extends Controller
         }
 
         /**
-         * ============================================================
          * 4. SEARCH FILTER
          * - Event Name
          * - Institute Name
-         * ============================================================
-         */
+        **/
         if ($search = $request->input('search')) {
             $query->whereHas('event', function ($eventQuery) use ($search) {
                 $eventQuery
@@ -73,22 +63,14 @@ class MyEventController extends Controller
             });
         }
 
-        /**
-         * ============================================================
-         * 5. DATE FILTER (EVENT START DATE)
-         * ============================================================
-         */
+        //5. DATE FILTER (EVENT START DATE)
         if ($date = $request->input('date')) {
             $query->whereHas('event', function ($eventQuery) use ($date) {
                 $eventQuery->whereDate('event_start', $date);
             });
         }
 
-        /**
-         * ============================================================
-         * 6. PAGINATION & DATA TRANSFORMATION (API CONTRACT)
-         * ============================================================
-         */
+        //6. PAGINATION & DATA TRANSFORMATION (API CONTRACT)
         $events = $query
             ->latest('applied_at')
             ->paginate(9)
@@ -115,11 +97,7 @@ class MyEventController extends Controller
                 ];
             });
 
-        /**
-         * ============================================================
-         * 7. RENDER INERTIA PAGE
-         * ============================================================
-         */
+        //7. RENDER INERTIA PAGE
         return Inertia::render('Relawan/MyEvent', [
             'events'  => $events,
             'filters' => $request->only(['search', 'tab', 'date']),

@@ -4,11 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class InstituteEventController extends Controller
 {
+    public function create()
+    {
+        // Fetch all active categories
+        $categories = Category::where('is_active', true)->get();
+
+        return inertia('Institute/CreateEvent', [
+            'categories' => $categories
+        ]);
+    }
+
     // STORE EVENT
     public function store(Request $request)
     {
@@ -21,7 +32,7 @@ class InstituteEventController extends Controller
         $data = $request->validate([
             'event_name'              => 'required|string|max:255',
             'event_description'       => 'required|string',
-            'category'                => 'required|in:Lingkungan,Sosial,Pendidikan,Kesehatan',
+            'category_id'                => 'required|exists:categories,category_id',
             'thumbnail'               => 'nullable|image|max:2048',
 
             'event_start'             => 'required|date',
@@ -98,7 +109,7 @@ class InstituteEventController extends Controller
         $data = $request->validate([
             'event_name'            => 'required|string|max:255',
             'event_description'     => 'required|string',
-            'category'              => 'required|in:Lingkungan,Sosial,Pendidikan,Kesehatan',
+            'category_id'              => 'required|exists:categories,category_id',
             'thumbnail'             => 'nullable|image|max:2048',
             'event_start'           => 'required|date',
             'event_finish'          => 'required|date',

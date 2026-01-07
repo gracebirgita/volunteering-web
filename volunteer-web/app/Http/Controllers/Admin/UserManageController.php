@@ -19,7 +19,7 @@ class UserManageController extends Controller
         // 2. Start Query
         $query = Account::query()
             ->where('role', $role)
-            ->with(['users_profiles', 'institute']); // Load relations to get Names
+            ->with(['profile', 'institute']); // Load relations to get Names
 
         // 3. Search Logic (Complex: Search Name in related tables OR Email in account table)
         if ($search = $request->input('search')) {
@@ -29,7 +29,7 @@ class UserManageController extends Controller
 
                 // Search Name based on role
                 if ($role === 'user') {
-                    $q->orWhereHas('users_profiles', function ($q2) use ($search) {
+                    $q->orWhereHas('profile', function ($q2) use ($search) {
                         $q2->where('user_name', 'like', "%{$search}%");
                     });
                 } elseif ($role === 'institute') {
@@ -44,8 +44,8 @@ class UserManageController extends Controller
         $users = $query->paginate(10)->withQueryString()->through(function ($account) {
             // Get the correct name based on role
             $name = 'Unknown';
-            if ($account->role === 'user' && $account->users_profiles) {
-                $name = $account->users_profiles->user_name;
+            if ($account->role === 'user' && $account->profile) {
+                $name = $account->profile->user_name;
             } elseif ($account->role === 'institute' && $account->institute) {
                 $name = $account->institute->institute_name;
             }
