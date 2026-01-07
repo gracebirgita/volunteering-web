@@ -161,8 +161,8 @@ export default function CreateEvent({ auth, categories }) {
                                     <label className="block text-md font-bold text-black mb-2">Judul Event:</label>
                                     <input
                                         type="text"
-                                        className="w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67]"
-                                       text-gray-400  placeholder="Aksi Bersih Pantai Balekambang"
+                                        className="w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67] text-gray-400"
+                                         placeholder="Aksi Bersih Pantai Balekambang"
                                         value={data.event_name}
                                         onChange={(e) => setData("event_name", e.target.value)}
                                     />
@@ -172,8 +172,8 @@ export default function CreateEvent({ auth, categories }) {
                                     <label className="block text-md font-bold text-black mb-2">Deskripsi Singkat:</label>
                                     <textarea
                                         rows="3"
-                                        className="w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67]"
-                                       text-gray-400  placeholder="Bergabung untuk membersihkan sampah..."
+                                        className="w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67] text-gray-400"
+                                        placeholder="Bergabung untuk membersihkan sampah..."
                                         value={data.event_description}
                                         onChange={(e) => setData("event_description", e.target.value)}
                                     />
