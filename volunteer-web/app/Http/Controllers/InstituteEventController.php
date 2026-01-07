@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia; 
 
 class InstituteEventController extends Controller
 {
@@ -15,7 +16,7 @@ class InstituteEventController extends Controller
         // Fetch all active categories
         $categories = Category::where('is_active', true)->get();
 
-        return inertia('Institute/CreateEvent', [
+        return Inertia::render('Institute/CreateEvent', [
             'categories' => $categories
         ]);
     }
@@ -32,7 +33,7 @@ class InstituteEventController extends Controller
         $data = $request->validate([
             'event_name'              => 'required|string|max:255',
             'event_description'       => 'required|string',
-            'category_id'                => 'required|exists:categories,category_id',
+            'category_id'             => 'required|exists:categories,category_id',
             'thumbnail'               => 'nullable|image|max:2048',
 
             'event_start'             => 'required|date',
@@ -80,11 +81,14 @@ class InstituteEventController extends Controller
         $institute = $account->institute;
         if (!$institute) abort(404, 'Institute not found');
 
+        $categories = Category::where('is_active', true)->get();
+
         // ambil keyword search kalau ada
         $search = $request->input('search');
 
         $events = Event::where('institute_id', $institute->institute_id)
                     //filter kalau ada search
+                    ->with('category')
                     ->when($search, function ($query, $search) {
                         return $query->where('event_name', 'like', "%{$search}%");
                     })
@@ -93,6 +97,7 @@ class InstituteEventController extends Controller
 
         return inertia('Institute/OrganizeEvent', [
             'events' => $events,
+            'categories' => $categories,
             'filters' => $request->only(['search']) 
         ]);
     }
@@ -109,7 +114,7 @@ class InstituteEventController extends Controller
         $data = $request->validate([
             'event_name'            => 'required|string|max:255',
             'event_description'     => 'required|string',
-            'category_id'              => 'required|exists:categories,category_id',
+            'category_id'           => 'required|exists:categories,category_id',
             'thumbnail'             => 'nullable|image|max:2048',
             'event_start'           => 'required|date',
             'event_finish'          => 'required|date',
@@ -117,7 +122,7 @@ class InstituteEventController extends Controller
             'event_end_time'        => 'required',
             'event_location'        => 'required|string|max:255',
             'address'               => 'required|string',
-            'quota'           => 'required|integer|min:1',
+            'quota'                 => 'required|integer|min:1',
             'registration_deadline' => 'required|date',
             'benefit_consumption'   => 'boolean',
             'benefit_certificate'   => 'boolean',

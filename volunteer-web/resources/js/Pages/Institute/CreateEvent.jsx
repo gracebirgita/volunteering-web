@@ -173,7 +173,6 @@ export default function CreateEvent({ auth, categories }) {
                                     <label className="block text-md font-bold text-black mb-2">Deskripsi Singkat:</label>
                                     <textarea
                                         rows="3"
-                                        // UPDATED: text-black placeholder:text-gray-400
                                         className="w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67] text-black placeholder:text-gray-400"
                                         placeholder="Bergabung untuk membersihkan sampah..."
                                         value={data.event_description}
@@ -196,7 +195,7 @@ export default function CreateEvent({ auth, categories }) {
                                                     backgroundColor: isSelected ? `${cat.color}59` : `${cat.color}1A`,
                                                     color: cat.color,
                                                     borderColor: cat.color,
-                                                    borderWidth: isSelected ? '2px' : '1px',
+                                                    borderWidth: '1px',
                                                 };
 
                                                 return (

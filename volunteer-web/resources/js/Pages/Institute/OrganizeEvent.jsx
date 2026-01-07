@@ -8,10 +8,6 @@ import {
     Calendar,
     Clock,
     LayoutTemplate,
-    Sprout,
-    UserRound,
-    GraduationCap,
-    Hospital,
     X,
     Plus,
     Minus,
@@ -21,7 +17,7 @@ import {
     Check,
 } from "lucide-react";
 
-export default function MyEvent({ auth, events = [] }) {
+export default function MyEvent({ auth, events = [], categories = [] }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     // state edit
@@ -46,29 +42,6 @@ export default function MyEvent({ auth, events = [] }) {
         : "/assets/Dashboard/Institute/who.png";
 
     const tabs = ["Informasi", "Logistik", "Relawan", "Kontak & Status"];
-
-    const categoryList = [
-        {
-            name: "Lingkungan",
-            icon: Sprout,
-            style: "bg-[#E7F8F1] text-[#00772A]",
-        },
-        {
-            name: "Sosial",
-            icon: UserRound,
-            style: "bg-[#FEEDE5] text-[#FF7A00]",
-        },
-        {
-            name: "Pendidikan",
-            icon: GraduationCap,
-            style: "bg-[#E7F0FF] text-[#07ACE6]",
-        },
-        {
-            name: "Kesehatan",
-            icon: Hospital,
-            style: "bg-[#E9FBFF] text-[#33CCB5]",
-        },
-    ];
 
     const { data, setData, post, processing, reset, errors } = useForm({
         _method: "PUT",
@@ -152,7 +125,7 @@ export default function MyEvent({ auth, events = [] }) {
             .toLowerCase()
             .includes(searchQuery.toLowerCase());
         const matchCategory = selectedCategory
-            ? event.category === selectedCategory
+            ? event.category_id === selectedCategory
             : true;
 
         let matchDate = true;
@@ -166,36 +139,6 @@ export default function MyEvent({ auth, events = [] }) {
 
         return matchSearch && matchCategory && matchDate && matchLocation;
     });
-
-    const getCategoryStyle = (cat) => {
-        switch (cat) {
-            case "Lingkungan":
-                return "bg-[#E7F8F1] text-[#00772A]";
-            case "Sosial":
-                return "bg-[#FEEDE5] text-[#FF7A00]";
-            case "Pendidikan":
-                return "bg-[#E7F0FF] text-[#07ACE6]";
-            case "Kesehatan":
-                return "bg-[#E9FBFF] text-[#33CCB5]";
-            default:
-                return "bg-gray-100 text-gray-600";
-        }
-    };
-
-    const getCategoryIcon = (cat) => {
-        switch (cat) {
-            case "Lingkungan":
-                return <Sprout size={14} />;
-            case "Sosial":
-                return <UserRound size={14} />;
-            case "Pendidikan":
-                return <GraduationCap size={14} />;
-            case "Kesehatan":
-                return <Hospital size={14} />;
-            default:
-                return <Sprout size={14} />;
-        }
-    };
 
     return (
         <div className="flex min-h-screen bg-gray-50 font-sans text-black relative">
@@ -311,99 +254,107 @@ export default function MyEvent({ auth, events = [] }) {
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                                    {filteredEvents.map((event, index) => (
-                                        <div
-                                            key={event.event_id || index}
-                                            className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition"
-                                        >
-                                            <div className="h-40 bg-gray-200 relative">
-                                                <img
-                                                    src={
-                                                        event.thumbnail
-                                                            ? `/storage/${event.thumbnail}`
-                                                            : "/assets/landing-page/event1.png"
-                                                    }
-                                                    alt={event.event_name}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                                <span
-                                                    className={`absolute top-3 right-3 px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
-                                                        event.event_status ===
-                                                        "active"
-                                                            ? "bg-green-700 text-white"
-                                                            : "bg-red-500 text-white"
-                                                    }`}
-                                                >
-                                                    {event.event_status}
-                                                </span>
-                                            </div>
+                                    {filteredEvents.map((event, index) => {
+                                        // Safe access to category data
+                                        const catName = event.category?.name || "Umum";
+                                        const catColor = event.category?.color || "#6b7280";
+                                        
+                                        // Inline style for dynamic color
+                                        const badgeStyle = {
+                                            backgroundColor: `${catColor}1A`, // 10% opacity
+                                            color: catColor,
+                                        };
 
-                                            <div className="p-4 flex flex-col flex-1">
-                                                <div className="flex gap-2 mb-3">
-                                                    <span
-                                                        className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold ${getCategoryStyle(
-                                                            event.category
-                                                        )}`}
-                                                    >
-                                                        {getCategoryIcon(
-                                                            event.category
-                                                        )}{" "}
-                                                        {event.category}
-                                                    </span>
-                                                    <span className="px-2 py-1 rounded-full bg-[#005D67] text-white text-[10px] font-bold line-clamp-1">
-                                                        {instituteName}
-                                                    </span>
-                                                </div>
-
-                                                <h3 className="font-bold text-black text-sm mb-2 line-clamp-1">
-                                                    {event.event_name}
-                                                </h3>
-                                                <p className="text-xs text-gray-500 mb-4 line-clamp-3 leading-relaxed">
-                                                    {event.event_description}
-                                                </p>
-
-                                                <div className="mt-auto space-y-2 mb-4">
-                                                    <div className="flex items-center gap-2 text-xs text-gray-600">
-                                                        <Clock size={14} />
-                                                        {new Date(
-                                                            event.event_start
-                                                        ).toLocaleDateString(
-                                                            "id-ID",
-                                                            {
-                                                                day: "2-digit",
-                                                                month: "2-digit",
-                                                                year: "numeric",
-                                                            }
-                                                        )}
-                                                    </div>
-                                                    <div className="flex items-center gap-2 text-xs text-gray-600">
-                                                        <MapPin size={14} />
-                                                        {event.event_location &&
-                                                        event.event_location
-                                                            .length > 20
-                                                            ? event.event_location.substring(
-                                                                  0,
-                                                                  20
-                                                              ) + "..."
-                                                            : event.event_location}
-                                                    </div>
-                                                </div>
-
-                                                <div className="grid gap-2">
-                                                    <button
-                                                        onClick={() =>
-                                                            handleEditClick(
-                                                                event
-                                                            )
+                                        return (
+                                            <div
+                                                key={event.event_id || index}
+                                                className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition"
+                                            >
+                                                <div className="h-40 bg-gray-200 relative">
+                                                    <img
+                                                        src={
+                                                            event.thumbnail
+                                                                ? `/storage/${event.thumbnail}`
+                                                                : "/assets/landing-page/event1.png"
                                                         }
-                                                        className="bg-[#33CCB5] hover:bg-teal-400 text-black py-2 rounded-lg text-xs font-bold transition text-center w-full flex items-center justify-center gap-2"
+                                                        alt={event.event_name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                    <span
+                                                        className={`absolute top-3 right-3 px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
+                                                            event.event_status ===
+                                                            "active"
+                                                                ? "bg-green-700 text-white"
+                                                                : "bg-red-500 text-white"
+                                                        }`}
                                                     >
-                                                        Edit
-                                                    </button>
+                                                        {event.event_status}
+                                                    </span>
+                                                </div>
+
+                                                <div className="p-4 flex flex-col flex-1">
+                                                    <div className="flex gap-2 mb-3">
+                                                        <span
+                                                            style={badgeStyle}
+                                                            className="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold"
+                                                        >
+                                                            {catName}
+                                                        </span>
+                                                        <span className="px-2 py-1 rounded-full bg-[#005D67] text-white text-[10px] font-bold line-clamp-1">
+                                                            {instituteName}
+                                                        </span>
+                                                    </div>
+
+                                                    <h3 className="font-bold text-black text-sm mb-2 line-clamp-1">
+                                                        {event.event_name}
+                                                    </h3>
+                                                    <p className="text-xs text-gray-500 mb-4 line-clamp-3 leading-relaxed">
+                                                        {event.event_description}
+                                                    </p>
+
+                                                    <div className="mt-auto space-y-2 mb-4">
+                                                        <div className="flex items-center gap-2 text-xs text-gray-600">
+                                                            <Clock size={14} />
+                                                            {new Date(
+                                                                event.event_start
+                                                            ).toLocaleDateString(
+                                                                "id-ID",
+                                                                {
+                                                                    day: "2-digit",
+                                                                    month: "2-digit",
+                                                                    year: "numeric",
+                                                                }
+                                                            )}
+                                                        </div>
+                                                        <div className="flex items-center gap-2 text-xs text-gray-600">
+                                                            <MapPin size={14} />
+                                                            {event.event_location &&
+                                                            event.event_location
+                                                                .length > 20
+                                                                ? event.event_location.substring(
+                                                                    0,
+                                                                    20
+                                                                ) + "..."
+                                                                : event.event_location}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid gap-2">
+                                                        <button
+                                                            onClick={() =>
+                                                                handleEditClick(
+                                                                    event
+                                                                )
+                                                            }
+                                                            className="bg-[#33CCB5] hover:bg-teal-400 text-black py-2 rounded-lg text-xs font-bold transition text-center w-full flex items-center justify-center gap-2"
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             )}
                         </div>
@@ -429,34 +380,26 @@ export default function MyEvent({ auth, events = [] }) {
                                     )}
                                 </div>
                                 <div className="space-y-3">
-                                    {[
-                                        "Lingkungan",
-                                        "Sosial",
-                                        "Pendidikan",
-                                        "Kesehatan",
-                                    ].map((cat, idx) => {
-                                        const isSelected =
-                                            selectedCategory === cat;
+                                    {categories.map((cat) => {
+                                        const isSelected = selectedCategory === cat.category_id;
+                                        
+                                        // Styles for sidebar buttons
+                                        const sidebarBtnStyle = {
+                                            borderColor: cat.color,
+                                            backgroundColor: isSelected ? `${cat.color}59` : `${cat.color}1A`, 
+                                            color: cat.color,
+                                        };
                                         return (
                                             <button
-                                                key={idx}
+                                                key={cat.category_id}
                                                 onClick={() =>
                                                     setSelectedCategory(
-                                                        isSelected ? null : cat
+                                                        isSelected ? null : cat.category_id
                                                     )
                                                 }
-                                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-full text-xs font-bold transition border-2
-                                                ${
-                                                    isSelected
-                                                        ? `border-[#005D67] opacity-100 ${getCategoryStyle(
-                                                              cat
-                                                          )}`
-                                                        : `border-transparent hover:opacity-80 ${getCategoryStyle(
-                                                              cat
-                                                          )}`
-                                                }`}
-                                            >
-                                                {getCategoryIcon(cat)} {cat}
+                                                style={sidebarBtnStyle}
+                                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-full text-xs font-bold transition border-2 hover:opacity-80`}
+                                            >{cat.name}
                                             </button>
                                         );
                                     })}
@@ -611,37 +554,35 @@ export default function MyEvent({ auth, events = [] }) {
                                             }
                                         />
                                     </div>
+
                                     <div>
-                                        <label className="block text-sm font-bold text-black mb-2">
-                                            Kategori:
-                                        </label>
+                                        <label className="block text-sm font-bold text-black mb-2">Kategori:</label>
                                         <div className="flex flex-wrap gap-3">
-                                            {categoryList.map((cat) => (
-                                                <button
-                                                    type="button"
-                                                    key={cat.name}
-                                                    onClick={() =>
-                                                        setData(
-                                                            "category",
-                                                            cat.name
-                                                        )
-                                                    }
-                                                    className={`px-4 py-2 rounded-full text-xs font-bold transition border flex items-center gap-2 ${
-                                                        data.category ===
-                                                        cat.name
-                                                            ? "ring-2 ring-offset-1 ring-[#005D67] opacity-100"
-                                                            : "opacity-60 hover:opacity-100"
-                                                    } ${cat.style}`}
-                                                >
-                                                    <cat.icon
-                                                        size={16}
-                                                        strokeWidth={2.5}
-                                                    />{" "}
-                                                    {cat.name}
-                                                </button>
-                                            ))}
+                                            {categories.map((cat) => {
+                                                const isSelected = data.category_id === cat.category_id;
+                                                
+                                                const editBtnStyle = {
+                                                    // 1A = 10% opacity, 59 = 35% opacity
+                                                    backgroundColor: isSelected ? `${cat.color}59` : `${cat.color}1A`,
+                                                    color: cat.color,
+                                                    borderColor: cat.color,
+                                                    borderWidth: '1px',
+                                                };
+
+                                                return (
+                                                    <button
+                                                        key={cat.category_id}
+                                                        type="button" 
+                                                        onClick={() => setData("category_id", cat.category_id)}
+                                                        style={editBtnStyle}
+                                                        className={`px-4 py-2 rounded-full text-xs font-bold transition border flex items-center gap-2 hover:opacity-80`}>
+                                                        {cat.name}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
                                     </div>
+
                                     <div>
                                         <label className="block text-sm font-bold text-black mb-2">
                                             Gambar Thumbnail:
