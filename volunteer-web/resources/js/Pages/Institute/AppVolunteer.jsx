@@ -7,10 +7,6 @@ import {
     ChevronDown,
     ArrowLeft,
     Clock,
-    Sprout,
-    GraduationCap,
-    UserRound,
-    Hospital,
     MapPin,
     ChevronLeft,
     ChevronRight,
@@ -19,9 +15,10 @@ import {
     ArrowDown,
     X,
     AlertTriangle,
+    Layers,
 } from "lucide-react";
 
-export default function AppVolunteer({ auth, events = [] }) {
+export default function AppVolunteer({ auth, events = [], categories = []}) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [selectedEventId, setSelectedEventId] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
@@ -64,8 +61,9 @@ export default function AppVolunteer({ auth, events = [] }) {
         const matchSearch = (event.event_name || "")
             .toLowerCase()
             .includes(searchQuery.toLowerCase());
+
         const matchCategory = filterCategory
-            ? event.category === filterCategory
+            ? event.category_id === parseInt(filterCategory)
             : true;
         return matchSearch && matchCategory;
     });
@@ -195,6 +193,7 @@ export default function AppVolunteer({ auth, events = [] }) {
                     ) : (
                         <EventListView
                             events={filteredEvents}
+                            categories = {categories}
                             onSelectEvent={(ev) =>
                                 setSelectedEventId(ev.event_id)
                             }
@@ -212,42 +211,13 @@ export default function AppVolunteer({ auth, events = [] }) {
 
 const EventListView = ({
     events,
+    categories,
     onSelectEvent,
     searchQuery,
     setSearchQuery,
     filterCategory,
     setFilterCategory,
 }) => {
-    const getCategoryIcon = (cat) => {
-        switch (cat) {
-            case "Lingkungan":
-                return <Sprout size={12} />;
-            case "Sosial":
-                return <UserRound size={12} />;
-            case "Pendidikan":
-                return <GraduationCap size={12} />;
-            case "Kesehatan":
-                return <Hospital size={12} />;
-            default:
-                return <Sprout size={12} />;
-        }
-    };
-
-    const getCategoryStyle = (cat) => {
-        switch (cat) {
-            case "Lingkungan":
-                return "bg-[#E7F8F1] text-[#00772A]";
-            case "Sosial":
-                return "bg-[#FEEDE5] text-[#FF7A00]";
-            case "Pendidikan":
-                return "bg-[#E7F0FF] text-[#07ACE6]";
-            case "Kesehatan":
-                return "bg-[#E9FBFF] text-[#33CCB5]";
-            default:
-                return "bg-gray-100 text-gray-600";
-        }
-    };
-
     return (
         <div className="animate-fade-in">
             <div className="mb-6">
@@ -282,10 +252,11 @@ const EventListView = ({
                             onChange={(e) => setFilterCategory(e.target.value)}
                         >
                             <option value="">Kategori Event</option>
-                            <option value="Lingkungan">Lingkungan</option>
-                            <option value="Pendidikan">Pendidikan</option>
-                            <option value="Sosial">Sosial</option>
-                            <option value="Kesehatan">Kesehatan</option>
+                            {categories.map((cat) => (
+                                <option key={cat.category_id} value={cat.category_id}>
+                                    {cat.name}
+                                </option>
+                            ))}
                         </select>
                         <ChevronDown
                             className="absolute right-3 top-3.5 text-gray-400 pointer-events-none"
@@ -304,10 +275,18 @@ const EventListView = ({
                     {events.map((event) => {
                         const status =
                             event.quota > 0 ? "Active" : "Closed";
-                        const category = event.category || "Umum";
+
+                        const categoryName = event.category?.name || "Umum";
+                        const categoryColor = event.category?.color || "#6b7280"; // Default gray
+                        
                         const imageSrc = event.thumbnail
                             ? `/storage/${event.thumbnail}`
                             : "/assets/landing-page/event3.png";
+
+                        const categoryBadgeStyle = {
+                            backgroundColor: `${categoryColor}1A`, // 10% Opacity
+                            color: categoryColor,
+                        };
 
                         return (
                             <div
@@ -334,12 +313,10 @@ const EventListView = ({
                                 <div className="p-5 flex flex-col flex-1">
                                     <div className="mb-3">
                                         <span
-                                            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${getCategoryStyle(
-                                                category
-                                            )}`}
+                                            style={categoryBadgeStyle}
+                                            className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide"
                                         >
-                                            {getCategoryIcon(category)}{" "}
-                                            {category}
+                                            {categoryName}
                                         </span>
                                     </div>
                                     <h3 className="font-bold text-black text-sm mb-2 line-clamp-1">

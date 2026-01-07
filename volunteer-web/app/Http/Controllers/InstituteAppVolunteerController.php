@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\EventRegistration;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -17,10 +18,12 @@ class InstituteAppVolunteerController extends Controller
         $institute = $account->institute;
         if (!$institute) abort(404, 'Institute not found');
 
+        $categories = Category::where('is_active', true)->get();
+
         $search = $request->input('search');
 
         $events = Event::where('institute_id', $institute->institute_id)
-            ->with(['registrations.userProfile']) 
+            ->with(['registrations.userProfile', 'category'])
             ->when($search, function ($query, $search) {
                 return $query->where('event_name', 'like', "%{$search}%");
             })
@@ -29,6 +32,7 @@ class InstituteAppVolunteerController extends Controller
 
         return Inertia::render('Institute/AppVolunteer', [
             'events' => $events,
+            'categories' => $categories,
             'filters' => $request->only(['search'])
         ]);
     }
