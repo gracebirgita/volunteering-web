@@ -33,14 +33,14 @@ class InstituteDashboardController extends Controller
 
         // jumlah pendaftar unik
         $totalVolunteers = (clone $eventsQuery)
-            ->join('events_regists', 'events.event_id', '=', 'events_regists.event_id')
-            ->distinct('events_regists.user_id')
-            ->count('events_regists.user_id');
+            ->join('events_registrations', 'events.event_id', '=', 'events_registrations.event_id')
+            ->distinct('events_registrations.profile_id')
+            ->count('events_registrations.profile_id');
 
         // pendaftar status pending
         $pendingApprovals = (clone $eventsQuery)
-            ->join('events_regists', 'events.event_id', '=', 'events_regists.event_id')
-            ->where('events_regists.regist_status', 'Pending')
+            ->join('events_registrations', 'events.event_id', '=', 'events_registrations.event_id')
+            ->where('events_registrations.regist_status', 'Pending')
             ->whereDate('events.event_finish', '>', $today)
             ->count();
 

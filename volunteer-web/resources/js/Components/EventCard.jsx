@@ -1,54 +1,105 @@
-import React from 'react';
-import { MapPin, Calendar } from 'lucide-react';
+import { MapPin, CalendarDays } from "lucide-react";
+import { Link } from '@inertiajs/react';
+import AddOns from "@/Components/AddOns";
+
+
 
 export default function EventCard({ event }) {
-  // Dynamic badge color based on status
-  const getStatusBadge = (status) => {
-    switch(status) {
-      case 'pending': return <span className="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded">Menunggu Konfirmasi</span>;
-      case 'rejected': return <span className="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Ditolak</span>;
-      default: return <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">Aktivitas</span>;
-    }
-  };
+    const {
+        event_id,
+        event_name,
+        event_start,
+        event_description,
+        event_location,
+        registered,
+    } = event;
 
-  return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-      {/* Image Section */}
-      <div className="h-40 w-full bg-gray-200 relative">
-        <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
-        <div className="absolute top-3 left-3">
-            {getStatusBadge(event.status)}
-        </div>
-      </div>
+    return (
+        <div className=" relative bg-white rounded-xl overflow-hidden shadow-sm flex flex-col ">
 
-      {/* Content Section */}
-      <div className="p-4">
-        <h3 className="font-bold text-gray-900 mb-1 line-clamp-1">{event.title}</h3>
-        <p className="text-sm text-gray-500 mb-4 line-clamp-2">
-           Bergabunglah bersama kami untuk membuat perubahan nyata di lingkungan sekitar...
-        </p>
-
-        <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
-          <div className="flex items-center gap-1">
-            <Calendar size={14} /> {event.date}
-          </div>
-          <div className="flex items-center gap-1">
-            <MapPin size={14} /> {event.location}
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-2 mt-2">
-            <button className="flex-1 bg-white border border-teal-600 text-teal-600 py-2 rounded-lg text-sm font-medium hover:bg-teal-50">
-                Lihat Detail
-            </button>
-            {event.status === 'upcoming' && (
-                <button className="flex-1 bg-teal-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-teal-700">
-                    Mulai
-                </button>
+           {/* Status Event , jika tidak registered */}
+            {!registered && (
+                <div className="absolute top-3 right-3 z-20">
+                    <AddOns status={event.event_status} />
+                </div>
             )}
+
+          
+            {/* Thumbnail */}
+            <div className="relative h-40">
+                <img
+                    src={event.image_url}
+                    alt={event.event_name}
+                    className="h-full w-full object-cover"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+
+                {registered && (
+                    <span className="absolute top-3 right-3 bg-green-600 text-white text-xs px-3 py-1 rounded-full z-15">
+                        Terdaftar
+                    </span>
+                )}
+            </div>
+
+            {/* Content */}
+            <div className="p-4 flex flex-col flex-1">
+                
+                <div className="flex flex-row gap-5 mb-3">
+                    <AddOns category={event.category}/>
+                    <AddOns organizer={event.event_organizer} />
+                </div>
+
+                <h3 className="font-inter font-semibold text-gray-800 line-clamp-1 mb-1 pl-2">
+                    {event_name}
+                </h3>
+
+
+                <p className="text-sm text-gray-600 line-clamp-3 pl-2">
+                    {event_description}
+                </p>
+
+                
+                <div className="flex flex-row items-center mt-2 gap-3 text-sm text-gray-500 pl-2">
+                    <div className="flex items-center gap-2">
+                        <CalendarDays size={16} />
+                        <span className="line-clamp-1">
+                            {new Date(event_start).toLocaleDateString("id-ID", {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                            })}
+                        </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <MapPin size={16} />
+                        <span className="line-clamp-1">
+                            {event_location}
+                        </span>
+                    </div>
+                </div>
+                
+
+                <div className="mt-auto pt-4">
+                    <Link
+                        href={route('events.show', event_id)}
+                        className="block"
+                    >
+                        <button
+                            className={`w-full text-sm font-semibold py-2 rounded-lg transition
+                                ${
+                                    registered
+                                        ? "bg-gray-200 text-gray-500 hover:bg-[#2fb8a4]"
+                                        : "bg-[#33CCB5] text-black hover:bg-[#2fb8a4]"
+                                }
+                            `}
+                        >
+                            {registered ? "Sudah Terdaftar" : "Lihat Detail"}
+                        </button>
+                    </Link>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

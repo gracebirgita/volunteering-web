@@ -58,7 +58,7 @@ export default function MyNavbar({
                 {/* Mobile Overlay */}
                 {isOpen && (
                     <div
-                        className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                        className="fixed inset-0 bg-black/50 z-40 lg:hidden"
                         onClick={() => setIsOpen(false)}
                     ></div>
                 )}
@@ -162,7 +162,7 @@ export default function MyNavbar({
                 {/* Mobile */}
                 {isOpen && (
                     <div
-                        className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                        className="fixed inset-0 bg-black/50 z-40 lg:hidden"
                         onClick={() => setIsOpen(false)}
                     ></div>
                 )}
@@ -316,7 +316,7 @@ export default function MyNavbar({
                 {/* Mobile */}
                 {isOpen && (
                     <div
-                        className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                        className="fixed inset-0 bg-black/50 z-40 lg:hidden"
                         onClick={() => setIsOpen(false)}
                     ></div>
                 )}

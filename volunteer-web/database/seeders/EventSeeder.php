@@ -12,6 +12,7 @@ class EventSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create('id_ID');
+
         $institutes = DB::table('institutes')->pluck('institute_id');
         $categoryIds = DB::table('categories')->pluck('category_id')->toArray();
 
@@ -20,13 +21,17 @@ class EventSeeder extends Seeder
             return;
         }
 
+        $start  = $faker->dateTimeBetween('-1 month', '+1 month');
+        $finish = (clone $start)->modify('+'.rand(1, 5).' days');
+
+        $registrationDeadline = (clone $start)->modify('-'.rand(1, 14).' days');
+
         foreach ($institutes as $instituteId) {
-            $totalEvent = rand(3, 5);
+            $totalEvent = rand(3, 6);
 
             for ($i = 1; $i <= $totalEvent; $i++) {
-                $start = $faker->dateTimeBetween('-1 month', '+2 months');
-                $finish = (clone $start)->modify('+' . rand(1, 3) . ' days');
-                $deadline = (clone $start)->modify('-' . rand(2, 7) . ' days');
+                $start  = $faker->dateTimeBetween('-1 month', '+1 month');
+                $finish = (clone $start)->modify('+'.rand(1, 5).' days');
 
                 DB::table('events')->insert([
                     'institute_id'          => $instituteId,
@@ -37,21 +42,22 @@ class EventSeeder extends Seeder
                     'address'               => $faker->address(),
                     'event_start'           => $start->format('Y-m-d'),
                     'event_finish'          => $finish->format('Y-m-d'),
-                    'registration_deadline' => $deadline->format('Y-m-d'),
                     'event_start_time'      => '08:00',
-                    'event_end_time'        => '17:00',
-                    'event_quota'           => rand(20, 100),
-                    'thumbnail'             => null,
+                    'event_end_time'        => '12:00',
+                    'event_location'        => $faker->city(),
+                    'address'               => $faker->address(),
+                    'quota'                 => rand(10, 100),
+                    'registration_deadline' => $registrationDeadline->format('Y-m-d'),
                     'benefit_consumption'   => $faker->boolean(),
                     'benefit_certificate'   => $faker->boolean(),
                     'benefit_jam_volunt'    => $faker->boolean(),
-                    'other_benefit'         => $faker->randomElement(['Kaos', 'E-Wallet', 'Snack', null]),
                     'contact_person'        => $faker->phoneNumber(),
-                    'group_link'            => 'https://chat.whatsapp.com/' . $faker->regexify('[A-Za-z0-9]{22}'),
-                    'event_status'          => $faker->randomElement(['active', 'closed']),
+                    'group_link'            => null,
+                    'event_status'          => $faker->randomElement(['active', 'finished']),
                     'created_at'            => now(),
                     'updated_at'            => now(),
                 ]);
+
             }
         }
     }

@@ -2,216 +2,228 @@
 
 namespace App\Http\Controllers\Relawan;
 
-use Illuminate\Http\Request;
-
-// add
+use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Institute;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Http\Controllers\Controller;
+
+
+
 
 class EventController extends Controller
 {
+    /**
+     * EXPLORE EVENT (LIST)
+     */
+    public function index(Request $request): Response
+    {
+        
+        $filters = $request->only([
+            'search',
+            'category',
+            'institute',
+            'location',
+            'status',
+            'date',
+        ]);
 
-    public function index(Request $request): Response{
-        // dd($events->toArray());
-        $search = $request->input('search');
-
-        // fitur filter by
-        $institute_cat =$request->institute_cat;
-        $institute=$request->institute;
-        $location=$request->location;
-        $status=$request->status;
-        $date=$request->input('date');
-
-        $events = Event::with('institute')
-            // hitung relawan ACCEPTED
-            ->withCount(['registrations as accepted_count' => function($query){
-                $query->where('regist_status', 'Accepted');
-            }])
-
-            // search bar
-            ->when($search, function($query, $search){
-                $query->where('event_name', 'like', "%{$search}%")
-                    ->orWhere('event_location', 'like', "%{$search}%");
-            })
-
-            // filter by
-            ->when($institute_cat, function($q, $institute_cat){
-                $q->whereHas('institute', fn($sub)=>
-                    $sub->where('institute_category', $institute_cat)
-                );
-            })
-            ->when($institute, function($q, $institute){
-                $q->whereHas('institute', fn($sub)=>
-                    $sub->where('institute_name', $institute)
-                );
-            })
-
-            ->when($status, fn($q)=>
+        $baseQuery = Event::query()
+            ->when($filters['search'] ?? null, fn ($q, $search) =>
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('event_name', 'like', "%{$search}%")
+                        ->orWhere('event_location', 'like', "%{$search}%");
+                })
+            )
+            ->when($filters['institute'] ?? null, fn ($q, $inst) =>
+                $q->whereHas('institute', fn ($sub) =>
+                    $sub->where('institute_name', $inst)
+                )
+            )
+            ->when($filters['location'] ?? null, fn ($q, $loc) =>
+                $q->where('event_location', $loc)
+            )
+            ->when($filters['status'] ?? null, fn ($q, $status) =>
                 $q->where('event_status', $status)
             )
-            ->when($location, fn($q)=>
-                $q->where('event_location', $location)
-            )
-            ->when($date, fn($q)=>
+            ->when($filters['date'] ?? null, fn ($q, $date) =>
                 $q->whereDate('event_start', $date)
-            )
+        );
 
-            // get order by event start
-            ->orderBy('event_start')
-            ->get()
-            ->map(function ($event) {
-                $quota = (int) $event->event_quota;
-                $accepted = (int) $event->accepted_count;
-                $remaining = $quota -$accepted;
-                
-                $isFull = ($quota > 0) && ($remaining <= 0);
-                
-                return [
-                    'event_id' => $event->event_id,
-                    'event_name' => $event->event_name,
-                    'event_location' => $event->event_location,
-                    'event_description' => $event->event_description,
-                    'event_start' => $event->event_start,
-                    'event_finish' => $event->event_finish,
-                    'event_quota' => $event->event_quota, 
-                    'event_status' => $event->event_status,
+       $events = (clone $baseQuery)
+        ->when($filters['category'] ?? null, fn ($q, $cat) =>
+            $q->where('category', $cat)
+        )
+        ->with('institute')
+        ->withCount([
+            'registrations as accepted_count' => fn ($q) =>
+                $q->where('regist_status', 'Accepted')
+        ])
+        ->orderBy('event_start')
+        ->paginate(6)->withQueryString()
+        ->through(function (Event $event) {
+            $remaining = max(0, $event->quota - $event->accepted_count);
 
-                    // remaining quota
-                    'quota_remaining'=>$remaining,
-                    'is_full'=>$isFull, //tanda relawan event full capacity
-                    'display_quota'=> $isFull ? 'Full' : 'Slot relawan tersedia : '.$remaining,
-                    'institute' => [
-                        'institute_name' => $event->institute->institute_name,
-                        'institute_category' => $event->institute->institute_category,
-                    ],
-                    // utk show di card event
-                ];
-            });
-        
-        return Inertia::render('Relawan/ExploreEvent',[
-                'events'=>$events,
-                // search bar filter
-                // 'filters'=>[
-                //     'search'=>$search,
-                // ],
+            return [
+                'event_id'        => $event->event_id,
+                'event_name'      => $event->event_name,
+                'category'        => $event->category,
+                'event_location'  => $event->event_location,
+                'event_description'=> $event->event_description,
+                'event_start'     => $event->event_start,
+                'event_finish'    => $event->event_finish,
+                'event_status'    => $event->event_status,
+                'address'         => $event->address,
+                'thumbnail'       => $event->thumbnail,
+                'event_organizer' => $event->institute->institute_name,
+                'image_url' => event_image_url($event),
 
-                // dropdown filter
-                'categories' => Institute::select('institute_category')
-                    ->where('institute_category', '!=', '')
-                    ->distinct()->orderBy('institute_category', 'asc')
-                    ->pluck('institute_category'),
+                // OPTIONAL (bagus buat FE)
+                'quota_remaining' => $remaining,
+                'is_full'         => $remaining <= 0,
+            ];
+        });
+            
+        $categoryCounts = (clone $baseQuery)
+            ->select('category')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('category')
+            ->pluck('total', 'category');
 
-                'institutes' => Institute::select('institute_name')
-                    ->distinct()->pluck('institute_name'),
+        $user = auth()->user();
+        $profile = $user?->profile;
 
-                'locations' => Event::select('event_location')
-                    ->distinct()->pluck('event_location'),
-                
-                'status'=>Event::select('event_status')
-                    ->distinct()->pluck('event_status'),
 
-                // search bar filter
-                'filters' => $request->only([
-                    'search', 'category', 'organization', 'location', 'date', 'status'
-                ]),
-            ]);
+        return Inertia::render('Relawan/ExploreEvent', [
+            'events' => $events,
+
+            'profileUser' => $profile ? [
+                'user_name'  => $profile->user_name,
+                'avatar_url' => profile_image_url($profile),
+            ] : null,
+
+            // FILTER OPTIONS
+            'categories' => Event::select('category')
+                ->whereNotNull('category')
+                ->distinct()
+                ->orderBy('category')
+                ->pluck('category'),
+
+            
+            'categoryCounts' => $categoryCounts, 
+
+            'institutes' => Institute::select('institute_name')
+                ->distinct()
+                ->orderBy('institute_name')
+                ->pluck('institute_name'),
+
+            'locations' => Event::select('event_location')
+                ->distinct()
+                ->orderBy('event_location')
+                ->pluck('event_location'),
+
+            'status' => Event::select('event_status')
+                ->distinct()
+                ->pluck('event_status'),
+
+            'filters' => $request->only([
+                'search', 'category', 'institute', 'location', 'date', 'status'
+            ]),
+        ]);
     }
 
+    /**
+     * EVENT DETAIL
+     */
+    public function show(Event $event): Response
+    {
 
-    // SHOW DETAIL EVENT
-    // get event
-    public function show(Event $event){
         $event->load([
             'institute.account',
-            'registrations.userProfile' //relawan terdaftar
+            'registrations.userProfile',
+            'registrations.division',
+            'agendas',
+
         ]);
-        // jml accepted 1 event
-        $acceptedCount = $event->registrations->where('regist_status', 'Accepted')->count();
-        $remaining=$event->event_quota - $acceptedCount;
 
-        // get user yang sedang login
+        $accepted = $event->registrations
+            ->where('regist_status', 'Accepted')
+            ->count();
+
+        $remaining = max(0, $event->quota - $accepted);
+
         $user = auth()->user();
-        // get data regist user yg login
+        $profile = $user?->profile;
+
         $userRegistration = $event->registrations()
-            ->where('user_id', $user->users_profiles->user_id)
+            ->where('profile_id', $profile?->profile_id)
             ->first();
+
+        $isProfileComplete = $profile &&
+            $profile->user_phone !== '-' &&
+            $profile->user_domicile !== '-';
+
         
-        $profile = $user->users_profiles;
-
-        // Cek apakah data kritikal sudah diisi (bukan tanda hubung)
-        $isProfileComplete = $profile && 
-                            $profile->user_phone !== '-' && 
-                            $profile->user_domicile !== '-';
-
-
-        return Inertia::render('Relawan/EventDetail',[
-            'event'=>[
+        return Inertia::render('Relawan/EventDetail', [
+            'event' => [
                 'id' => $event->event_id,
                 'name' => $event->event_name,
                 'description' => $event->event_description,
+                'category' => $event->category,
                 'location' => $event->event_location,
-                'start' => $event->event_start,
-                'finish' => $event->event_finish,
+                'start_date' => $event->event_start,
+                'end_date' => $event->event_finish,
+                'start_time'=>$event->event_start_time,
+                'end_time'=>$event->event_end_time,
                 'status' => $event->event_status,
-                'quota'=>$event->event_quota,
+                'quota' => $event->quota,
+                'image_url' => event_image_url($event), 
 
-                // remaining relawan quota
-                'quota_remaining'=>$remaining,
-                'is_full'=> $remaining <=0,
+                'benefit_consumption' => $event->benefit_consumption, #boolean
+                'benefit_certificate' => $event->benefit_certificate, #boolean
+                'benefit_hour_volunt' => $event->benefit_jam_volunt, #boolean
+
+                'quota_remaining' => $remaining,
+                'is_full' => $remaining <= 0,
+
+                // AGENDA
+                'agendas' => $event->agendas->map(fn ($a) => [
+                    'agenda_id' => $a->id,
+                    'agenda_start_time' => $a->start_time->format('H:i'),
+                    'agenda_end_time' => $a->end_time->format('H:i'),
+                    'agenda_title' => $a->title,
+                    'agenda_description' => $a->description,
+                ])->values(),
+
+                
             ],
-            'institute'=>[
+
+            'institute' => [
                 'name' => $event->institute->institute_name,
                 'category' => $event->institute->institute_category,
-
-                // get email dr table account
                 'email' => $event->institute->account->email ?? '-',
                 'phone' => $event->institute->institute_phone,
                 'pic' => $event->institute->institute_pic_name,
-                // 'bio' => $event->institute->bio ?? '-',
             ],
-            'volunteers'=>$event->registrations->map(fn ($r)=>[
-                    'name'=>$r->userProfile->user_name ?? '-',
-                    'status'=>$r->regist_status,
-            ])->values(),
 
-            // regist Jadi Relawan
+            'volunteers' => $event->registrations->map(fn ($r) => [
+                'name' => $r->userProfile?->user_name ?? '-',
+                'avatar' => $r->userProfile
+                            ? profile_image_url($r->userProfile)
+                            : asset('images/avatar-placeholder.png'),
+                'division' => $r->division->name ?? '-',
+                'status'   => $r->regist_status,
+            ])->values(),
+            
+
             'isRegistered' => (bool) $userRegistration,
             'isProfileComplete' => $isProfileComplete,
-            'isAccepted'   => $userRegistration?->regist_status === 'Accepted',
-            'isRejected'   => $userRegistration?->regist_status === 'Rejected',
-            'registStatus' => $userRegistration?->regist_status,
-
+            'isAccepted' => $userRegistration?->regist_status === 'Accepted',
+            'isRejected' => $userRegistration?->regist_status === 'Rejected',
+            'registStatus' => $userRegistration?->status,
         ]);
     }
-
-
-     // show status daftar event user
-    // public function show(Event $event)
-    // {
-    //     // get user yang sedang login
-    //     $userId = auth()->id();
-
-    //     // get data regist user yg login
-    //     $userRegistration = $event->registrations()
-    //         ->where('user_id', $userId)
-    //         ->first();
-
-    //     return Inertia::render('Relawan/EventDetail', [
-    //         'event' => [
-    //             'id' => $event->event_id,
-    //             'name' => $event->event_name,
-    //         ],
-
-    //         'isRegistered' => (bool) $userRegistration,
-
-    //         'isAccepted'   => $userRegistration && $userRegistration->status === 'Accepted',
-    //         'isRejected'   => $userRegistration && $userRegistration->status === 'Rejected',
-
-    //         // send status regist
-    //         'registStatus'=> $userRegistration->status ?? null,
-    //     ]);
-    // }
 }
+
+

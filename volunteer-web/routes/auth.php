@@ -19,18 +19,21 @@ use App\Http\Controllers\Dashboard\UserDashboardController;
 use App\Http\Controllers\Dashboard\InstituteDashboardController;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\AdminAuthController;
-use App\Http\Controllers\VolunteerSettingsController;
-use App\Http\Controllers\InstituteProfileController;
-use App\Http\Controllers\InstituteSettingsController;
+
+
+use App\Http\Controllers\Institute\InstituteProfileController;
+use App\Http\Controllers\Institute\InstituteSettingsController;
 use App\Http\Controllers\InstituteEventController;
 use App\Http\Controllers\InstituteAppVolunteerController;
+
 
 // relawan
 use App\Http\Controllers\Relawan\EventController;
 use App\Http\Controllers\Relawan\EventRegistController;
-use App\Http\Controllers\Relawan\VolunteerProfilController;
 use App\Http\Controllers\Relawan\MyEventController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Relawan\VolunteerProfileController;
+use App\Http\Controllers\Relawan\VolunteerSettingsController;
+
 
 //Admin
 use App\Http\Controllers\Admin\CategoryController;
@@ -129,6 +132,8 @@ Route::middleware(['auth'])->group(function(){
                                 ->name('events.join');
                         // cancel (bs jk status = pending)
                         Route::delete('/events/{event}/cancel', [EventRegistController::class, 'cancel']);
+                        
+                        
 
                 // 3. Event Saya (MODIF nanti sesuai controller & function yg dipakai)**
                 Route::get('/myevents', [MyEventController::class, 'index'])
@@ -138,7 +143,7 @@ Route::middleware(['auth'])->group(function(){
                 // === AKTIVITAS (opsional)
                 // === AKUN
                 // 1.Profil (showcase profil user)
-                Route::get('/profile', [VolunteerProfilController::class, 'show'])
+                Route::get('/profile', [VolunteerProfileController::class, 'show'])
                         ->name('volunteer.profile');
                 // 2. Pengaturan
                 Route::get('/settings', [VolunteerSettingsController::class, 'edit'])
@@ -149,6 +154,10 @@ Route::middleware(['auth'])->group(function(){
 
                 Route::post('/settings/password', [VolunteerSettingsController::class, 'updatePassword'])
                         ->name('volunteer.settings.password');
+
+                Route::post('/settings/email', [VolunteerSettingsController::class, 'updateEmail'])
+                ->name('volunteer.settings.email');
+
         });
         
         // -- ROLE INSTITUTE
@@ -170,6 +179,8 @@ Route::middleware(['auth'])->group(function(){
 
                 Route::put('/institute/events/{event}', [InstituteEventController::class, 'update'])
                 ->name('institute.events.update');
+
+                
 
                 // 4. app volunteer 
                 Route::get('/institute/app-volunteer', [InstituteAppVolunteerController::class, 'index'])->name('institute.appvol');
@@ -228,3 +239,46 @@ Route::middleware(['auth'])->group(function(){
 //     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
 //         ->name('logout');
 // });
+
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\Account;
+
+if (app()->environment('local')) {
+
+    Route::get('/_dev/login-user', function () {
+        $account = Account::where('account_id', 2)
+            ->where('role', 'user')
+            ->firstOrFail();
+
+        // 🔐 DEV ONLY: reset password ke nilai yang kita tahu
+        $account->password = Hash::make('password123');
+        $account->save();
+
+        Auth::login($account);
+
+        // pastikan profile ada
+        if (!$account->profile) {
+            $account->profile()->create([
+                'user_name' => 'Dev Volunteer',
+            ]);
+        }
+
+        return redirect()->route('dashboard.user');
+    });
+
+    Route::get('/_dev/login-institute', function () {
+        $account = Account::where('account_id', 14)
+            ->where('role', 'institute')
+            ->firstOrFail();
+
+        // 🔐 DEV ONLY
+        $account->password = Hash::make('password123');
+        $account->save();
+
+        Auth::login($account);
+
+        return redirect()->route('dashboard.institute');
+    });
+}

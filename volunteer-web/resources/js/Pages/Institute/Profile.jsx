@@ -4,18 +4,17 @@ import { Head, usePage } from "@inertiajs/react";
 
 export default function Profile({ auth }) {
     const user = auth.user || {};
-    const institute = user.institute || {};
+    const { institute } = usePage().props;
 
-    // ambil institute langsung dari props Inertia (buat logo)
-    const { institute: instituteFromPage } = usePage().props;
 
     const profileData = {
-        name: institute.institute_name || "Nama Organisasi",
-        email: user.email,
-        phone: institute.institute_phone || "-",
-        address: institute.institute_address || "-",
-        postal_code: institute.postal_code || "-",
-        bio: institute.institute_desc || "-",
+        name: institute?.name || "Nama Organisasi",
+        email: institute?.email || "-",
+        phone: institute?.phone || "-",
+        address: institute?.address || "-",
+        postal_code: institute?.postal_code || "-",
+        bio: institute?.bio || "-",
+        logo: institute?.logo_url || "/assets/Dashboard/Institute/who.png",
     };
 
     return (
@@ -30,13 +29,9 @@ export default function Profile({ auth }) {
                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row items-center gap-8">
                     <div className="w-32 h-32 rounded-full bg-white border border-gray-100 shadow-sm flex items-center justify-center p-2 shrink-0">
                         <img
-                            src={
-                                instituteFromPage?.logo
-                                    ? `/storage/${instituteFromPage.logo}`
-                                    : "/assets/Dashboard/Institute/who.png"
-                            }
+                            src={profileData.logo}
                             alt={profileData.name}
-                            className="w-full h-full object-contain rounded-full"
+                            className="w-full h-full object-cover"
                         />
                     </div>
 
