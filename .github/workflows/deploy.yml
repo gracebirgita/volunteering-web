@@ -11,8 +11,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          
       - name: Install dependencies & Build React
         run: |
+          cd volunteer-web
           composer install --no-dev --optimize-autoloader
           npm install
           npm run build
@@ -23,5 +29,10 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: volunteer-web
+          local-dir: ./volunteer-web/
           server-dir: /htdocs/
+          exclude: |
+            node_modules/**
+            .git/**
+            .github/**
+            tests/**
