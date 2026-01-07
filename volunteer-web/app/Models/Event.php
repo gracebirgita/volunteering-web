@@ -20,6 +20,7 @@ class Event extends Model
     protected $fillable=[
         'institute_id',
         'category_id',
+        'thumbnail',
         'event_name',
         'event_description',
         'event_start',
@@ -36,7 +37,6 @@ class Event extends Model
         'contact_person',
         'group_link',
         'event_status',
-        // 'thumbnail', //image 
     ];
 
 

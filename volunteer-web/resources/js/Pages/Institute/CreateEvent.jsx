@@ -37,7 +37,7 @@ export default function CreateEvent({ auth, categories }) {
         address: "",
 
         // Relawan
-        event_quota: 0,
+        quota: 0,
         registration_deadline: "",
 
         // Benefits
@@ -83,7 +83,9 @@ export default function CreateEvent({ auth, categories }) {
     };
 
     const handleFileChange = (e) => {
-        setData("thumbnail", e.target.files[0]);
+        if (e.target.files?.length) {
+            setData("thumbnail", e.target.files[0]);
+        }
     };
 
     return (
@@ -285,9 +287,12 @@ export default function CreateEvent({ auth, categories }) {
                                                 />
                                             </label>
                                             <button
-                                                onClick={() =>
-                                                    setData("thumbnail", null)
-                                                }
+                                                onClick={() => {
+                                                    setData((prev) => ({
+                                                        ...prev,
+                                                        thumbnail: undefined,
+                                                    }));
+                                                }}
                                                 className="text-xs font-bold text-black hover:text-red-500 flex items-center gap-1"
                                             >
                                                 <Minus size={14} /> Remove
@@ -453,10 +458,10 @@ export default function CreateEvent({ auth, categories }) {
                                                 type="button"
                                                 onClick={() =>
                                                     setData(
-                                                        "event_quota",
+                                                        "quota",
                                                         Math.max(
                                                             0,
-                                                            data.event_quota - 1
+                                                            data.quota - 1
                                                         )
                                                     )
                                                 }
@@ -469,8 +474,8 @@ export default function CreateEvent({ auth, categories }) {
                                                 className="w-20 text-center border-none focus:ring-0 text-sm text-gray-600 placeholder:text-gray-400"
                                                 placeholder="0"
                                                 value={
-                                                    data.event_quota > 0
-                                                        ? data.event_quota
+                                                    data.quota > 0
+                                                        ? data.quota
                                                         : ""
                                                 }
                                                 readOnly
@@ -479,8 +484,8 @@ export default function CreateEvent({ auth, categories }) {
                                                 type="button"
                                                 onClick={() =>
                                                     setData(
-                                                        "event_quota",
-                                                        data.event_quota + 1
+                                                        "quota",
+                                                        data.quota + 1
                                                     )
                                                 }
                                                 className="px-3 py-2 hover:bg-gray-100 border-l border-gray-300 text-gray-500"
