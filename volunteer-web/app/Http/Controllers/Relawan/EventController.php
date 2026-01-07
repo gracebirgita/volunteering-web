@@ -56,7 +56,7 @@ class EventController extends Controller
             )
             ->when($filters['category'] ?? null, function ($q, $cat) {
                 $q->whereHas('category', function ($sub) use ($cat) {
-                    $sub->where('name', $cat);
+                    $sub->where('slug', $cat);
                 });
             });
 
@@ -77,7 +77,11 @@ class EventController extends Controller
                 return [
                     'event_id'          => $event->event_id,
                     'event_name'        => $event->event_name,
-                    'category'          => $event->category?->name,
+                    'category' => $event->category ? [
+                        'name'  => $event->category->name,
+                        'slug'  => $event->category->slug,
+                        'color' => $event->category->color,
+                    ] : null,
                     'event_location'    => $event->event_location,
                     'event_description' => $event->event_description,
                     'event_start'       => $event->event_start,
@@ -100,9 +104,9 @@ class EventController extends Controller
         $categoryCounts = (clone $baseQuery)
             ->whereHas('category')
             ->join('categories', 'events.category_id', '=', 'categories.category_id')
-            ->selectRaw('categories.name as name, COUNT(*) as total')
-            ->groupBy('categories.name')
-            ->pluck('total', 'name');
+            ->selectRaw('categories.slug as slug, COUNT(*) as total')
+            ->groupBy('categories.slug')
+            ->pluck('total', 'slug');
 
         $user    = auth()->user();
         $profile = $user?->profile;
@@ -116,8 +120,12 @@ class EventController extends Controller
             ] : null,
 
             // FILTER OPTIONS
-            'categories' => Category::orderBy('name')
-                ->pluck('name'),
+            'categories' => Category::orderBy('name')->get([
+                'category_id',
+                'name',
+                'slug',
+                'color',
+            ]),
 
             'categoryCounts' => $categoryCounts,
 

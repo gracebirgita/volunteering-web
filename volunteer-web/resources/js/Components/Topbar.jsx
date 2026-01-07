@@ -1,6 +1,5 @@
 import { Menu, Search, X } from "lucide-react";
-import { CATEGORY_CONFIG } from "@/Components/AddOns";
-
+import { hexToRgba } from "@/Utils/Color";
 
 
 function FilterChip({ label, onRemove, className = "" }) {
@@ -24,7 +23,12 @@ export default function Topbar({
     onSearchChange,
     filters,
     onFilterRemove,
+    categories = [],
 }) {
+    const activeCategory = categories.find(
+        (cat) => cat.slug === filters.category
+    );
+    
     return (
         <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-2">
             <div className="flex items-center gap-4">
@@ -79,11 +83,17 @@ export default function Topbar({
             {/* FILTER CHIPS */}
             {type === "explore" && filters && (
                 <div className="mt-2 flex flex-wrap gap-2">
-                    {filters.category && CATEGORY_CONFIG[filters.category] && (
+
+                    {activeCategory && (
                         <FilterChip
-                            label={CATEGORY_CONFIG[filters.category].label}
-                            className={`${CATEGORY_CONFIG[filters.category].bg} ${CATEGORY_CONFIG[filters.category].text}`}
+                            label={activeCategory.name}
                             onRemove={() => onFilterRemove("category")}
+                            className="border"
+                            style={{
+                                backgroundColor: hexToRgba(activeCategory.color, 0.15),
+                                color: activeCategory.color,
+                                borderColor: hexToRgba(activeCategory.color, 0.6),
+                            }}
                         />
                     )}
 

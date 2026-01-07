@@ -46,7 +46,7 @@ export default function EventCard({ event }) {
             {/* Content */}
             <div className="p-4 flex flex-col flex-1">
                 
-                <div className="flex flex-row gap-5 mb-3">
+                <div className="flex flex-row gap-3 mb-3">
                     <AddOns category={event.category}/>
                     <AddOns organizer={event.event_organizer} />
                 </div>

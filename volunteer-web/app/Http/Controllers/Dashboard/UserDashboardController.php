@@ -22,7 +22,7 @@ class UserDashboardController extends Controller
         }
 
         // 3. Event aktif
-        $events = Event::with('institute')
+        $events = Event::with(['institute', 'category'])
             ->where('event_status', 'active')
             ->whereDate('event_start', '>=', now())
             ->orderBy('event_start')
@@ -37,7 +37,11 @@ class UserDashboardController extends Controller
                     'event_status'    => $event->event_status,
                     'event_description' => $event->event_description,
                     'event_location'  => $event->event_location,
-                    'category' => $event->category?->name,
+                    'category' => $event->category ? [
+                        'name'  => $event->category->name,
+                        'slug'  => $event->category->slug,
+                        'color' => $event->category->color,
+                    ] : null,
                     'thumbnail'       => $event->thumbnail,
                     'quota'           => $event->quota,
                     'registered'      => $event->registrations()
