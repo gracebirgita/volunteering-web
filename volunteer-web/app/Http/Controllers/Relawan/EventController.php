@@ -219,8 +219,8 @@ class EventController extends Controller
 
             'isRegistered' => (bool) $userRegistration,
             'isProfileComplete' => $isProfileComplete,
-            'isAccepted' => $userRegistration?->status === 'Accepted',
-            'isRejected' => $userRegistration?->status === 'Rejected',
+            'isAccepted' => $userRegistration?->regist_status === 'Accepted',
+            'isRejected' => $userRegistration?->regist_status === 'Rejected',
             'registStatus' => $userRegistration?->status,
         ]);
     }

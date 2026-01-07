@@ -23,7 +23,7 @@ class EventRegistration extends Model
 
     public function userProfile()
     {
-        return $this->belongsTo(UserProfile::class, 'user_id', 'user_id');
+        return $this->belongsTo(UserProfile::class, 'profile_id', 'profile_id');
     }
 
     public function attendances()

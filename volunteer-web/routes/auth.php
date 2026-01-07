@@ -25,13 +25,14 @@ use App\Http\Controllers\Institute\InstituteProfileController;
 use App\Http\Controllers\Institute\InstituteSettingsController;
 use App\Http\Controllers\InstituteEventController;
 use App\Http\Controllers\InstituteAppVolunteerController;
+
+
 // relawan
 use App\Http\Controllers\Relawan\EventController;
 use App\Http\Controllers\Relawan\EventRegistController;
-use App\Http\Controllers\Relawan\VolunteerProfilController;
+use App\Http\Controllers\Relawan\VolunteerProfileController;
 use App\Http\Controllers\Relawan\VolunteerSettingsController;
 
-use App\Http\Controllers\ProfileController;
 
 // GUEST = belum login
 
@@ -132,7 +133,7 @@ Route::middleware(['auth'])->group(function(){
                 // === AKTIVITAS (opsional)
                 // === AKUN
                 // 1.Profil (showcase profil user)
-                Route::get('/profile', [VolunteerProfilController::class, 'show'])
+                Route::get('/profile', [VolunteerProfileController::class, 'show'])
                         ->name('volunteer.profile');
                 // 2. Pengaturan
                 Route::get('/settings', [VolunteerSettingsController::class, 'edit'])
@@ -143,6 +144,10 @@ Route::middleware(['auth'])->group(function(){
 
                 Route::post('/settings/password', [VolunteerSettingsController::class, 'updatePassword'])
                         ->name('volunteer.settings.password');
+
+                Route::post('/settings/email', [VolunteerSettingsController::class, 'updateEmail'])
+                ->name('volunteer.settings.email');
+
         });
         
         // -- ROLE INSTITUTE
@@ -226,9 +231,9 @@ Route::middleware(['auth'])->group(function(){
 // });
 
 
-use App\Models\Account;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Hash;
+use App\Models\Account;
 
 if (app()->environment('local')) {
 
@@ -237,9 +242,13 @@ if (app()->environment('local')) {
             ->where('role', 'user')
             ->firstOrFail();
 
+        // 🔐 DEV ONLY: reset password ke nilai yang kita tahu
+        $account->password = Hash::make('password123');
+        $account->save();
+
         Auth::login($account);
 
-        // pastikan volunteer(profile) ada
+        // pastikan profile ada
         if (!$account->profile) {
             $account->profile()->create([
                 'user_name' => 'Dev Volunteer',
@@ -253,6 +262,10 @@ if (app()->environment('local')) {
         $account = Account::where('account_id', 14)
             ->where('role', 'institute')
             ->firstOrFail();
+
+        // 🔐 DEV ONLY
+        $account->password = Hash::make('password123');
+        $account->save();
 
         Auth::login($account);
 

@@ -6,86 +6,133 @@ use App\Http\Controllers\Controller;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Account;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 class VolunteerSettingsController extends Controller
 {
     public function edit()
     {
-        // perlu login dulu
         $account = auth()->user();
-        if(!$account || !$account->isuser()) abort(403);
+        if (!$account || !$account->isUser()) abort(403);
 
-        $profile = $account->users_profiles()
-            ->latest('user_id')
-            ->first();
+        $profile = $account->profile;
 
-        return view('volunteer.settings', compact('account', 'profile'));
+        return inertia('Relawan/Settings', [
+            'auth' => [
+                'user' => $account,
+                'profile' => $profile ? [
+                    'user_name'     => $profile->user_name,
+                    'user_phone'    => $profile->user_phone,
+                    'user_domicile' => $profile->user_domicile,
+                    'user_interest' => $profile->user_interest,
+                    'avatar_url'    => profile_image_url($profile),
+                ] : null,
+            ],
+        ]);
     }
-
-    
 
     public function updateProfile(Request $request)
     {
         $account = auth()->user();
-        if (!$account) abort(403);
+        if (!$account || !$account->isUser()) abort(403);
 
         $data = $request->validate([
-            'user_name'     => 'required|string|max:100',
-            'user_email'    => 'nullable|email|max:255',
-            'user_phone'    => 'nullable|string|max:20',
-            'user_domicile' => 'nullable|string|max:255',
-            'user_dob'      => 'nullable|date',
-            'user_interest' => 'nullable|string|max:255',
+            'name'         => 'required|string|max:100',
+            'phone'        => 'nullable|string|max:20',
+            'domicile'     => 'nullable|string|max:100',
+            'interest'     => 'nullable|string|max:100',
+            'photo'        => 'nullable|image|max:2048',
+            'remove_photo' => 'nullable|boolean',
         ]);
 
-        $data['account_id'] = $account->account_id ?? $account->id;
+        $profile = $account->profile ?? new UserProfile([
+            'account_id' => $account->account_id,
+        ]);
 
-        $profile = $account->users_profiles()
-            ->latest('user_id')
-            ->first();
-
-        if ($profile) {
-            $profile->update($data);
-        } else {
-            UserProfile::create($data);
+        /* REMOVE PHOTO */
+        if ($request->boolean('remove_photo')) {
+            if ($profile->profile_picture) {
+                Storage::disk('public')->delete($profile->profile_picture);
+            }
+            $profile->profile_picture = null;
         }
 
-        if (!empty($data['user_email']) && $data['user_email'] !== $account->email) {
-            $account->email = $data['user_email'];
-            $account->save();
+        /* UPLOAD PHOTO */
+        if ($request->hasFile('photo')) {
+            if ($profile->profile_picture) {
+                Storage::disk('public')->delete($profile->profile_picture);
+            }
+
+            $profile->profile_picture = $request
+                ->file('photo')
+                ->store('avatars/volunteers', 'public');
         }
 
-        return back()->with('status_profile', 'Profile updated.');
+        $profile->user_name     = $data['name'];
+        $profile->user_phone    = $data['phone'] ?? null;
+        $profile->user_domicile = $data['domicile'] ?? null;
+        $profile->user_interest = $data['interest'] ?? null;
+
+        $profile->save();
+
+        return back()->with('success', 'Profil berhasil diperbarui');
     }
-
 
     public function updatePassword(Request $request)
     {
         $account = auth()->user();
+        if (!$account) abort(403);
 
-    $request->validate([
-        'current_password' => 'required',
-        'password' => 'required|min:8|confirmed',
+        $request->validate([
+            'current_password' => 'required',
+            'password'         => 'required|min:8|confirmed',
+        ]);
+
+        if (!Hash::check($request->current_password, $account->password)) {
+            throw ValidationException::withMessages([
+                'current_password' => 'Password lama tidak sesuai.',
+            ]);
+        }
+
+        if (Hash::check($request->password, $account->password)) {
+            throw ValidationException::withMessages([
+                'password' => 'Password baru harus berbeda.',
+            ]);
+        }
+
+        $account->password = Hash::make($request->password);
+        $account->save();
+
+        return back()->with('success', 'Password berhasil diperbarui');
+    }
+
+    public function updateEmail(Request $request){
+
+    $account = auth()->user();
+    if (!$account || !$account->isUser()) abort(403);
+
+    $data = $request->validate([
+        'email' => [
+            'required',
+            'email',
+            Rule::unique('accounts', 'email')
+                ->ignore($account->account_id, 'account_id'),
+        ],
+        'password' => 'required',
     ]);
 
-    //password lama salah
-    if (!Hash::check($request->current_password, $account->password)) {
+    if (!Hash::check($data['password'], $account->password)) {
         throw ValidationException::withMessages([
-            'current_password' => 'Current password is incorrect.',
+            'password' => 'Password tidak sesuai.',
         ]);
     }
 
-    //password baru sama dengan yang lama
-    if (Hash::check($request->password, $account->password)) {
-        throw ValidationException::withMessages([
-            'password' => 'New password must be different from the current password.',
-        ]);
-    }
-
-    $account->password = Hash::make($request->password);
+    $account->email = $data['email'];
+    $account->email_verified_at = null;
     $account->save();
 
-    return back()->with('status_password', 'Password updated successfully.');
+    return back()->with('success', 'Email berhasil diperbarui');
     }
 }

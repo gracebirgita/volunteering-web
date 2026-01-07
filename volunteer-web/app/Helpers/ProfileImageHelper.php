@@ -9,24 +9,19 @@ if (!function_exists('profile_image_url')) {
         }
 
         // 1. Jika user sudah upload avatar
-        if (!empty($profile->avatar)) {
-            return asset('storage/' . $profile->avatar);
+        if (!empty($profile->profile_picture)) {
+            return asset('storage/' . $profile->profile_picture);
         }
 
-        // 2. Deterministic placeholder (TIDAK random)
+        // 2. Deterministic placeholder (konsisten per account)
         $placeholders = [
             'assets/Placeholder/avatar1.png',
             'assets/Placeholder/avatar2.png',
             'assets/Placeholder/avatar3.png',
         ];
 
-        /**
-         * Gunakan user_id agar:
-         * - Konsisten
-         * - Tidak berubah saat refresh
-         * - Tidak perlu kolom DB tambahan
-         */
-        $index = $profile->user_id % count($placeholders);
+        // account_id = identity utama user
+        $index = $profile->account_id % count($placeholders);
 
         return asset($placeholders[$index]);
     }

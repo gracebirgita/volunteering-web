@@ -2,36 +2,36 @@
 
 namespace App\Http\Controllers\Institute;
 
-use App\Http\Controllers\Controller; 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Inertia\Inertia;
 
 class InstituteProfileController extends Controller
 {
-    
     public function show()
     {
         $account = auth()->user();
 
+        // ✅ HARUS institute
         if (!$account || !$account->isInstitute()) {
             abort(403);
         }
 
-        // ambil institute milik account login
         $institute = $account->institute;
 
         if (!$institute) {
             abort(404, 'Institute profile not found');
         }
 
-        return inertia('Institute/Profile', [
+        return Inertia::render('Institute/Profile', [
             'institute' => [
-                'institute_id'   => $institute->institute_id,
-                'name'           => $institute->institute_name,
-                'description'    => $institute->institute_desc,
-                'location'       => $institute->institute_address,
-                'postal_code'    => $institute->postal_code,
-                'logo'           => $institute->institute_logo,
-                'cover_image'    => $institute->cover_image,
+                'name'        => $institute->institute_name,
+                'email'       => $account->email,
+                'phone'       => $institute->institute_phone,
+                'address'     => $institute->institute_address,
+                'postal_code' => $institute->postal_code,
+                'logo_url'    => $institute->institute_logo
+                    ? asset('storage/' . $institute->institute_logo)
+                    : asset('assets/Dashboard/Institute/who.png'),
             ],
         ]);
     }

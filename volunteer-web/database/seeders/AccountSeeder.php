@@ -22,7 +22,7 @@ class AccountSeeder extends Seeder
         for ($i=1; $i<=12; $i++){
             $userName=$faker->unique()->name;
             $cleanName = strtolower(str_replace(' ', '.',$userName));
-            $email = "{$cleanName}{$i}@mail.com";
+            $email = "{$cleanName}{$i}@gmail.com";
             $totalEvents = $faker->numberBetween(0, 20);
 
             // id akun baru dibuat
