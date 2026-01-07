@@ -28,6 +28,7 @@ class InstituteProfileController extends Controller
                 'email'       => $account->email,
                 'phone'       => $institute->institute_phone,
                 'address'     => $institute->institute_address,
+                'bio'         => $institute->institute_desc,
                 'postal_code' => $institute->postal_code,
                 'logo_url'    => $institute->institute_logo
                     ? asset('storage/' . $institute->institute_logo)
