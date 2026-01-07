@@ -6,20 +6,16 @@ import {
     Plus,
     Minus,
     Image as ImageIcon,
-    Sprout,
-    UserRound,
-    GraduationCap,
-    Hospital,
     Utensils,
     Award,
     Clock,
     Check,
 } from "lucide-react";
 
-export default function CreateEvent({ auth }) {
+export default function CreateEvent({ auth, categories }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("Informasi");
-
+    
     // State popup
     const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -27,7 +23,7 @@ export default function CreateEvent({ auth }) {
         // Informasi
         event_name: "",
         event_description: "",
-        category: "Lingkungan",
+        category_id: categories && categories.length > 0 ? categories[0].category_id : "",
         thumbnail: null,
 
         // Logistik
@@ -55,29 +51,6 @@ export default function CreateEvent({ auth }) {
         group_link: "",
         event_status: "active",
     });
-
-    const categoryList = [
-        {
-            name: "Lingkungan",
-            icon: Sprout,
-            style: "bg-[#E7F8F1] text-[#00772A]",
-        },
-        {
-            name: "Sosial",
-            icon: UserRound,
-            style: "bg-[#FEEDE5] text-[#FF7A00]",
-        },
-        {
-            name: "Pendidikan",
-            icon: GraduationCap,
-            style: "bg-[#E7F0FF] text-[#07ACE6]",
-        },
-        {
-            name: "Kesehatan",
-            icon: Hospital,
-            style: "bg-[#E9FBFF] text-[#33CCB5]",
-        },
-    ];
 
     const tabs = ["Informasi", "Logistik", "Relawan", "Kontak & Status"];
 
@@ -241,40 +214,48 @@ export default function CreateEvent({ auth }) {
                                         </div>
                                     )}
                                 </div>
+
                                 <div>
-                                    <label className="block text-md font-bold text-black mb-2">
-                                        Kategori:
-                                    </label>
+                                    <label className="block text-md font-bold text-black mb-2">Kategori:</label>
                                     <div className="flex flex-wrap gap-3">
-                                        {categoryList.map((cat) => (
-                                            <button
-                                                key={cat.name}
-                                                onClick={() =>
-                                                    setData(
-                                                        "category",
-                                                        cat.name
-                                                    )
-                                                }
-                                                className={`px-4 py-2 rounded-full text-xs font-bold transition border flex items-center gap-2 ${
-                                                    data.category === cat.name
-                                                        ? "ring-2 ring-offset-1 ring-[#005D67] opacity-100"
-                                                        : "opacity-60 hover:opacity-100"
-                                                } ${cat.style}`}
-                                            >
-                                                <cat.icon
-                                                    size={16}
-                                                    strokeWidth={2.5}
-                                                />{" "}
-                                                {cat.name}
-                                            </button>
-                                        ))}
+                                        {categories && categories.length > 0 ? (
+                                            categories.map((cat) => {
+                                                const isSelected = data.category_id === cat.category_id;
+                                                
+                                                // Dynamic style based on selection and DB Color
+                                                const buttonStyle = isSelected
+                                                    ? {
+                                                          backgroundColor: `${cat.color}1A`, // 10% opacity hex
+                                                          color: cat.color,
+                                                          borderColor: cat.color,
+                                                          borderWidth: '2px'
+                                                      }
+                                                    : {
+                                                          backgroundColor: 'white',
+                                                          color: '#4B5563', // gray-600
+                                                          borderColor: '#E5E7EB', // gray-200
+                                                          borderWidth: '1px'
+                                                      };
+
+                                                return (
+                                                    <button
+                                                        key={cat.category_id}
+                                                        type="button" 
+                                                        onClick={() => setData("category_id", cat.category_id)}
+                                                        style={buttonStyle}
+                                                        className="px-5 py-2 rounded-full text-xs font-bold transition hover:opacity-80"
+                                                    >
+                                                        {cat.name}
+                                                    </button>
+                                                );
+                                            })
+                                        ) : (
+                                            <p className="text-sm text-gray-500 italic">Belum ada kategori tersedia.</p>
+                                        )}
                                     </div>
-                                    {errors.category && (
-                                        <div className="text-red-500 text-xs mt-1">
-                                            {errors.category}
-                                        </div>
-                                    )}
+                                    {errors.category_id && <div className="text-red-500 text-xs mt-1">{errors.category_id}</div>}
                                 </div>
+
                                 <div>
                                     <label className="block text-md font-bold text-black mb-2">
                                         Gambar Thumbnail:

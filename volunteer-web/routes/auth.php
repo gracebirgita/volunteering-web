@@ -166,9 +166,8 @@ Route::middleware(['auth'])->group(function(){
                 Route::get('/dashboard/institute', [InstituteDashboardController::class, 'index'])
                         ->name('dashboard.institute');
                 // 2. create event
-                Route::get('/institute/create-event', function () {
-                return Inertia::render('Institute/CreateEvent');
-                })->name('institute.create');
+                Route::get('/institute/create-event', [InstituteEventController::class, 'create'])
+                        ->name('institute.create');
 
                 Route::post('/institute/events', [InstituteEventController::class, 'store'])
                 ->name('institute.events.store');

@@ -21,6 +21,7 @@ class AdminDashboardController extends Controller
 
         // 2. Total Volunteer Hours Logic
         // Sum of (Event Duration) for all 'Accepted' registrations in 'finished' events
+
         $totalHours = DB::table('events_registrations')
             ->join('events', 'events_registrations.event_id', '=', 'events.event_id')
             ->where('events_registrations.regist_status', 'Accepted') // Matches schema Enum

@@ -18,6 +18,8 @@ import {
 const Institute = ({ auth, institute, stats, ongoingList, upcomingList }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
+    console.log(ongoingList);
+
     // state pagination
     const [ongoingPage, setOngoingPage] = useState(0);
     const ITEMS_PER_PAGE = 6;
@@ -228,7 +230,7 @@ const Institute = ({ auth, institute, stats, ongoingList, upcomingList }) => {
                                         desc={event.event_description}
                                         date={formatDate(event.event_start)}
                                         location={event.event_location}
-                                        slot={`${event.event_quota} Slot`}
+                                        slot={`${event.quota} Slot`}
                                         category={event.category}
                                         stats={{
                                             // Statistik pendafar
@@ -297,30 +299,35 @@ const StatCard = ({ title, value, sub, href }) => {
 };
 
 const EventCard = ({ title, desc, date, location, slot, stats, category }) => {
-    const getCategoryStyle = (cat) => {
-        switch (cat) {
-            case "Lingkungan":
-                return "bg-[#E7F8F1] text-[#00772A]";
-            case "Sosial":
-                return "bg-[#FEEDE5] text-[#FF7A00]";
-            case "Pendidikan":
-                return "bg-[#E7F0FF] text-[#07ACE6]";
-            case "Kesehatan":
-                return "bg-[#E9FBFF] text-[#33CCB5]";
-            default:
-                return "bg-gray-100 text-gray-600";
-        }
+    const badgeColor = category?.color || '#6b7280'; 
+    const badgeName = category?.name || 'Umum';    
+    const badgeStyle = {
+        backgroundColor: `${badgeColor}1A`, // Adds 10% opacity
+        color: badgeColor,
+        border: `1px solid ${badgeColor}4D` // Adds 30% opacity for border
     };
+    
+    // const getCategoryStyle = (cat) => {
+    //     switch (cat) {
+    //         case "Lingkungan":
+    //             return "bg-[#E7F8F1] text-[#00772A]";
+    //         case "Sosial":
+    //             return "bg-[#FEEDE5] text-[#FF7A00]";
+    //         case "Pendidikan":
+    //             return "bg-[#E7F0FF] text-[#07ACE6]";
+    //         case "Kesehatan":
+    //             return "bg-[#E9FBFF] text-[#33CCB5]";
+    //         default:
+    //             return "bg-gray-100 text-gray-600";
+    //     }
+    // };
 
     return (
         <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col h-full animate-fade-in">
             <div className="flex gap-2 mb-3">
-                <span
-                    className={`text-[10px] font-bold px-2 py-1 rounded ${getCategoryStyle(
-                        category
-                    )}`}
-                >
-                    {category || "Umum"}
+                <span style={badgeStyle}
+                      className="text-[10px] font-bold px-2 py-1 rounded border">
+                      {badgeName} 
                 </span>
                 <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded">
                     Active

@@ -81,7 +81,7 @@ export default function MyEvent({ auth, events = [] }) {
         event_end_time: "",
         event_location: "",
         address: "",
-        event_quota: 0,
+        quota: 0,
         registration_deadline: "",
         benefit_consumption: false,
         benefit_certificate: false,
@@ -108,7 +108,7 @@ export default function MyEvent({ auth, events = [] }) {
             event_end_time: event.event_end_time || "",
             event_location: event.event_location || "",
             address: event.address || "",
-            event_quota: event.event_quota || 0,
+            quota: event.quota || 0,
             registration_deadline: event.registration_deadline || "",
             benefit_consumption: !!event.benefit_consumption,
             benefit_certificate: !!event.benefit_certificate,
@@ -825,11 +825,11 @@ export default function MyEvent({ auth, events = [] }) {
                                                     type="button"
                                                     onClick={() =>
                                                         setData(
-                                                            "event_quota",
+                                                            "quota",
                                                             Math.max(
                                                                 0,
                                                                 parseInt(
-                                                                    data.event_quota
+                                                                    data.quota
                                                                 ) - 1
                                                             )
                                                         )
@@ -841,16 +841,16 @@ export default function MyEvent({ auth, events = [] }) {
                                                 <input
                                                     type="text"
                                                     className="w-20 text-center border-none focus:ring-0 text-sm text-gray-600 placeholder:text-gray-400"
-                                                    value={data.event_quota}
+                                                    value={data.quota}
                                                     readOnly
                                                 />
                                                 <button
                                                     type="button"
                                                     onClick={() =>
                                                         setData(
-                                                            "event_quota",
+                                                            "quota",
                                                             parseInt(
-                                                                data.event_quota
+                                                                data.quota
                                                             ) + 1
                                                         )
                                                     }
