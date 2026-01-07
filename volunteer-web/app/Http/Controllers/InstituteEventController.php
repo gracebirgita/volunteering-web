@@ -32,7 +32,7 @@ class InstituteEventController extends Controller
             'event_location'          => 'required|string|max:255',
             'address'                 => 'required|string',
 
-            'event_quota'                   => 'required|integer|min:1',
+            'quota'                   => 'required|integer|min:1',
             'registration_deadline'   => 'required|date',
 
             'benefit_consumption'     => 'boolean',
@@ -106,7 +106,7 @@ class InstituteEventController extends Controller
             'event_end_time'        => 'required',
             'event_location'        => 'required|string|max:255',
             'address'               => 'required|string',
-            'event_quota'           => 'required|integer|min:1',
+            'quota'           => 'required|integer|min:1',
             'registration_deadline' => 'required|date',
             'benefit_consumption'   => 'boolean',
             'benefit_certificate'   => 'boolean',

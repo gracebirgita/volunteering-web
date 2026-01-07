@@ -18,6 +18,8 @@ import {
 const Institute = ({ auth, institute, stats, ongoingList, upcomingList }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
+    console.log(ongoingList);
+
     // state pagination
     const [ongoingPage, setOngoingPage] = useState(0);
     const ITEMS_PER_PAGE = 6;
@@ -228,7 +230,7 @@ const Institute = ({ auth, institute, stats, ongoingList, upcomingList }) => {
                                         desc={event.event_description}
                                         date={formatDate(event.event_start)}
                                         location={event.event_location}
-                                        slot={`${event.event_quota} Slot`}
+                                        slot={`${event.quota} Slot`}
                                         category={event.category}
                                         stats={{
                                             // Statistik pendafar

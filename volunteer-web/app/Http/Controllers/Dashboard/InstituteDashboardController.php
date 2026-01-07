@@ -74,7 +74,7 @@ class InstituteDashboardController extends Controller
                 'event_location',
                 'event_status',
                 'event_description',
-                'event_quota',
+                'quota',
                 'category',
             ]);
 
@@ -101,7 +101,7 @@ class InstituteDashboardController extends Controller
                 'event_location',
                 'event_status',
                 'event_description',
-                'event_quota',
+                'quota',
                 'category',
             ]);
 
