@@ -161,8 +161,9 @@ export default function CreateEvent({ auth, categories }) {
                                     <label className="block text-md font-bold text-black mb-2">Judul Event:</label>
                                     <input
                                         type="text"
-                                        className="w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67] text-gray-400"
-                                         placeholder="Aksi Bersih Pantai Balekambang"
+                                        // UPDATED: text-black placeholder:text-gray-400
+                                        className="w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67] text-black placeholder:text-gray-400"
+                                        placeholder="Aksi Bersih Pantai Balekambang"
                                         value={data.event_name}
                                         onChange={(e) => setData("event_name", e.target.value)}
                                     />
@@ -172,7 +173,8 @@ export default function CreateEvent({ auth, categories }) {
                                     <label className="block text-md font-bold text-black mb-2">Deskripsi Singkat:</label>
                                     <textarea
                                         rows="3"
-                                        className="w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67] text-gray-400"
+                                        // UPDATED: text-black placeholder:text-gray-400
+                                        className="w-full border-gray-300 rounded-lg text-sm focus:border-[#005D67] focus:ring-[#005D67] text-black placeholder:text-gray-400"
                                         placeholder="Bergabung untuk membersihkan sampah..."
                                         value={data.event_description}
                                         onChange={(e) => setData("event_description", e.target.value)}
@@ -180,10 +182,7 @@ export default function CreateEvent({ auth, categories }) {
                                     {errors.event_description && <div className="text-red-500 text-xs mt-1">{errors.event_description}</div>}
                                 </div>
                                 
-                                {/* DYNAMIC CATEGORY BUTTONS 
-                                    - Uses Database Hex Color
-                                    - No missing function calls 
-                                */}
+                                {/* DYNAMIC CATEGORY BUTTONS */}
                                 <div>
                                     <label className="block text-md font-bold text-black mb-2">Kategori:</label>
                                     <div className="flex flex-wrap gap-3">
@@ -222,7 +221,7 @@ export default function CreateEvent({ auth, categories }) {
                                 <div>
                                     <label className="block text-md font-bold text-black mb-2">Gambar Thumbnail:</label>
                                     <div className="flex items-center gap-4">
-                                        <div className="w-48 h-28 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400 overflow-hidden">
+                                        <div className="w-48 h-28 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden">
                                             {data.thumbnail ? (
                                                 <img src={URL.createObjectURL(data.thumbnail)} alt="Preview" className="w-full h-full object-cover" />
                                             ) : (
@@ -252,11 +251,11 @@ export default function CreateEvent({ auth, categories }) {
                                     <div className="flex gap-4">
                                         <div className="w-1/2">
                                             <span className="text-md text-black mb-1 block">Mulai:</span>
-                                            <input type="date" className="w-full border-gray-300 rounded-lg text-sm" value={data.event_start} onChange={(e) => setData("event_start", e.target.value)} />
+                                            <input type="date" className="w-full border-gray-300 rounded-lg text-sm text-black placeholder:text-gray-400" value={data.event_start} onChange={(e) => setData("event_start", e.target.value)} />
                                         </div>
                                         <div className="w-1/2">
                                             <span className="text-md text-black mb-1 block">Selesai:</span>
-                                            <input type="date" className="w-full border-gray-300 rounded-lg text-sm" value={data.event_finish} onChange={(e) => setData("event_finish", e.target.value)} />
+                                            <input type="date" className="w-full border-gray-300 rounded-lg text-sm text-black placeholder:text-gray-400" value={data.event_finish} onChange={(e) => setData("event_finish", e.target.value)} />
                                         </div>
                                     </div>
                                     {(errors.event_start || errors.event_finish) && <div className="text-red-500 text-xs mt-1">Tanggal harus diisi</div>}
@@ -266,22 +265,22 @@ export default function CreateEvent({ auth, categories }) {
                                     <div className="flex gap-4">
                                         <div className="w-1/2 md:w-1/4">
                                             <span className="text-md text-black mb-1 block">Mulai:</span>
-                                            <input type="time" className="w-full border-gray-300 rounded-lg text-sm" value={data.event_start_time} onChange={(e) => setData("event_start_time", e.target.value)} />
+                                            <input type="time" className="w-full border-gray-300 rounded-lg text-sm text-black placeholder:text-gray-400" value={data.event_start_time} onChange={(e) => setData("event_start_time", e.target.value)} />
                                         </div>
                                         <div className="w-1/2 md:w-1/4">
                                             <span className="text-md text-black mb-1 block">Selesai:</span>
-                                            <input type="time" className="w-full border-gray-300 rounded-lg text-sm" value={data.event_end_time} onChange={(e) => setData("event_end_time", e.target.value)} />
+                                            <input type="time" className="w-full border-gray-300 rounded-lg text-sm text-black placeholder:text-gray-400" value={data.event_end_time} onChange={(e) => setData("event_end_time", e.target.value)} />
                                         </div>
                                     </div>
                                 </div>
                                 <div>
                                     <label className="block text-md font-bold text-black mb-2">Lokasi:</label>
-                                    <input type="text" className="w-full border-gray-300 rounded-lg text-sm text-gray-400" placeholder="Contoh: Pantai Balekambang" value={data.event_location} onChange={(e) => setData("event_location", e.target.value)} />
+                                    <input type="text" className="w-full border-gray-300 rounded-lg text-sm text-black placeholder:text-gray-400" placeholder="Contoh: Pantai Balekambang" value={data.event_location} onChange={(e) => setData("event_location", e.target.value)} />
                                     {errors.event_location && <div className="text-red-500 text-xs mt-1">{errors.event_location}</div>}
                                 </div>
                                 <div>
                                     <label className="block text-md font-bold text-black mb-2">Alamat Lengkap:</label>
-                                    <textarea rows="3" className="w-full border-gray-300 rounded-lg text-sm text-gray-400" placeholder="Jalan, RT/RW..." value={data.address} onChange={(e) => setData("address", e.target.value)} />
+                                    <textarea rows="3" className="w-full border-gray-300 rounded-lg text-sm text-black placeholder:text-gray-400" placeholder="Jalan, RT/RW..." value={data.address} onChange={(e) => setData("address", e.target.value)} />
                                     {errors.address && <div className="text-red-500 text-xs mt-1">{errors.address}</div>}
                                 </div>
                              </div>
@@ -291,12 +290,11 @@ export default function CreateEvent({ auth, categories }) {
                         {activeTab === "Relawan" && (
                             <div className="space-y-6 animate-fade-in">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {/* QUOTA INPUT - USES data.quota */}
                                     <div>
                                         <label className="block text-md font-bold text-black mb-2">Target Jumlah Relawan:</label>
                                         <div className="flex items-center border border-gray-300 rounded-lg w-fit overflow-hidden">
                                             <button type="button" onClick={() => setData("quota", Math.max(0, data.quota - 1))} className="px-3 py-2 hover:bg-gray-100 border-r border-gray-300 text-gray-500"><Minus size={14} /></button>
-                                            <input type="text" className="w-20 text-center border-none focus:ring-0 text-sm" value={data.quota > 0 ? data.quota : ""} readOnl text-gray-400y placeholder="0" />
+                                            <input type="text" className="w-20 text-center border-none focus:ring-0 text-sm text-black placeholder:text-gray-400" value={data.quota > 0 ? data.quota : ""} readOnly placeholder="0" />
                                             <button type="button" onClick={() => setData("quota", data.quota + 1)} className="px-3 py-2 hover:bg-gray-100 border-l border-gray-300 text-gray-500"><Plus size={14} /></button>
                                         </div>
                                         {errors.quota && <div className="text-red-500 text-xs mt-1">{errors.quota}</div>}
@@ -304,7 +302,7 @@ export default function CreateEvent({ auth, categories }) {
 
                                     <div>
                                         <label className="block text-md font-bold text-black mb-2">Batas Akhir Pendaftaran:</label>
-                                        <input type="date" className="w-full border-gray-300 rounded-lg text-sm" value={data.registration_deadline} onChange={(e) => setData("registration_deadline", e.target.value)} />
+                                        <input type="date" className="w-full border-gray-300 rounded-lg text-sm text-black placeholder:text-gray-400" value={data.registration_deadline} onChange={(e) => setData("registration_deadline", e.target.value)} />
                                     </div>
                                 </div>
                                 <div>
@@ -326,7 +324,7 @@ export default function CreateEvent({ auth, categories }) {
                                 </div>
                                 <div className="mt-6">
                                     <label className="block text-md font-bold text-black mb-2">Lainnya: (opsional)</label>
-                                    <input type="text" className="w-full border-gray-300 rounded-lg text-sm text-gray-400" placeholder="Benefit lain" value={data.other_benefit} onChange={(e) => setData("other_benefit", e.target.value)} />
+                                    <input type="text" className="w-full border-gray-300 rounded-lg text-sm text-black placeholder:text-gray-400" placeholder="Benefit lain" value={data.other_benefit} onChange={(e) => setData("other_benefit", e.target.value)} />
                                 </div>
                             </div>
                         )}
@@ -336,11 +334,11 @@ export default function CreateEvent({ auth, categories }) {
                             <div className="space-y-6 animate-fade-in">
                                 <div>
                                     <label className="block text-md font-bold text-black mb-2">Contact Person (CP)</label>
-                                    <input type="text" className="w-full border-gray-300 rounded-lg text-sm text-gray-400" placeholder="0812 - xxxx - xxxx" value={data.contact_person} onChange={(e) => setData("contact_person", e.target.value)} />
+                                    <input type="text" className="w-full border-gray-300 rounded-lg text-sm text-black placeholder:text-gray-400" placeholder="0812 - xxxx - xxxx" value={data.contact_person} onChange={(e) => setData("contact_person", e.target.value)} />
                                 </div>
                                 <div>
                                     <label className="block text-md font-bold text-black mb-2">Link Group: (Opsional)</label>
-                                    <input type="text" className="w-full border-gray-300 rounded-lg text-sm text-gray-400" placeholder="https://chat.whatsapp.com/..." value={data.group_link} onChange={(e) => setData("group_link", e.target.value)} />
+                                    <input type="text" className="w-full border-gray-300 rounded-lg text-sm text-black placeholder:text-gray-400" placeholder="https://chat.whatsapp.com/..." value={data.group_link} onChange={(e) => setData("group_link", e.target.value)} />
                                 </div>
                                 <div>
                                     <label className="block text-md font-bold text-black mb-2">Status:</label>
