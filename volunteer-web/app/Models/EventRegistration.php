@@ -12,8 +12,9 @@ class EventRegistration extends Model
 
     protected $fillable = [
         'event_id',
-        'user_id',
-        'status',
+        'profile_id',
+        'division_id',
+        'regist_status',
     ];
 
     public function event()

@@ -36,17 +36,20 @@ export default function AppVolunteer({ auth, events = [] }) {
 
     const selectedEvent = events.find((e) => e.event_id === selectedEventId);
 
+    
+
     const currentEventVolunteers = useMemo(() => {
         if (!selectedEvent || !selectedEvent.registrations) return [];
 
         return selectedEvent.registrations.map((reg) => {
+            const user = reg || {};
             const profile = reg.user_profile || {};
-            const user = reg.user || {};
+           
             const realName =
-                profile.user_name || user.name || `User ID: ${reg.user_id}`;
+                profile?.user_name || user.name || `User ID: ${reg.user_id}`;
 
             return {
-                id: reg.regist_id,
+                id: reg.registration_id,
                 name: realName,
                 status: reg.regist_status,
                 avatar:
@@ -84,6 +87,7 @@ export default function AppVolunteer({ auth, events = [] }) {
                 preserveScroll: true,
                 onSuccess: () => {
                     console.log("Status & Kuota diperbarui");
+                    router.reload({ preserveScroll: true });
                     closeModal();
                 },
                 onError: (errors) => {
@@ -299,7 +303,7 @@ const EventListView = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {events.map((event) => {
                         const status =
-                            event.event_quota > 0 ? "Active" : "Closed";
+                            event.quota > 0 ? "Active" : "Closed";
                         const category = event.category || "Umum";
                         const imageSrc = event.thumbnail
                             ? `/storage/${event.thumbnail}`
@@ -453,7 +457,7 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
                 <p className="text-xs mt-1 text-gray-400">
                     Total Pendaftar: {volunteers.length} | Sisa Kuota:{" "}
                     <span className="font-bold text-[#005D67]">
-                        {event.event_quota}
+                        {event.quota}
                     </span>
                 </p>
             </div>
@@ -557,7 +561,7 @@ const VolunteerDetailView = ({ event, volunteers, onBack, onUpdateStatus }) => {
                                                     <>
                                                         <button
                                                             disabled={
-                                                                event.event_quota <=
+                                                                event.quota <=
                                                                 0
                                                             }
                                                             onClick={() =>
