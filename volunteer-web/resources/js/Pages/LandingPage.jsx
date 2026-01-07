@@ -178,7 +178,7 @@ export default function LandingPage({ auth }) {
 
     return (
         <>
-            <Head title="Selamat Datang" />
+            <Head title="Volunteer Hub" />
 
             {/* SECTION 1: HERO & NAVBAR */}
             <div className="min-h-screen relative overflow-hidden bg-[url('/assets/landing-page/lp-1.png')] bg-cover bg-center bg-no-repeat flex flex-col">
