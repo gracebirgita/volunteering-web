@@ -17,6 +17,8 @@ export default function EventDetail({auth,  event, institute, volunteers, divisi
 
     const user = auth.user 
     const userPorfile = auth.profile
+    const hasDivision = divisions && divisions.length > 0;
+
 
     const [showDivisionModal, setShowDivisionModal] = useState(false)
     const [selectedDivision, setSelectedDivision] = useState(null)
@@ -470,7 +472,15 @@ export default function EventDetail({auth,  event, institute, volunteers, divisi
                                 {showDivisionModal && (
                                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                                         <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                                        <h3 className="text-lg font-bold mb-4">Pilih Divisi</h3>
+                                        <h3 className="text-lg font-bold mb-4">
+                                            {hasDivision ? 'Pilih Divisi' : 'Konfirmasi Pendaftaran'}
+                                        </h3>
+
+                                        {!hasDivision && (
+                                            <p className="text-sm text-gray-600 mb-4">
+                                                Event ini tidak memiliki pembagian divisi.
+                                            </p>
+                                        )}
 
                                         {divisions.map(d => {
                                             const remaining = d.quota - d.used
@@ -495,9 +505,8 @@ export default function EventDetail({auth,  event, institute, volunteers, divisi
                                         })}
 
                                         <button
-                                            disabled={!selectedDivision}
+                                            disabled={hasDivision && !selectedDivision}
                                             onClick={handleJoin}
-                                            
                                             className="w-full mt-4 bg-[#005D67] text-white py-2 rounded"
                                         >
                                             Konfirmasi

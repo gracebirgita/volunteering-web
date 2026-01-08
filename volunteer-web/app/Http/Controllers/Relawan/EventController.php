@@ -106,7 +106,7 @@ class EventController extends Controller
             ->join('categories', 'events.category_id', '=', 'categories.category_id')
             ->selectRaw('categories.slug as slug, COUNT(*) as total')
             ->groupBy('categories.slug')
-            ->pluck('total', 'slug');
+             ->pluck('total', 'slug');
 
         $user    = auth()->user();
         $profile = $user?->profile;
@@ -189,7 +189,12 @@ class EventController extends Controller
                 'id'          => $event->event_id,
                 'name'        => $event->event_name,
                 'description' => $event->event_description,
-                'category'    => $event->category?->name,
+                'category' => $event->category ? [
+                    'id'    => $event->category->category_id,
+                    'name'  => $event->category->name,
+                    'slug'  => $event->category->slug,
+                    'color' => $event->category->color,
+                ] : null,
                 'location'    => $event->event_location,
                 'start_date'  => $event->event_start,
                 'end_date'    => $event->event_finish,

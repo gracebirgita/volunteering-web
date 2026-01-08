@@ -26,20 +26,30 @@ class EventRegistController extends Controller
         // cek user terdaftar/blm
 
         $request->validate([
-            'division_id' => 'required|exists:events_divisions,division_id',
+            'division_id' => 'nullable|exists:events_divisions,division_id',
         ]);
 
-        $division = $event->divisions()
-            ->where('division_id', $request->division_id)
-            ->firstOrFail();
+        $hasDivision = $event->divisions()->exists();
 
-        $usedQuota = EventRegistration::where('event_id', $event->event_id)
-            ->where('division_id', $division->division_id)
-            ->where('regist_status', 'Accepted')
-            ->count();
+        $division = null;
 
-        if ($usedQuota >= $division->quota) {
-            return back()->with('error', 'Kuota divisi ini sudah penuh.');
+        if ($hasDivision) {
+            if (! $request->division_id) {
+                return back()->with('error', 'Silakan pilih divisi terlebih dahulu.');
+            }
+
+            $division = $event->divisions()
+                ->where('division_id', $request->division_id)
+                ->firstOrFail();
+
+            $usedQuota = EventRegistration::where('event_id', $event->event_id)
+                ->where('division_id', $division->division_id)
+                ->where('regist_status', 'Accepted')
+                ->count();
+
+            if ($usedQuota >= $division->quota) {
+                return back()->with('error', 'Kuota divisi ini sudah penuh.');
+            }
         }
 
         
@@ -62,7 +72,7 @@ class EventRegistController extends Controller
         $regist = new EventRegistration();
         $regist->event_id = $event->event_id;
         $regist->profile_id = $profile->profile_id; // pastikan tidak null
-        $regist->division_id = $division->division_id;
+        $regist->division_id = $division?->division_id; //bisa null update
         $regist->regist_status = 'Pending';
         $regist->applied_at=now();
         // dd($user->account_id);
