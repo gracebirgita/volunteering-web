@@ -82,7 +82,10 @@ export default function MyEventCard({ event }) {
                     {event.title}
                 </h3>
                 <p className="text-sm text-gray-500 mb-4 line-clamp-2">
-                    Bergabunglah bersama kami untuk membuat perubahan nyata di lingkungan sekitar...
+
+                    {/* event desc fixed */}
+                    {event.event_description}
+
                 </p>
 
 

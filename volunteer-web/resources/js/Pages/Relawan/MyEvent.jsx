@@ -7,7 +7,7 @@ import MyNavbar from '@/Components/Navbar';
 import MyEventCard from '@/Components/MyEventCard';
 import HeroBanner from '@/Components/HeroBanner';
 
-export default function MyEvent({ auth, filters, events }) {
+export default function MyEvent({ auth, filters, events, categories, institutes }) {
     /**
      * ============================================================
      * 1. BASE DATA
@@ -27,6 +27,10 @@ export default function MyEvent({ auth, filters, events }) {
     const [searchQuery, setSearchQuery] = useState(filters.search || '');
     const [selectedDate, setSelectedDate] = useState(filters.date || '');
 
+    // filter category, institute/organisasi
+    const [selectedCategory, setSelectedCategory]=useState(filters.category || '');
+    const [selectedInstitute, setSelectedInstitute] = useState(filters.institute || '');
+
     /**
      * ============================================================
      * 3. DATA RELOAD HELPER (SINGLE SOURCE OF TRUTH)
@@ -39,6 +43,10 @@ export default function MyEvent({ auth, filters, events }) {
                 tab: activeTab,
                 search: searchQuery,
                 date: selectedDate,
+
+                // filter category, institute
+                category: selectedCategory,
+                institute:selectedInstitute,
                 ...params,
             },
             {
@@ -47,7 +55,7 @@ export default function MyEvent({ auth, filters, events }) {
                 replace: true,
             }
         );
-    }, [activeTab, searchQuery, selectedDate]);
+    }, [activeTab, searchQuery, selectedDate, selectedCategory, selectedInstitute]);
 
     /**
      * ============================================================
@@ -90,6 +98,19 @@ export default function MyEvent({ auth, filters, events }) {
     const clearDate = () => {
         setSelectedDate('');
         reloadData({ date: '' });
+    };
+
+    // category, institute filter
+    const handleCategoryChange = (e) => {
+        const value = e.target.value;
+        setSelectedCategory(value);
+        reloadData({ category: value });
+    };
+
+    const handleInstituteChange = (e) => {
+        const value = e.target.value;
+        setSelectedInstitute(value);
+        reloadData({ institute: value });
     };
 
     /**
@@ -150,7 +171,7 @@ export default function MyEvent({ auth, filters, events }) {
                     </div>
 
                     {/* Search & Date Filter */}
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-2 mb-8">
                         <div className="relative w-full md:w-96">
                             <Search
                                 className="absolute left-3 top-2.5 text-gray-400"
@@ -165,22 +186,50 @@ export default function MyEvent({ auth, filters, events }) {
                             />
                         </div>
 
-                        <div className="relative">
-                            <input
-                                type="date"
-                                value={selectedDate}
-                                onChange={handleDateChange}
-                                className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 bg-white shadow-sm focus:ring-2 focus:ring-teal-500"
-                            />
-                            {selectedDate && (
-                                <button
-                                    onClick={clearDate}
-                                    className="absolute -right-3 -top-3 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600"
-                                    title="Hapus Tanggal"
-                                >
-                                    <X size={12} />
-                                </button>
-                            )}
+                        {/* CATEGORY */}
+                        <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto lg:justify-end">
+
+                            <select
+                                value={selectedCategory}
+                                onChange={handleCategoryChange}
+                                className="px-2 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 bg-white shadow-sm focus:ring-2 focus:ring-teal-500"
+                            >
+                                <option value="">Semua Kategori</option>
+                                {categories.map((cat) => (
+                                    <option key={cat.slug} value={cat.slug}>{cat.name}</option>
+                                ))}
+                            </select>
+
+                            {/* ORGANISASI */}
+                            <select
+                                value={selectedInstitute}
+                                onChange={handleInstituteChange}
+                                className="px-2 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 bg-white shadow-sm focus:ring-2 focus:ring-teal-500"
+                            >
+                                <option value="">Semua Organisasi</option>
+                                {institutes.map((inst) => (
+                                    <option key={inst} value={inst}>{inst}</option>
+                                ))}
+                            </select>
+
+
+                            <div className="relative">
+                                <input
+                                    type="date"
+                                    value={selectedDate}
+                                    onChange={handleDateChange}
+                                    className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 bg-white shadow-sm focus:ring-2 focus:ring-teal-500"
+                                />
+                                {selectedDate && (
+                                    <button
+                                        onClick={clearDate}
+                                        className="absolute -right-3 -top-3 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600"
+                                        title="Hapus Tanggal"
+                                    >
+                                        <X size={12} />
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
 
