@@ -53,7 +53,7 @@ class EventSeeder extends Seeder
                     'benefit_jam_volunt'    => $faker->boolean(),
                     'contact_person'        => $faker->phoneNumber(),
                     'group_link'            => null,
-                    'event_status'          => $faker->randomElement(['active', 'finished']),
+                    'event_status'          => $faker->randomElement(['active', 'closed']),
                     'created_at'            => now(),
                     'updated_at'            => now(),
                 ]);
