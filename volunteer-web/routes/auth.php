@@ -281,3 +281,20 @@ if (app()->environment('local')) {
         return redirect()->route('dashboard.institute');
     });
 }
+
+Route::get('/seed-route', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        
+        return '<div style="font-family:sans-serif; padding:50px; text-align:center; background:#d4edda; color:#155724;">
+                    <h1>Success</h1>
+                    <p>Database Seeding sudah selesai.</p>
+                    <p>Silakan cek database atau login ke aplikasi sekarang.</p>
+                </div>';
+    } catch (\Exception $e) {
+        return '<div style="font-family:sans-serif; padding:50px; background:#f8d7da; color:#721c24;">
+                    <h1>Error</h1>
+                    <p>' . $e->getMessage() . '</p>
+                </div>';
+    }
+});
