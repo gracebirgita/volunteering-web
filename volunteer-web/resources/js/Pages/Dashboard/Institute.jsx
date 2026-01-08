@@ -49,8 +49,9 @@ const Institute = ({ auth, institute, stats, ongoingList, upcomingList }) => {
 
     const displayName =
         institute?.institute_name || auth?.user?.name || "Institute";
-    const displayPhoto =
-        auth?.user?.profile_photo_url || "/assets/Dashboard/Institute/who.png";
+    const institutePhoto = institute.institute_logo
+        ? `/storage/${institute.institute_logo}`
+        : "/assets/Dashboard/Institute/who.png";
 
     // pagination logic
     const totalOngoing = ongoingList ? ongoingList.length : 0;
@@ -113,8 +114,8 @@ const Institute = ({ auth, institute, stats, ongoingList, upcomingList }) => {
                     <div className="flex flex-col mb-8">
                         <div className="hidden md:flex justify-end items-center gap-4 mb-6">
                             <img
-                                src={displayPhoto}
-                                alt="Institute Logo"
+                                src={institutePhoto}
+                                alt="Profile"
                                 className="w-16 h-16 rounded-full object-cover border border-gray-200"
                             />
                             <span className="text-lg font-semibold text-black">

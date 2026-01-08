@@ -6,7 +6,6 @@ export default function Profile({ auth }) {
     const user = auth.user || {};
     const { institute } = usePage().props;
 
-
     const profileData = {
         name: institute?.name || "Nama Organisasi",
         email: institute?.email || "-",
@@ -31,7 +30,7 @@ export default function Profile({ auth }) {
                         <img
                             src={profileData.logo}
                             alt={profileData.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover rounded-full"
                         />
                     </div>
 
