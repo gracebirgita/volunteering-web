@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
 import { MapPin, Calendar } from 'lucide-react';
+import AddOns from "@/Components/AddOns";
 
 export default function MyEventCard({ event }) {
     /**
@@ -58,15 +59,14 @@ export default function MyEventCard({ event }) {
 
             {/* Content */}
             <div className="p-4">
-                <h3 className="font-bold text-gray-900 mb-1 line-clamp-1">
-                    {event.title}
-                </h3>
-
-                <p className="text-sm text-gray-500 mb-4 line-clamp-2">
-                    Bergabunglah bersama kami untuk membuat perubahan nyata di lingkungan sekitar...
-                </p>
-
                 <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
+                    <div className="flex items-center gap-1">
+                        <AddOns
+                            category={event.category}
+                            organizer={event.event_organizer}
+                        />
+                    </div>
+
                     <div className="flex items-center gap-1">
                         <Calendar size={14} />
                         <span>{event.date}</span>
@@ -76,6 +76,16 @@ export default function MyEventCard({ event }) {
                         <span>{event.location}</span>
                     </div>
                 </div>
+
+
+                <h3 className="font-bold text-gray-900 mb-1 line-clamp-1">
+                    {event.title}
+                </h3>
+                <p className="text-sm text-gray-500 mb-4 line-clamp-2">
+                    Bergabunglah bersama kami untuk membuat perubahan nyata di lingkungan sekitar...
+                </p>
+
+
 
                 {/* Actions */}
                 <div className="flex gap-2 mt-2">
@@ -88,11 +98,12 @@ export default function MyEventCard({ event }) {
                         </button>
                     </Link>
 
-                    {event.status === 'accepted' && (
+                    {/* {event.status === 'accepted' && (
                         <button className="flex-1 bg-teal-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-teal-700">
                             Mulai
                         </button>
-                    )}
+                    )} */}
+
                 </div>
             </div>
         </div>
