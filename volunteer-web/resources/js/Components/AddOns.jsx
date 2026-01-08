@@ -13,9 +13,11 @@ const STATUS_CONFIG = {
     },
 };
 
+
+
 export default function AddOns({ category, organizer, status }) {
     if (!category && !organizer && !status) return null;
-
+    
     const statusConfig = status ? STATUS_CONFIG[status] : null;
 
     return (
@@ -29,7 +31,8 @@ export default function AddOns({ category, organizer, status }) {
                         color: category.color,
                         borderColor: hexToRgba(category.color, 0.4),
                     }}
-                >
+                >   
+                    
                     {category.name}
                 </span>
             )}
