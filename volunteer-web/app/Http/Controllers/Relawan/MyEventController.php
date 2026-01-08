@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
+
+use App\Models\Institute;
+use App\Models\Category;
+
 class MyEventController extends Controller
 {
     public function index(Request $request)
@@ -23,13 +27,26 @@ class MyEventController extends Controller
 
         
         //2. BASE QUERY (EVENT REGISTRATIONS BY PROFILE)
-
         $query = EventRegistration::query()
             ->where('profile_id', $profile->profile_id)
             ->with([
                 'event.institute',
                 'event.category',
-            ]);
+            ])
+
+            ->when($request->input('category'), function ($q, $cat) {
+                $q->whereHas('event.category', function ($sub) use ($cat) {
+                    // Jika inst adalah nama organisasi:
+                    $sub->where('slug', $cat); 
+                });
+            })
+            ->when($request->input('institute'), function ($q, $inst) {
+                $q->whereHas('event.institute', function ($sub) use ($inst) {
+                    // Jika inst adalah nama organisasi:
+                    $sub->where('institute_name', $inst); 
+                });
+            });
+
 
      
         // 3. TAB FILTER (UI → DATABASE STATUS MAPPING)
@@ -84,11 +101,16 @@ class MyEventController extends Controller
 
                     'title'           => $event->event_name,
                     // 'category'        => $event->category->name ?? 'Umum',
+
+
+                    'event_description' => $event->event_description,
                     'category' => $event->category ? [
                         'name'  => $event->category->name,
                         'slug'  => $event->category->slug,
                         'color' => $event->category->color,
                     ] : null,
+
+
                     'organizer'       => $event->institute->institute_name ?? 'Unknown',
 
                     'location'        => $event->event_location,
@@ -102,10 +124,20 @@ class MyEventController extends Controller
                 ];
             });
 
+        $categories = Category::all(['name', 'slug']);
+        $institutes = Institute::whereHas('events.registrations', function($q) use ($profile) {
+            $q->where('profile_id', $profile->profile_id);
+        })->pluck('institute_name'); 
+
         //7. RENDER INERTIA PAGE
         return Inertia::render('Relawan/MyEvent', [
             'events'  => $events,
-            'filters' => $request->only(['search', 'tab', 'date']),
+            
+            // dropdown filter
+            'categories'=> $categories,
+            'institutes'=>$institutes,
+
+            'filters' => $request->only(['search', 'tab', 'date', 'category', 'institute']),
         ]);
     }
 }
