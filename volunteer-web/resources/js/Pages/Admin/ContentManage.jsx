@@ -123,18 +123,29 @@ export default function ContentManage({ auth, categories, achievements }) {
                                 </tbody>
                             </table>
 
-                            <div className="p-20 text-center flex flex-col items-center gap-4">
+                            {/* <div className="p-20 text-center flex flex-col items-center gap-4">
                                 <AlertCircle className="text-gray-400" size={32} />
                                 <p className="text-gray-900">Coming Soon</p>
-                            </div>
-                            {/* {dataList.length === 0 && (
+                            </div> */}
+                            {dataList.length === 0 && (
                                 <div className="p-20 text-center flex flex-col items-center gap-4">
                                     <AlertCircle className="text-gray-400" size={32} />
                                     <p className="text-gray-900">Belum ada data. Silahkan tambahkan.</p>
                                 </div>
                             )}
 
-                            <div className="mt-8 pt-4 border-t border-gray-50">
+                            {activeTab === 'kategori' && (
+                                <div className="mt-8 pt-4 border-t border-gray-50">
+                                    <button 
+                                        onClick={() => setIsModalOpen(true)}
+                                        className="flex items-center gap-2 px-5 py-2.5 bg-[#14b8a6] hover:bg-[#0d9488] text-white rounded-lg font-semibold shadow-sm transition-all text-sm"
+                                    >
+                                        <Plus size={18} strokeWidth={3} />
+                                        Tambah Kategori
+                                    </button>
+                                </div>
+                            )}
+                            {/* <div className="mt-8 pt-4 border-t border-gray-50">
                                 <button onClick = {() => setIsModalOpen(true)}
                                         className="flex items-center gap-2 px-5 py-2.5 bg-[#14b8a6] hover:bg-[#0d9488] text-white rounded-lg font-semibold shadow-sm transition-all text-sm">
                                     <Plus size={18} strokeWidth={3} />
