@@ -122,7 +122,12 @@ export default function ContentManage({ auth, categories, achievements }) {
                                     })}
                                 </tbody>
                             </table>
-                            {dataList.length === 0 && (
+
+                            <div className="p-20 text-center flex flex-col items-center gap-4">
+                                <AlertCircle className="text-gray-400" size={32} />
+                                <p className="text-gray-900">Coming Soon</p>
+                            </div>
+                            {/* {dataList.length === 0 && (
                                 <div className="p-20 text-center flex flex-col items-center gap-4">
                                     <AlertCircle className="text-gray-400" size={32} />
                                     <p className="text-gray-900">Belum ada data. Silahkan tambahkan.</p>
@@ -135,7 +140,9 @@ export default function ContentManage({ auth, categories, achievements }) {
                                     <Plus size={18} strokeWidth={3} />
                                     {activeTab === 'kategori' ? 'Tambah Kategori' : 'Tambah Pencapaian'}
                                 </button>
-                            </div>
+                            </div> */}
+
+
                         </div>
                     </div>
                 </div>
