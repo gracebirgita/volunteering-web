@@ -83,7 +83,12 @@ class MyEventController extends Controller
                     'registration_id'=> $registration->regist_id,
 
                     'title'           => $event->event_name,
-                    'category'        => $event->category->name ?? 'Umum',
+                    // 'category'        => $event->category->name ?? 'Umum',
+                    'category' => $event->category ? [
+                        'name'  => $event->category->name,
+                        'slug'  => $event->category->slug,
+                        'color' => $event->category->color,
+                    ] : null,
                     'organizer'       => $event->institute->institute_name ?? 'Unknown',
 
                     'location'        => $event->event_location,
