@@ -462,14 +462,6 @@ export default function MyNavbar({
 
                     {/* Footer Sidebar */}
                     <div className="p-4 border-t border-gray-100 flex items-center gap-3 bg-white shrink-0">
-                        <img
-                            src={
-                                user?.profile_photo_url ||
-                                "/assets/Dashboard/Institute/who.png"
-                            }
-                            alt="Profile"
-                            className="w-8 h-8 rounded-full object-cover border border-gray-200"
-                        />
                         <span className="text-sm font-semibold text-gray-700 truncate">
                             {user?.institute?.institute_name ||
                                 user?.name ||
