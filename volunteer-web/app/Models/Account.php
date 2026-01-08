@@ -30,7 +30,7 @@ class Account extends Authenticatable
 
     protected $casts = [
         'password' => 'hashed',
-        'is_active' => 'boolean', // <--- Cast to boolean for React
+        'is_active' => 'boolean',
     ];
 
     // RELATIONS

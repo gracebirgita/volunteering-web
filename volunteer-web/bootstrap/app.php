@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth'  => Authenticate::class,
             'guest' => RedirectIfAuthenticated::class,
             'role'=> \App\Http\Middleware\RoleMiddleware::class,
+            'acc_active'=> \App\Http\Middleware\CheckActiveAccount::class,
         ]);
 
         //

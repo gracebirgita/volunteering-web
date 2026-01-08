@@ -44,12 +44,24 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate(); //cocokan email, pass - save ke user session
+        $request->authenticate(); //cocokan email, pass -> save ke user session
         $request->session()->regenerate(); //regenerate session id
 
         $account = Auth::user(); //account model
-        $selectedRole=$request->input('role');
 
+        // akun diblokir admin
+        if (!$account->is_active){
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withErrors([
+                'email'=> 'Akun anda telah diblokir, silahkan hubungi admin.'
+            ]);
+        }
+
+
+        $selectedRole=$request->input('role');
         // validasi role hrs sesuai saat login
         if(
             ($selectedRole==='user' && !$account->isUser()) ||

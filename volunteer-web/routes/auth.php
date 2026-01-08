@@ -113,7 +113,7 @@ Route::middleware(['auth'])->group(function(){
                 });
 
         // -- ROLE USER / RELAWAN  / VOLUNTEER
-        Route::middleware('role:user')->group(function(){
+        Route::middleware('role:user', 'acc_active')->group(function(){
                 // === UTAMA
                 // 1. dashboard
                 Route::get('/dashboard/user', [UserDashboardController::class, 'index'])
@@ -161,7 +161,7 @@ Route::middleware(['auth'])->group(function(){
         });
         
         // -- ROLE INSTITUTE
-        Route::middleware('role:institute')->group(function(){
+        Route::middleware('role:institute', 'acc_active')->group(function(){
                 // 1. dashboard
                 Route::get('/dashboard/institute', [InstituteDashboardController::class, 'index'])
                         ->name('dashboard.institute');
