@@ -21,7 +21,6 @@ export default function EventCard({ event }) {
             {!registered && (
                 <div className="absolute top-3 right-3 z-20">
                     <AddOns status={event.event_status} />
-                    <AddOns status={event.category} />
                 </div>
             )}
 
@@ -47,8 +46,10 @@ export default function EventCard({ event }) {
             <div className="p-4 flex flex-col flex-1">
                 
                 <div className="flex flex-row gap-3 mb-3">
-                    <AddOns category={event.category}/>
-                    <AddOns organizer={event.event_organizer} />
+                    <AddOns
+                        category={event.category}
+                        organizer={event.event_organizer}
+                    />
                 </div>
 
                 <h3 className="font-inter font-semibold text-gray-800 line-clamp-1 mb-1 pl-2">
