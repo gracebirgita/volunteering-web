@@ -238,7 +238,9 @@ export default function MyNavbar({
                             </ul>
                         </div>
 
-                        {/* Aktivitas */}
+                        {/* Aktivitas  */}
+                        {/* fitur opsional off */}
+                        {/*
                         <div>
                             <p className="text-xs font-semibold text-black mb-3 px-2">
                                 Aktivitas
@@ -266,6 +268,7 @@ export default function MyNavbar({
                                 </li>
                             </ul>
                         </div>
+                        */}
 
                         {/* Akun */}
                         <div>
