@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\EventAttendance;
+use App\Http\Controllers\Dashboard\Inertia;
 
 class UserDashboardController extends Controller
 {
@@ -13,6 +14,7 @@ class UserDashboardController extends Controller
     {
         // 1. Ambil account
         $account = auth()->user();
+        
 
         // 2. Ambil profile (VOLUNTEER)
         $userProfile = $account->profile;
@@ -91,3 +93,4 @@ class UserDashboardController extends Controller
         ]);
     }
 }
+
