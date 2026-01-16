@@ -31,7 +31,11 @@ export default function MyNavbar({
         post(route("logout"), {
             preserveState: false,
             preserveScroll: false,
+            onSuccess: () => {
+                window.location.reload()
+            }
         });
+        
     };
 
 
