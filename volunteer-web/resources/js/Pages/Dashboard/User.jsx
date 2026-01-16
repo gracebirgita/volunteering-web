@@ -72,7 +72,7 @@ export default function Dashboard({ auth, events = [], stats = null, profileUser
                                 </p>
                             </div>
                             <img
-                                src="/assets/hero.png"
+                                src="/assets/Hero.png"
                                 alt=""
                                 className=" sm:block h-40 select-none md:self-center sm:self-end"
                             />
