@@ -29,7 +29,7 @@ export default function Login({ status, canResetPassword }) {
     return (
        <div className="flex h-screen w-full overflow-hidden bg-white">
             <Head title="Login"/>
-
+        
             {/* FORM SECTION RIGHT */}
             <div className="flex-1 flex flex-col justify-center items-center px-8 py-5">
                 
