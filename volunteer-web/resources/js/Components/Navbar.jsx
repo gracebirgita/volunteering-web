@@ -27,8 +27,13 @@ export default function MyNavbar({
 
     const handleLogout = (e) => {
         e.preventDefault();
-        post(route("logout"));
+
+        post(route("logout"), {
+            preserveState: false,
+            preserveScroll: false,
+        });
     };
+
 
     const isActive = (pathOrRoute) => {
         try {
